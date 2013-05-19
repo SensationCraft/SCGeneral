@@ -1,0 +1,17 @@
+name: SCGeneral
+author: superckl
+version: 2.2
+main: me.superckl.scgeneral.Main
+website: www.sensationcraft.info
+depend: [Factions, Lockette, PermissionsEx, Votifier, Essentials, xAuth]
+commands:
+  s:
+    description: Shout a message
+    usage: Syntax error! Type /<command> message
+  shout:
+    description: Shout a message
+    usage: Syntax error! Type /<command> message
+  factioncheck:
+    description: Check a factions for overlapping IPs.
+  clearinvis:
+    description: Clear invisibility.
