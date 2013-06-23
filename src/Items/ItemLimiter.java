@@ -77,6 +77,7 @@ public class ItemLimiter implements Listener
 			if(Lockette.isProtected(b))
 			{
 				event.setCancelled(true);
+				((BlockState)initiator.getHolder()).getBlock().breakNaturally();
 			}
 		}
 	}

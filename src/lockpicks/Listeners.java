@@ -3,7 +3,7 @@ package lockpicks;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.superckl.scgeneral.Main;
+import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,14 +30,14 @@ import com.massivecraft.factions.Faction;
 public class Listeners implements Listener
 {
 
-	private final Main main;
+	private final SCGeneral main;
 
-	public Listeners(final Main main)
+	public Listeners(final SCGeneral main)
 	{
 		this.main = main;
 	}
 
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDamageEvent(final EntityDamageEvent e)
 	{
 		final Entity ent = e.getEntity();
@@ -51,7 +51,7 @@ public class Listeners implements Listener
 		}
 	}
 
-	@EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteract(final PlayerInteractEvent e)
 	{
 		if(e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && e.getPlayer().getItemInHand().getTypeId() == 383 && e.getClickedBlock().getTypeId() == 68)

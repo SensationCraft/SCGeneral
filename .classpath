@@ -2,12 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
-	<classpathentry kind="lib" path="C:/eclipse bukkit/reflib/Essentials.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse bukkit/reflib/Factions.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse bukkit/reflib/PermissionsEx.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse bukkit/reflib/Lockette.jar"/>
-	<classpathentry kind="lib" path="C:/Users/superckl/Downloads/Votifier.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse bukkit/reflib/craftbukkit-1.5.1-R0.2-20130406.060241-8.jar"/>
-	<classpathentry kind="lib" path="C:/eclipse bukkit/reflib/xAuth.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Essentials.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Factions.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/PermissionsEx.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Lockette.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/craftbukkit-1.5.2-R1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/xAuth.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Combat Logger.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Votifier.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

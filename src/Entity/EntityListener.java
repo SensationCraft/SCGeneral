@@ -1,8 +1,8 @@
 package Entity;
 
-import java.util.Iterator;
+import java.util.Random;
 
-import me.superckl.scgeneral.Main;
+import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,14 +28,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.util.Vector;
-
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
@@ -44,20 +39,23 @@ import com.massivecraft.factions.struct.ChatMode;
 public class EntityListener implements Listener
 {
 
+	private final Random random = new Random();
+
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
 	public void onEntityDeath(final EntityDeathEvent event)
 	{
+		final int chance = this.random.nextInt(2);
 		final Entity ent = event.getEntity();
 		final Location loc = ent.getLocation();
-		if (ent instanceof Zombie)
+		if (ent instanceof Zombie && chance == 0)
 		{
 			loc.getWorld().dropItem(loc, new ItemStack(372, 1));
 		}
-		if (ent instanceof Skeleton)
+		else if (ent instanceof Skeleton && chance == 0)
 		{
 			loc.getWorld().dropItem(loc, new ItemStack(Material.GHAST_TEAR, 1));
 		}
-		if (ent instanceof Spider)
+		else if (ent instanceof Spider && chance == 0)
 		{
 			loc.getWorld().dropItem(loc, new ItemStack(Material.MAGMA_CREAM, 1));
 		}
@@ -70,15 +68,19 @@ public class EntityListener implements Listener
 		final Location loc = event.getLocation();
 		if (ent instanceof Creeper)
 		{
+			final int chance = this.random.nextInt(2);
 			event.setCancelled(true);
 			loc.getWorld().createExplosion(loc, 0.0F);
-			loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
+			if(chance == 0) {
+				loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
+			}
 		}
 	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent e){
-		final Main main = (Main)Bukkit.getPluginManager().getPlugin("SCGeneral");
-		e.getPlayer().setScoreboard(((Main)Bukkit.getPluginManager().getPlugin("SCGeneral")).getScoreboard());
+		final SCGeneral main = (SCGeneral)Bukkit.getPluginManager().getPlugin("SCGeneral");
+		e.getPlayer().setScoreboard(((SCGeneral)Bukkit.getPluginManager().getPlugin("SCGeneral")).getScoreboard());
 		e.getPlayer().setScoreboard(main.getScoreboard());
 		main.getScoreboard().getObjective(DisplaySlot.BELOW_NAME).getScore(e.getPlayer()).setScore(e.getPlayer().getHealth());
 		final FPlayer fPlayer = FPlayers.i.get(e.getPlayer());
@@ -101,6 +103,9 @@ public class EntityListener implements Listener
 		player.sendMessage(ChatColor.YELLOW+"You killed "+e.getEntity().getName());
 		player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
 	}
+	/**
+	 * Anti-forcefield
+	 */
 	//@EventHandler(priority = EventPriority.LOW)
 	public void onEntityDamageByEntity(final EntityDamageByEntityEvent e){
 		if(e.getDamage() == 0) return;
@@ -133,7 +138,7 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+e.getEntity().getEntityId());
 		}
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	/*@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
 		if (e.isCancelled())
 			return;
@@ -164,24 +169,21 @@ public class EntityListener implements Listener
 				}
 			}, 2L);
 		}
-	}
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerTeleport(final PlayerTeleportEvent e){
-		if(e.getTo().distanceSquared(e.getFrom()) == 0) {
+	}*/
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerChat(final AsyncPlayerChatEvent e) {
+		if(e.getMessage().startsWith("!")){
 			e.setCancelled(true);
+			e.setMessage("I'm a herp");
+			e.getPlayer().sendMessage(ChatColor.DARK_RED+"I will eat your soul if you chat like that. -superckl");
 		}
 	}
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerCommandPreprocess(final PlayerCommandPreprocessEvent e){
-		if(e.getMessage().equalsIgnoreCase("/op") || e.getMessage().equalsIgnoreCase("/op ")){
-			e.setCancelled(true);
-			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Op can only be given from the console!");
-			return;
-		}
-		if(e.getMessage().length() < 4) return;
-		if(e.getMessage().substring(0, 3).equalsIgnoreCase("/op")){
+		if(e.getMessage().toLowerCase().startsWith("/op ") || e.getMessage().equalsIgnoreCase("/op")){
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Op can only be given from the console!");
 		}
 	}
+
 }

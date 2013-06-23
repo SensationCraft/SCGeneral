@@ -1,4 +1,4 @@
-package FactionCheck;
+package Commands;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,8 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -25,19 +27,19 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 
-public class FactionCheck
+public class FactionCheck implements CommandExecutor
 {
 
-	Essentials ess;
+	private final Essentials ess;
 
 	public FactionCheck()
 	{
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
-	public boolean checkFaction(final CommandSender logTo, final String[] args)
-	{
-
+	@Override
+	public boolean onCommand(final CommandSender logTo, final Command arg1, final String arg2,
+			final String[] args) {
 		if (this.ess == null)
 		{
 			logTo.sendMessage(ChatColor.RED + "Essentials not found!");
