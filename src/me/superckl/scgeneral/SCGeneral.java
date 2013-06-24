@@ -11,11 +11,13 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import Commands.Ban;
 import Commands.ClearInvis;
 import Commands.FactionCheck;
 import Commands.Heal;
 import Commands.Kick;
 import Commands.Shout;
+import Commands.ShoutMute;
 import Entity.EntityListener;
 import Items.ItemLimiter;
 
@@ -23,6 +25,7 @@ import Items.ItemLimiter;
 public class SCGeneral extends JavaPlugin
 {
 	private Scoreboard scoreboard;
+	private Shout shout;
 
 	@Override
 	public void onEnable()
@@ -48,15 +51,24 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Overriding commands");
-
+		
+		this.shout = new Shout(this);
 		this.getLogger().info("   - shout");
 		final PluginCommand shoutCommand = this.getServer().getPluginCommand("shout");
 		if(shoutCommand != null) {
-			shoutCommand.setExecutor(new Shout(this));
+			shoutCommand.setExecutor(this.shout);
+			shoutCommand.setUsage("");
 		} else {
 			this.getLogger().warning("Failed to override shout!");
 		}
 
+		this.getLogger().info("   - shoutmute");
+		final PluginCommand shoutToggleCommand = this.getServer().getPluginCommand("shoutmute");
+		if(shoutToggleCommand != null) shoutToggleCommand.setExecutor(new ShoutMute(this));
+		else {
+				this.getLogger().warning("Failed to override shoutmute!");
+		}
+		
 		this.getLogger().info("   - factioncheck");
 		final PluginCommand factionCheckCommand = this.getServer().getPluginCommand("factioncheck");
 		if(factionCheckCommand != null) {
@@ -77,14 +89,24 @@ public class SCGeneral extends JavaPlugin
 		final PluginCommand kickCommand = this.getServer().getPluginCommand("kick");
 		if(kickCommand != null) {
 			kickCommand.setExecutor(new Kick(this));
+			kickCommand.setUsage("");
 		} else {
 			this.getLogger().warning("Failed to override kick!");
 		}
-
+		this.getLogger().info("   - ban");
+		final PluginCommand banCommand = this.getServer().getPluginCommand("ban");
+		if(banCommand != null){
+			banCommand.setExecutor(new Ban(this));
+			banCommand.setUsage("");
+		}
+		 else {
+				this.getLogger().warning("Failed to override ban!");
+			}
 		this.getLogger().info("   - heal");
 		final PluginCommand healCommand = this.getServer().getPluginCommand("heal");
 		if(healCommand != null) {
 			healCommand.setExecutor(new Heal(this));
+			healCommand.setUsage("");
 		} else {
 			this.getLogger().warning("Failed to override heal!");
 		}
@@ -112,5 +134,9 @@ public class SCGeneral extends JavaPlugin
 
 	public Scoreboard getScoreboard() {
 		return this.scoreboard;
+	}
+
+	public Shout getShout() {
+		return this.shout;
 	}
 }

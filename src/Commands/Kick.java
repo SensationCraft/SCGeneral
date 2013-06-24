@@ -81,7 +81,7 @@ public class Kick implements CommandExecutor{
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String arg2,
 			final String[] args) {
-		if(!sender.hasPermission("scgeneral.kick")){
+		if(!sender.hasPermission("essentials.kick")){
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
@@ -96,22 +96,28 @@ public class Kick implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You need to enter a reason!");
 			return false;
 		}
+		Player player = this.plugin.getServer().getPlayer(args[0]);
 		final List<Player> players = this.plugin.getServer().matchPlayer(args[0]);
-		if(players.size() != 1){
+		if(player == null && players.size() < 1){
 			sender.sendMessage(ChatColor.RED+"Player not found.");
 			return false;
+		}else if(player == null && players.size() > 1){
+			sender.sendMessage(ChatColor.RED+"More than one player found! Please refine your name.");
+			return false;
+		}else if(player == null){
+			player = players.get(0);
 		}
-		if(players.get(0).hasPermission("scgeneral.kick.exempt")){
+		if(player.hasPermission("essentials.kick.exempt")){
 			sender.sendMessage(ChatColor.RED+"That player is exempt to kicks!");
 			return false;
 		}
 		final CombatLogger combatLogger = (CombatLogger) this.plugin.getServer().getPluginManager().getPlugin("CombatLogger");
-		if(combatLogger.getCombatListeners().isInCombat(players.get(0).getName())){
+		if(combatLogger.getCombatListeners().isInCombat(player.getName())){
 			sender.sendMessage(ChatColor.RED+"You can't kick players while they are in combat!");
 			return false;
 		}
 		final String reason = this.translate(args);
-		if(!sender.hasPermission("scgeneral.kick.bypasscooldown")){
+		if(!sender.hasPermission("essentials.kick.bypasscooldown")){
 			this.cooldowns.add(sender.getName());
 			new BukkitRunnable(){
 				@Override
@@ -120,9 +126,9 @@ public class Kick implements CommandExecutor{
 				}
 			}.runTaskLaterAsynchronously(this.plugin, 20*60*5L);
 		}
-		players.get(0).kickPlayer(reason+ChatColor.DARK_RED+" - "+sender.getName());
-		for(final Player player:this.plugin.getServer().getOnlinePlayers()) if(player.hasPermission("scgeneral.kick.broadcast")) {
-			player.sendMessage(ChatColor.RED+sender.getName()+" kicked "+players.get(0).getName()+" for "+ChatColor.BLUE+reason);
+		player.kickPlayer(reason+ChatColor.DARK_RED+" - "+sender.getName());
+		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(player.hasPermission("essentials.kick.broadcast")) {
+			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);
 		}
 		return true;
 	}

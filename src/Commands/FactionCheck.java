@@ -1,9 +1,5 @@
 package Commands;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,11 +12,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.sensationcraft.login.PlayerManager;
+import org.sensationcraft.login.SCLogin;
 
-import com.cypherx.xauth.PlayerManager;
-import com.cypherx.xauth.xAuth;
-import com.cypherx.xauth.xAuthPlayer;
-import com.cypherx.xauth.database.Table;
 import com.earth2me.essentials.Essentials;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
@@ -45,14 +39,7 @@ public class FactionCheck implements CommandExecutor
 			logTo.sendMessage(ChatColor.RED + "Essentials not found!");
 			return true;
 		}
-
-		if (!xAuth.isPluginAvailable())
-		{
-			logTo.sendMessage(ChatColor.RED + "xAuth not available!");
-			return true;
-		}
-
-		final xAuth xauth = xAuth.getPlugin();
+		final SCLogin scLogin = SCLogin.getInstance();
 
 		if (args.length < 1)
 		{
@@ -118,46 +105,19 @@ public class FactionCheck implements CommandExecutor
 			@Override
 			public void run()
 			{
-				final Connection conn = xauth.getDatabaseController().getConnection();
-				PreparedStatement ps = null;
-				xAuthPlayer xp;
-				final PlayerManager manager = xauth.getPlayerManager();
-				ResultSet result = null;
+				final PlayerManager manager = scLogin.getPlayerManager();
 				for (final String name : names)
 				{
-					xp = manager.getPlayer(name);
-					if(xp == null) {
-						continue;
-					}
-					try
+					final String ip = manager.getLastIp(name);
+					if (ips.get(ip) != null)
 					{
-						final String sql = String.format("SELECT `lastloginip` FROM `%s` WHERE `id` = ?",
-								xauth.getDatabaseController().getTable(Table.ACCOUNT));
-						ps = conn.prepareStatement(sql);
-						ps.setInt(1, xp.getAccountId());
-						result = ps.executeQuery();
-						if(result.next())
-						{
-							final String ip = result.getString("lastloginip");
-							if (ips.get(ip) != null)
-							{
-								ipToNames.get(ip).add(name);
-								ips.put(ip, ips.get(ip) + 1);
-							}
-							else
-							{
-								ipToNames.put(ip, new ArrayList<String>(Arrays.asList(name)));
-								ips.put(ip, 1);
-							}
-						}
+						ipToNames.get(ip).add(name);
+						ips.put(ip, ips.get(ip) + 1);
 					}
-					catch (final SQLException e)
+					else
 					{
-
-					}
-					finally
-					{
-						xauth.getDatabaseController().close(conn, ps);
+						ipToNames.put(ip, new ArrayList<String>(Arrays.asList(name)));
+						ips.put(ip, 1);
 					}
 				}
 
@@ -189,7 +149,7 @@ public class FactionCheck implements CommandExecutor
 				logTo.sendMessage(glue.toString().split("\n"));
 
 			}
-		}.runTaskAsynchronously(xauth);
+		}.runTaskAsynchronously(scLogin);
 		return true;
 	}
 }

@@ -7,7 +7,7 @@
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/PermissionsEx.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Lockette.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/craftbukkit-1.5.2-R1.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/xAuth.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/SCLogin.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Combat Logger.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Votifier.jar"/>
 	<classpathentry kind="output" path="bin"/>

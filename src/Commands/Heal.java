@@ -1,5 +1,7 @@
 package Commands;
 
+import java.util.List;
+
 import me.superckl.combatlogger.CombatLogger;
 import me.superckl.scgeneral.SCGeneral;
 
@@ -41,10 +43,16 @@ public class Heal implements CommandExecutor{
 			}
 		}else if (args.length == 1){
 			if(sender.hasPermission("essentials.heal.other")){
-				player = Bukkit.getPlayer(args[0]);
-				if(player == null){
-					sender.sendMessage(ChatColor.RED+"Player not found!");
+				player = this.instance.getServer().getPlayer(args[0]);
+				final List<Player> players = this.instance.getServer().matchPlayer(args[0]);
+				if(player == null && players.size() < 1){
+					sender.sendMessage(ChatColor.RED+"Player not found.");
 					return false;
+				}else if(player == null && players.size() > 1){
+					sender.sendMessage(ChatColor.RED+"More than one player found! Please refine your name.");
+					return false;
+				}else if(player == null){
+					player = players.get(0);
 				}
 				if(this.combatLogger.getCombatListeners().isInCombat(player.getName()) || this.combatLogger.getArena().isInArena(player)){
 					sender.sendMessage(ChatColor.RED+"You can't heal players that are in combat!");

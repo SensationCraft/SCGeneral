@@ -3,7 +3,7 @@ author: superckl
 version: 3.0
 main: me.superckl.scgeneral.SCGeneral
 website: www.sensationcraft.info
-depend: [Factions, Lockette, PermissionsEx, Votifier, Essentials, xAuth, CombatLogger]
+depend: [Factions, Lockette, PermissionsEx, Votifier, Essentials, SCLogin, CombatLogger]
 commands:
   shout:
     description: Shout a message
@@ -12,3 +12,6 @@ commands:
     description: Check a factions for overlapping IPs.
   clearinvis:
     description: Clear invisibility.
+  shoutmute:
+    description: Toggle shout.
+    aliases: [toggleshout, stfushout]

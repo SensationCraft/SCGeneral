@@ -1,15 +1,17 @@
 package Commands;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import me.superckl.scgeneral.SCGeneral;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
@@ -27,7 +29,8 @@ public class Shout implements CommandExecutor
 		this.ess = (Essentials)this.instance.getServer().getPluginManager().getPlugin("Essentials");
 	}
 
-	public Map<String, Long> CoolDowns = new HashMap<String, Long>();
+	private Map<String, Long> CoolDowns = new HashMap<String, Long>();
+	private Set<String> disabled = new HashSet<String>();
 
 	@Override
 	public boolean onCommand(final CommandSender p, final Command arg1, final String arg2,
@@ -38,7 +41,10 @@ public class Shout implements CommandExecutor
 		}
 
 		final String playerName = p.getName();
-
+		if(this.disabled.contains(playerName)){
+			p.sendMessage(ChatColor.RED+"You have turned shout off. '/shoutmute' to turn it back on.");
+			return false;
+		}
 		if(this.ess != null)
 		{
 			final User user = this.ess.getUser(playerName);
@@ -90,11 +96,21 @@ public class Shout implements CommandExecutor
 		}
 
 		shout.append(": ").append(ChatColor.BOLD).append(message);
-		Bukkit.broadcastMessage(shout.toString());
+		Player players[] = this.instance.getServer().getOnlinePlayers();
+		for(Player player:players) 
+			if(!disabled.contains(player.getName())) 
+				player.sendMessage(shout.toString());
 		this.instance.getLogger().info(shout.toString());
 		if(!bypass) {
 			this.CoolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
 		}
 		return true;
+	}
+
+	public Set<String> getDisabled() {
+		return this.disabled;
+	}
+	public Map<String, Long> getCooldowns(){
+		return this.CoolDowns;
 	}
 }
