@@ -106,7 +106,7 @@ public class EntityListener implements Listener
 	/**
 	 * Anti-forcefield
 	 */
-	//@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW)
 	public void onEntityDamageByEntity(final EntityDamageByEntityEvent e){
 		if(e.getDamage() == 0) return;
 		if(e.isCancelled()) return;
@@ -133,9 +133,13 @@ public class EntityListener implements Listener
 		} else {
 			yaw = Math.abs(yaw);
 		}
-		if(Math.abs(angle-yaw)>50){
+		final float finalAngle = Math.abs(angle-yaw);
+		if(finalAngle>15){
 			e.setCancelled(true);
-			System.out.println("Blocked aimbot for "+e.getEntity().getEntityId());
+			System.out.println("Blocked aimbot for "+((Player)e.getEntity()).getName()+": "+finalAngle);
+			for(Player player:Bukkit.getOnlinePlayers())
+				if(player.hasPermission("antif.broadcast"))
+					player.sendMessage(ChatColor.AQUA+"Detected forcefield for "+((Player)e.getEntity()).getName()+": "+finalAngle);
 		}
 	}
 	/*@EventHandler(priority = EventPriority.HIGHEST)

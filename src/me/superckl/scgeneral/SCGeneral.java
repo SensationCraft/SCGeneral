@@ -18,6 +18,10 @@ import Commands.Heal;
 import Commands.Kick;
 import Commands.Shout;
 import Commands.ShoutMute;
+import Commands.TpAccept;
+import Commands.TpDeny;
+import Commands.Tpa;
+import Commands.TpaHere;
 import Entity.EntityListener;
 import Items.ItemLimiter;
 
@@ -110,6 +114,41 @@ public class SCGeneral extends JavaPlugin
 		} else {
 			this.getLogger().warning("Failed to override heal!");
 		}
+		
+		this.getLogger().info("   - tpa");
+		Tpa tpa = null;
+		final PluginCommand tpaCommand = this.getServer().getPluginCommand("tpa");
+		if(tpaCommand != null){
+			tpa = new Tpa(this);
+			tpaCommand.setExecutor(tpa);
+			tpaCommand.setUsage("");
+		}else this.getLogger().warning("Failed to override tpa!");
+		
+		this.getLogger().info("   - tpahere");
+		TpaHere tpaHere = null;
+		final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
+		if(tpaHereCommand != null && tpa != null){
+			tpaHere = new TpaHere(tpa, this);
+			tpaHereCommand.setExecutor(tpaHere);
+			tpaHereCommand.setUsage("");
+			tpa.setTpaHere(tpaHere);
+		}else this.getLogger().warning("Failed to override tpahere!");
+		
+		this.getLogger().info("   - tpaccept");
+		final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
+		if(tpAcceptCommand != null && tpa != null && tpaHere != null){
+			tpAcceptCommand.setExecutor(new TpAccept(tpa, tpaHere));
+			tpAcceptCommand.setUsage("");
+			tpAcceptCommand.getAliases().add("tpaaccept");
+		}else this.getLogger().warning("Failed to override tpaccept!");
+		
+		this.getLogger().info("   - tpdeny");
+		final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
+		if(tpDenyCommand != null && tpa != null && tpaHere != null){
+			tpDenyCommand.setExecutor(new TpDeny(tpa, tpaHere));
+			tpDenyCommand.setUsage("");
+			tpDenyCommand.getAliases().add("tpadeny");
+		}else this.getLogger().warning("Failed to override tpdeny!");
 
 		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
 
