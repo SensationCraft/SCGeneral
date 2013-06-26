@@ -25,7 +25,7 @@ public class TpDeny implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"Tpa request from "+tpaSender+" has been denied");
 			Player player = Bukkit.getPlayer(tpaSender);
 			if(player != null)
-				player.sendMessage(sender.getName()+" has denied your tpa request.");
+				player.sendMessage(ChatColor.RED+sender.getName()+" has denied your tpa request.");
 			return true;
 		}else{
 			String tpaHereSender = this.tpaHere.removeDestinationByOrigin(sender.getName());
@@ -33,7 +33,7 @@ public class TpDeny implements CommandExecutor{
 				sender.sendMessage(ChatColor.RED+"Tpahere request from "+tpaHereSender+" has been denied");
 				Player player = Bukkit.getPlayer(tpaHereSender);
 				if(player != null)
-					player.sendMessage(sender.getName()+" has denied your tpahere request.");
+					player.sendMessage(ChatColor.RED+sender.getName()+" has denied your tpahere request.");
 				return true;
 			}else{
 				sender.sendMessage(ChatColor.RED+"You have not received a teleport request.");

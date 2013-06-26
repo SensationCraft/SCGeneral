@@ -49,9 +49,9 @@ public class Tpa implements CommandExecutor{
 			Player tpaHerePlayer = this.instance.getServer().getPlayer(tpaHere);
 			if(tpaHerePlayer != null) tpaHerePlayer.sendMessage(ChatColor.RED+sender.getName()+" has cancelled their tpahere request.");
 		}
-		this.requests.put(sender.getName(), player.getName());
+		this.requests.put(player.getName(), sender.getName());
 		sender.sendMessage(ChatColor.GOLD+"Request sent to "+player.getName()+".");
-		player.sendMessage(ChatColor.GOLD+sender.getName()+" would like you to teleport to "+ChatColor.RED+"them"+ChatColor.GOLD+":");
+		player.sendMessage(ChatColor.GOLD+sender.getName()+" would like to teleport to "+ChatColor.RED+"you"+ChatColor.GOLD+":");
 		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.GREEN+"/tpaccept"+ChatColor.GOLD+"' to accept.");
 		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.RED+"/tpdeny"+ChatColor.GOLD+"' to accept.");
 		return true;

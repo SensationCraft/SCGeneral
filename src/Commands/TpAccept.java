@@ -29,11 +29,13 @@ public class TpAccept implements CommandExecutor{
 			Player player = Bukkit.getPlayer(tpaSender);
 			if(player != null){
 				if(combatLogger.getCombatListeners().isInCombat(player.getName())){
-					sender.sendMessage(ChatColor.RED+"You can't teleport players that are in combat!");
+					player.sendMessage(ChatColor.RED+"You can't teleport players that are in combat!");
 					return false;
 				}
+				player.sendMessage(ChatColor.GOLD+sender.getName()+" has accepted your tpa request.");
+				sender.sendMessage(ChatColor.GOLD+"You have accepted "+player.getName()+"'s tpa request.");
 				Player tpa = (Player) sender;
-				tpa.teleport(player);
+				player.teleport(tpa);
 				return true;
 			}else{
 				sender.sendMessage(ChatColor.RED+"Oops! It seems the sender of that request has logged off!");
@@ -47,8 +49,10 @@ public class TpAccept implements CommandExecutor{
 						sender.sendMessage(ChatColor.RED+"You can't teleport to players that are in combat!");
 						return false;
 					}
+					player.sendMessage(ChatColor.GOLD+sender.getName()+" has accepted your tpahere request.");
+					sender.sendMessage(ChatColor.GOLD+"You have accepted "+player.getName()+"'s tpahere request.");
 					Player tpaHere = (Player) sender;
-					player.teleport(tpaHere);
+					tpaHere.teleport(player);
 					return true;
 				}else{
 					sender.sendMessage(ChatColor.RED+"Oops! It seems the sender of that request has logged off!");
