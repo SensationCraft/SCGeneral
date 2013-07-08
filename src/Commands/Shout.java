@@ -74,8 +74,8 @@ public class Shout implements CommandExecutor
 		String title = Titles.getInstance().getTitle(playerName);
 		final StringBuilder shout = (new StringBuilder()).append(ChatColor.RED).append("[SHOUT] ").append(ChatColor.RESET);
 		if(title != null && !title.equals(""))
-			shout.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("[ ").append(Titles.getInstance().getTitle(playerName)).append("] ")
-			.append(ChatColor.RESET);
+			shout.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("[").append(Titles.getInstance().getTitle(playerName))
+			.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("] ").append(ChatColor.RESET);
 
 		if (p.isOp()) {
 			shout.append(ChatColor.GOLD).append(playerName).append(ChatColor.RESET);
