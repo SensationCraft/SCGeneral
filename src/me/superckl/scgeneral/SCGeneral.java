@@ -1,6 +1,11 @@
 package me.superckl.scgeneral;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import lockpicks.Listeners;
+
+import net.minecraft.server.v1_6_R1.SharedConstants;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,10 +41,18 @@ public class SCGeneral extends JavaPlugin
 	{
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Scoreboard");
-		this.scoreboard = this.getServer().getScoreboardManager().getNewScoreboard();
-		final Objective objective = this.scoreboard.registerNewObjective("showHealth", "health");
-		objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-		objective.setDisplayName("Health");
+		try {
+			this.ModifyAllowedCharacters();
+			this.scoreboard = this.getServer().getScoreboardManager().getNewScoreboard();
+			final Objective objective = this.scoreboard.registerNewObjective("showHealth", ChatColor.RED+"\u2665");
+			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+			objective.setDisplayName("Health");
+		} catch (NoSuchFieldException | SecurityException
+				| IllegalArgumentException | IllegalAccessException
+				| IllegalStateException e) {
+			this.getLogger().severe("Failed to create health scoreboard!");
+			e.printStackTrace();
+		}
 		this.getLogger().info(" - Registering EntityListener");
 		this.getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		this.getLogger().info(" - Registering ItemLimiter");
@@ -178,4 +191,18 @@ public class SCGeneral extends JavaPlugin
 	public Shout getShout() {
 		return this.shout;
 	}
+	 public void ModifyAllowedCharacters() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
+	 {
+	  Field field = SharedConstants.class.getDeclaredField("allowedCharacters");
+	  field.setAccessible(true);
+	  Field modifiersField = Field.class.getDeclaredField( "modifiers" );
+	  modifiersField.setAccessible( true );
+	  modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+	  String oldallowedchars = (String)field.get(null);
+	  String suits = "\u2665";//\u2666\u2663\u2660
+	  StringBuilder sb = new StringBuilder();
+	  sb.append( oldallowedchars );
+	  sb.append( suits );
+	  field.set( null, sb.toString() );
+	 }
 }

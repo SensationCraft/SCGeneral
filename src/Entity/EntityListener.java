@@ -2,8 +2,6 @@ package Entity;
 
 import java.util.Random;
 
-import me.superckl.scgeneral.SCGeneral;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -29,7 +27,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.util.Vector;
 
 import com.massivecraft.factions.FPlayer;
@@ -79,10 +76,6 @@ public class EntityListener implements Listener
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent e){
-		final SCGeneral main = (SCGeneral)Bukkit.getPluginManager().getPlugin("SCGeneral");
-		e.getPlayer().setScoreboard(((SCGeneral)Bukkit.getPluginManager().getPlugin("SCGeneral")).getScoreboard());
-		e.getPlayer().setScoreboard(main.getScoreboard());
-		main.getScoreboard().getObjective(DisplaySlot.BELOW_NAME).getScore(e.getPlayer()).setScore(e.getPlayer().getHealth());
 		final FPlayer fPlayer = FPlayers.i.get(e.getPlayer());
 		if(fPlayer.getChatMode() == ChatMode.FACTION || fPlayer.getChatMode() == ChatMode.ALLIANCE){
 			fPlayer.setChatMode(ChatMode.PUBLIC);
@@ -106,9 +99,9 @@ public class EntityListener implements Listener
 	/**
 	 * Anti-forcefield
 	 */
-	@EventHandler(priority = EventPriority.LOW)
+	//@EventHandler(priority = EventPriority.LOW)
 	public void onEntityDamageByEntity(final EntityDamageByEntityEvent e){
-		if(e.getDamage() == 0) return;
+		if(e.getDamage() == 0.0) return;
 		if(e.isCancelled()) return;
 		if(e.getCause() != DamageCause.ENTITY_ATTACK) return;
 		if(e.getDamager().getType() != EntityType.PLAYER) return;
@@ -134,12 +127,12 @@ public class EntityListener implements Listener
 			yaw = Math.abs(yaw);
 		}
 		final float finalAngle = Math.abs(angle-yaw);
-		if(finalAngle>15){
+		if(finalAngle>40){
 			e.setCancelled(true);
-			System.out.println("Blocked aimbot for "+((Player)e.getEntity()).getName()+": "+finalAngle);
+			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+finalAngle);
 			for(Player player:Bukkit.getOnlinePlayers())
 				if(player.hasPermission("antif.broadcast"))
-					player.sendMessage(ChatColor.AQUA+"Detected forcefield for "+((Player)e.getEntity()).getName()+": "+finalAngle);
+					player.sendMessage(ChatColor.AQUA+"Detected forcefield for "+((Player)e.getDamager()).getName()+": "+finalAngle);
 		}
 	}
 	/*@EventHandler(priority = EventPriority.HIGHEST)

@@ -1,5 +1,7 @@
 package Items;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,7 +15,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class ItemLimiter implements Listener
@@ -80,5 +84,17 @@ public class ItemLimiter implements Listener
 				((BlockState)initiator.getHolder()).getBlock().breakNaturally();
 			}
 		}
+	}
+	//@EventHandler(priority = EventPriority.MONITOR)
+	public void onItemPickup(PlayerPickupItemEvent e){
+		ItemPrices mat = ItemPrices.translateMaterial(e.getItem().getItemStack().getType());
+		if(mat == null)
+			return;
+		ItemMeta meta = e.getItem().getItemStack().getItemMeta();
+		List<String> lore = meta.getLore();
+		lore.clear();
+		lore.add(ChatColor.GREEN+""+ChatColor.BOLD+"This item can be sold for $"+mat.getPrice()+" at the shop.");
+		meta.setLore(lore);
+		e.getItem().getItemStack().setItemMeta(meta);
 	}
 }
