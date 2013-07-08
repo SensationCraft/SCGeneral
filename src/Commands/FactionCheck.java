@@ -38,6 +38,9 @@ public class FactionCheck implements CommandExecutor
 		{
 			logTo.sendMessage(ChatColor.RED + "Essentials not found!");
 			return true;
+		}if(!logTo.hasPermission("check.faction")){
+			logTo.sendMessage(ChatColor.RED+"You don't have permission for that!");
+			return false;
 		}
 		final SCLogin scLogin = SCLogin.getInstance();
 

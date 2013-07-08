@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import com.github.DarkSeraphim.SCPvP.Titles;
 
 public class Shout implements CommandExecutor
 {
@@ -68,10 +69,13 @@ public class Shout implements CommandExecutor
 		{
 			sb.append(s).append(" ");
 		}
-
+		
 		final String message = sb.toString().trim();
-
+		String title = Titles.getInstance().getTitle(playerName);
 		final StringBuilder shout = (new StringBuilder()).append(ChatColor.RED).append("[SHOUT] ").append(ChatColor.RESET);
+		if(title != null && !title.equals(""))
+			shout.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("[ ").append(Titles.getInstance().getTitle(playerName)).append("] ")
+			.append(ChatColor.RESET);
 
 		if (p.isOp()) {
 			shout.append(ChatColor.GOLD).append(playerName).append(ChatColor.RESET);
