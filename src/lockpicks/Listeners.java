@@ -61,9 +61,7 @@ public class Listeners implements Listener
 			final Sign sign = (Sign)e.getClickedBlock().getState();
 			if(sign.getLine(0).equalsIgnoreCase("[private]"))
 				if(this.picking.containsKey(e.getPlayer().getName()))
-				{
 					e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("You are already picking a lock!").toString());
-				}
 				else
 				{
 					final boolean vip = player.hasPermission("lockpicks.vip");
@@ -75,9 +73,8 @@ public class Listeners implements Listener
 					{
 						final ItemStack it = e.getPlayer().getItemInHand();
 						it.setAmount(it.getAmount() - 1);
-						if(it.getAmount() < 1) {
+						if(it.getAmount() < 1)
 							it.setType(Material.AIR);
-						}
 						e.getPlayer().setItemInHand(it);
 						e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.DARK_AQUA).append("Picking Lock...").toString());
 						if(premium)
@@ -95,11 +92,8 @@ public class Listeners implements Listener
 							final int id = Bukkit.getScheduler().scheduleSyncDelayedTask(this.main, new Default(this, e), 100L);
 							this.picking.put(e.getPlayer().getName(), Integer.valueOf(id));
 						}
-					}
-					else
-					{
+					} else
 						e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("You can only pick locks in the Wilderness!").toString());
-					}
 				}
 		}
 	}

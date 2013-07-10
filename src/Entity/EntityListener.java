@@ -26,8 +26,11 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import Commands.HelpRequest;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
@@ -37,6 +40,16 @@ public class EntityListener implements Listener
 {
 
 	private final Random random = new Random();
+	private final HelpRequest help;
+
+	public EntityListener(final HelpRequest help){
+		this.help = help;
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(final PlayerQuitEvent e){
+		this.help.removeRequest(e.getPlayer().getName());
+	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
 	public void onEntityDeath(final EntityDeathEvent event)
@@ -45,17 +58,11 @@ public class EntityListener implements Listener
 		final Entity ent = event.getEntity();
 		final Location loc = ent.getLocation();
 		if (ent instanceof Zombie && chance == 0)
-		{
 			loc.getWorld().dropItem(loc, new ItemStack(372, 1));
-		}
 		else if (ent instanceof Skeleton && chance == 0)
-		{
 			loc.getWorld().dropItem(loc, new ItemStack(Material.GHAST_TEAR, 1));
-		}
 		else if (ent instanceof Spider && chance == 0)
-		{
 			loc.getWorld().dropItem(loc, new ItemStack(Material.MAGMA_CREAM, 1));
-		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -68,9 +75,8 @@ public class EntityListener implements Listener
 			final int chance = this.random.nextInt(2);
 			event.setCancelled(true);
 			loc.getWorld().createExplosion(loc, 0.0F);
-			if(chance == 0) {
+			if(chance == 0)
 				loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
-			}
 		}
 	}
 
@@ -117,20 +123,18 @@ public class EntityListener implements Listener
 		final Vector basevector = new Vector(0,0,1);
 		float angle = adjvector.angle(basevector);
 		angle = (float) (angle*(180/Math.PI));
-		if(adjx<0) {
+		if(adjx<0)
 			angle=360-angle;
-		}
 		float yaw = damloc.getYaw();
-		if(yaw>0) {
+		if(yaw>0)
 			yaw=Math.abs(yaw-360);
-		} else {
+		else
 			yaw = Math.abs(yaw);
-		}
 		final float finalAngle = Math.abs(angle-yaw);
 		if(finalAngle>40){
 			e.setCancelled(true);
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+finalAngle);
-			for(Player player:Bukkit.getOnlinePlayers())
+			for(final Player player:Bukkit.getOnlinePlayers())
 				if(player.hasPermission("antif.broadcast"))
 					player.sendMessage(ChatColor.AQUA+"Detected forcefield for "+((Player)e.getDamager()).getName()+": "+finalAngle);
 		}

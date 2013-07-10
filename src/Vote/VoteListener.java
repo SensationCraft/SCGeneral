@@ -23,8 +23,6 @@ public class VoteListener implements Listener
 		Bukkit.broadcastMessage((new StringBuilder()).append(ChatColor.BLUE).append(name).append(" has voted for free diamonds. Get your own free diamonds at www.sensationcraft.info/votenow").toString());
 		final Player player = Bukkit.getPlayer(name);
 		if(player != null)
-		{
 			player.getInventory().addItem(new ItemStack(Material.DIAMOND, 10));
-		}
 	}
 }

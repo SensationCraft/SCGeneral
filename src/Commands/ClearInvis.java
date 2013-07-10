@@ -21,9 +21,8 @@ public class ClearInvis implements CommandExecutor{
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
 			final String[] args) {
 		if(sender.hasPermission("scgeneral.clearinvis")){
-			for(final Player player:this.instance.getServer().getOnlinePlayers()) {
+			for(final Player player:this.instance.getServer().getOnlinePlayers())
 				player.removePotionEffect(PotionEffectType.INVISIBILITY);
-			}
 			sender.sendMessage(ChatColor.GREEN+"Invisibility cleared.");
 			return true;
 		}

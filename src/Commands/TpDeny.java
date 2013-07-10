@@ -9,35 +9,34 @@ import org.bukkit.entity.Player;
 
 public class TpDeny implements CommandExecutor{
 
-	private Tpa tpa;
-	private TpaHere tpaHere;
-	
-	public TpDeny(Tpa tpa, TpaHere tpaHere){
+	private final Tpa tpa;
+	private final TpaHere tpaHere;
+
+	public TpDeny(final Tpa tpa, final TpaHere tpaHere){
 		this.tpa = tpa;
 		this.tpaHere = tpaHere;
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
-			String[] arg3) {
-		String tpaSender = this.tpa.removeOriginByDestination(sender.getName());
+	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
+			final String[] arg3) {
+		final String tpaSender = this.tpa.removeOriginByDestination(sender.getName());
 		if(tpaSender != null){
 			sender.sendMessage(ChatColor.RED+"Tpa request from "+tpaSender+" has been denied");
-			Player player = Bukkit.getPlayer(tpaSender);
+			final Player player = Bukkit.getPlayer(tpaSender);
 			if(player != null)
 				player.sendMessage(ChatColor.RED+sender.getName()+" has denied your tpa request.");
 			return true;
 		}else{
-			String tpaHereSender = this.tpaHere.removeDestinationByOrigin(sender.getName());
+			final String tpaHereSender = this.tpaHere.removeDestinationByOrigin(sender.getName());
 			if(tpaHereSender != null){
 				sender.sendMessage(ChatColor.RED+"Tpahere request from "+tpaHereSender+" has been denied");
-				Player player = Bukkit.getPlayer(tpaHereSender);
+				final Player player = Bukkit.getPlayer(tpaHereSender);
 				if(player != null)
 					player.sendMessage(ChatColor.RED+sender.getName()+" has denied your tpahere request.");
 				return true;
-			}else{
+			} else
 				sender.sendMessage(ChatColor.RED+"You have not received a teleport request.");
-			}
 		}
 		return false;
 	}

@@ -51,9 +51,8 @@ public class Heal implements CommandExecutor{
 				}else if(player == null && players.size() > 1){
 					sender.sendMessage(ChatColor.RED+"More than one player found! Please refine your name.");
 					return false;
-				}else if(player == null){
+				}else if(player == null)
 					player = players.get(0);
-				}
 				if(this.combatLogger.getCombatListeners().isInCombat(player.getName()) || this.combatLogger.getArena().isInArena(player)){
 					sender.sendMessage(ChatColor.RED+"You can't heal players that are in combat!");
 					return false;

@@ -53,24 +53,18 @@ public class FactionCheck implements CommandExecutor
 		Faction faction = null;
 		// First we try an exact match
 		if (faction == null)
-		{
 			faction = Factions.i.getByTag(args[0]);
-		}
 
 		// Next we match faction tags
 		if (faction == null)
-		{
 			faction = Factions.i.getBestTagMatch(args[0]);
-		}
 
 		// Next we match player names
 		if (faction == null)
 		{
 			final FPlayer fplayer = FPlayers.i.getBestIdMatch(args[0]);
 			if (fplayer != null)
-			{
 				faction = fplayer.getFaction();
-			}
 		}
 
 		if (faction == null || faction.isNone())
@@ -80,15 +74,9 @@ public class FactionCheck implements CommandExecutor
 		}
 		final List<String> flags = new ArrayList<String>();
 		if (args.length > 1)
-		{
 			for (final String s : Arrays.copyOfRange(args, 1, args.length))
-			{
 				if (s.startsWith("-"))
-				{
 					flags.add(s.toLowerCase());
-				}
-			}
-		}
 
 		final boolean hideSingletons = !flags.contains("-all");
 		final boolean showNames = flags.contains("-names");
@@ -98,9 +86,7 @@ public class FactionCheck implements CommandExecutor
 
 		final List<String> names = new ArrayList<String>();
 		for (final FPlayer fp : faction.getFPlayers())
-		{
 			names.add(fp.getName());
-		}
 
 
 		new BukkitRunnable()
@@ -125,18 +111,11 @@ public class FactionCheck implements CommandExecutor
 				}
 
 				if (hideSingletons)
-				{
 					for (final Map.Entry<String, Integer> ip : ips.entrySet())
-					{
 						if (ip.getValue() != null && ip.getValue() < 2)
-						{
 							ip.setValue(null);
-						}
-					}
-				}
 				final StringBuilder glue = new StringBuilder(ChatColor.GOLD.toString()).append("IP list:");
 				for (final Map.Entry<String, Integer> ip : ips.entrySet())
-				{
 					if (ip.getValue() != null)
 					{
 						glue.append("\n - ").append((ChatColor.AQUA)).append(ip.getKey())
@@ -147,7 +126,6 @@ public class FactionCheck implements CommandExecutor
 							glue.append(ChatColor.RESET).append(" - ").append(ChatColor.GOLD).append(names);
 						}
 					}
-				}
 
 				logTo.sendMessage(glue.toString().split("\n"));
 

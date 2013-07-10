@@ -26,9 +26,7 @@ public class Vip implements Runnable
 			this.e.getPlayer().getWorld().playSound(this.e.getPlayer().getLocation(), Sound.FIRE_IGNITE, 2.0F, 1.0F);
 			this.e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("Lock Pick successful!").toString());
 		} else
-		{
 			this.e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("Lock Pick failed!").toString());
-		}
 		this.l.picking.remove(this.e.getPlayer().getName());
 	}
 

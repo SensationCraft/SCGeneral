@@ -4,7 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Essentials.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Factions.jar"/>
-	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/PermissionsEx.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Lockette.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/SCLogin.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Combat Logger.jar"/>

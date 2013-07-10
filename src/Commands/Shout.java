@@ -30,8 +30,8 @@ public class Shout implements CommandExecutor
 		this.ess = (Essentials)this.instance.getServer().getPluginManager().getPlugin("Essentials");
 	}
 
-	private Map<String, Long> CoolDowns = new HashMap<String, Long>();
-	private Set<String> disabled = new HashSet<String>();
+	private final Map<String, Long> CoolDowns = new HashMap<String, Long>();
+	private final Set<String> disabled = new HashSet<String>();
 
 	@Override
 	public boolean onCommand(final CommandSender p, final Command arg1, final String arg2,
@@ -66,48 +66,44 @@ public class Shout implements CommandExecutor
 
 		final StringBuilder sb = new StringBuilder();
 		for(final String s : args)
-		{
 			sb.append(s).append(" ");
-		}
-		
+
 		final String message = sb.toString().trim();
-		String title = Titles.getInstance().getTitle(playerName);
-		final StringBuilder shout = (new StringBuilder()).append(ChatColor.RED).append("[SHOUT] ").append(ChatColor.RESET);
-		if(title != null && !title.equals(""))
-			shout.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("[").append(Titles.getInstance().getTitle(playerName))
+		final String title = Titles.getInstance().getTitle(playerName);
+		final StringBuilder shout = (new StringBuilder()).append(ChatColor.RED).append("[S] ").append(ChatColor.RESET);
+		if(!title.equals(""))
+			shout.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("[").append(title)
 			.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("] ").append(ChatColor.RESET);
 
-		if (p.isOp()) {
+		if (p.isOp())
 			shout.append(ChatColor.GOLD).append(playerName).append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.HeadAdmin")) {
+		else if (p.hasPermission("Shout.HeadAdmin"))
 			shout.append("[").append(ChatColor.BLACK).append("H").append(ChatColor.GOLD).append("A").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.AdminPlus")) {
+		else if (p.hasPermission("Shout.AdminPlus"))
 			shout.append("[").append(ChatColor.DARK_RED).append("A").append(ChatColor.YELLOW).append("+").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.Admin")) {
+		else if (p.hasPermission("Shout.Admin"))
 			shout.append("[").append(ChatColor.DARK_RED).append("A").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.Mod")) {
+		else if (p.hasPermission("Shout.Mod"))
 			shout.append("[").append(ChatColor.BLUE).append("M").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.PremiumPlus")) {
+		else if (p.hasPermission("Shout.PremiumPlus"))
 			shout.append(ChatColor.BLUE).append(playerName).append(ChatColor.YELLOW).append("+").append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.Premium")) {
+		else if (p.hasPermission("Shout.Premium"))
 			shout.append(ChatColor.BLUE).append(playerName).append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.VIPPlus")) {
+		else if (p.hasPermission("Shout.VIPPlus"))
 			shout.append(ChatColor.GREEN).append(playerName).append(ChatColor.YELLOW).append("+").append(ChatColor.RESET);
-		} else if (p.hasPermission("Shout.VIP")) {
+		else if (p.hasPermission("Shout.VIP"))
 			shout.append(ChatColor.GREEN).append(playerName).append(ChatColor.RESET);
-		} else {
+		else
 			shout.append(playerName);
-		}
 
 		shout.append(": ").append(ChatColor.BOLD).append(message);
-		Player players[] = this.instance.getServer().getOnlinePlayers();
-		for(Player player:players) 
-			if(!disabled.contains(player.getName())) 
+		final Player players[] = this.instance.getServer().getOnlinePlayers();
+		for(final Player player:players)
+			if(!this.disabled.contains(player.getName()))
 				player.sendMessage(shout.toString());
 		this.instance.getLogger().info(shout.toString());
-		if(!bypass) {
+		if(!bypass)
 			this.CoolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
-		}
 		return true;
 	}
 

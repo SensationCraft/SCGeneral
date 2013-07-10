@@ -14,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -29,14 +28,14 @@ public class ItemLimiter implements Listener
 		final Player p = event.getPlayer();
 		if(p.isOp())
 			return;
-		if(block == Material.FIRE)
+		/*if(block == Material.FIRE)
 		{
 			if(!p.hasPermission("itemlimiter.special"))
 			{
 				event.setCancelled(true);
 				p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You must be a donator to place fire!").toString());
 			}
-		}
+		}*/
 		else if(block == Material.SKULL)
 		{
 			final byte data = event.getBlock().getData();
@@ -48,7 +47,7 @@ public class ItemLimiter implements Listener
 		}
 	}
 
-	@EventHandler(priority=EventPriority.HIGHEST)
+	/*@EventHandler(priority=EventPriority.HIGHEST)
 	public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event)
 	{
 		final Player p = event.getPlayer();
@@ -68,7 +67,7 @@ public class ItemLimiter implements Listener
 			p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You must be a donator to do this!").toString());
 			p.getItemInHand().setType(Material.LAVA_BUCKET);
 		}
-	}
+	}*/
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onInventoryMove(final InventoryMoveItemEvent event)
 	{
@@ -86,12 +85,12 @@ public class ItemLimiter implements Listener
 		}
 	}
 	//@EventHandler(priority = EventPriority.MONITOR)
-	public void onItemPickup(PlayerPickupItemEvent e){
-		ItemPrices mat = ItemPrices.translateMaterial(e.getItem().getItemStack().getType());
+	public void onItemPickup(final PlayerPickupItemEvent e){
+		final ItemPrices mat = ItemPrices.translateMaterial(e.getItem().getItemStack().getType());
 		if(mat == null)
 			return;
-		ItemMeta meta = e.getItem().getItemStack().getItemMeta();
-		List<String> lore = meta.getLore();
+		final ItemMeta meta = e.getItem().getItemStack().getItemMeta();
+		final List<String> lore = meta.getLore();
 		lore.clear();
 		lore.add(ChatColor.GREEN+""+ChatColor.BOLD+"This item can be sold for $"+mat.getPrice()+" at the shop.");
 		meta.setLore(lore);

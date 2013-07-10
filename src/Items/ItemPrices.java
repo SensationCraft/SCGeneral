@@ -13,18 +13,18 @@ public enum ItemPrices {
 	EGG(0.5),
 	POTATO(0.5),
 	FISH(1.0);
-	
+
 	private double price;
-	
-	private ItemPrices(double price){
+
+	private ItemPrices(final double price){
 		this.price = price;
 	}
-	
+
 	public double getPrice(){
 		return this.price;
 	}
-	
-	public static ItemPrices translateMaterial(Material material){
+
+	public static ItemPrices translateMaterial(final Material material){
 		if(material == Material.SUGAR_CANE)
 			return ItemPrices.SUGARCANE;
 		else if(material == Material.COCOA)

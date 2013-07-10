@@ -9,16 +9,16 @@ import org.bukkit.command.CommandSender;
 
 public class ShoutMute implements CommandExecutor{
 
-	private SCGeneral instance;
-	
-	public ShoutMute(SCGeneral instance){
+	private final SCGeneral instance;
+
+	public ShoutMute(final SCGeneral instance){
 		this.instance = instance;
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
-			String[] args) {
-		Shout shout = this.instance.getShout();
+	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
+			final String[] args) {
+		final Shout shout = this.instance.getShout();
 		if(shout.getDisabled().contains(sender.getName())){
 			shout.getDisabled().remove(sender.getName());
 			sender.sendMessage(ChatColor.GOLD+"Shout is now on.");

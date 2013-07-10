@@ -3,7 +3,7 @@ author: superckl
 version: 3.0
 main: me.superckl.scgeneral.SCGeneral
 website: www.sensationcraft.info
-depend: [Factions, Lockette, PermissionsEx, Votifier, Essentials, SCLogin, CombatLogger]
+depend: [Factions, Lockette, Votifier, Essentials, SCLogin, CombatLogger]
 commands:
   shout:
     description: Shout a message
@@ -15,3 +15,16 @@ commands:
   shoutmute:
     description: Toggle shout.
     aliases: [toggleshout, stfushout]
+  helprequest:
+    description: Request help from a staff member.
+    aliases: [requesthelp]
+  helpread:
+    description: Read a help request.
+  helplist:
+    description: List all the help requests.
+  helpaccept:
+    description: Accept a help request.
+  helpcancel:
+    description: Cancel your help request.
+  helpdeny:
+    description: Deny a help request.

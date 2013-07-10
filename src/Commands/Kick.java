@@ -70,9 +70,8 @@ public class Kick implements CommandExecutor{
 	}*/
 	private String translate(final String[] args) {
 		String message = "";
-		for (int i=1;i<args.length;i++) {
+		for (int i=1;i<args.length;i++)
 			message += args[i].concat(" ");
-		}
 		message = message.trim();
 		message = ChatColor.stripColor(message);
 		return message;
@@ -104,9 +103,8 @@ public class Kick implements CommandExecutor{
 		}else if(player == null && players.size() > 1){
 			sender.sendMessage(ChatColor.RED+"More than one player found! Please refine your name.");
 			return false;
-		}else if(player == null){
+		}else if(player == null)
 			player = players.get(0);
-		}
 		if(player.hasPermission("essentials.kick.exempt")){
 			sender.sendMessage(ChatColor.RED+"That player is exempt to kicks!");
 			return false;
@@ -127,9 +125,8 @@ public class Kick implements CommandExecutor{
 			}.runTaskLaterAsynchronously(this.plugin, 20*60*5L);
 		}
 		player.kickPlayer(reason+ChatColor.DARK_RED+" - "+sender.getName());
-		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(player.hasPermission("essentials.kick.broadcast")) {
+		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.kick.broadcast"))
 			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);
-		}
 		return true;
 	}
 }

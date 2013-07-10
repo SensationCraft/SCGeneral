@@ -6,6 +6,7 @@ import java.util.Map;
 
 import me.superckl.scgeneral.SCGeneral;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,27 +14,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import com.earth2me.essentials.Essentials;
+
 public class TpaHere implements CommandExecutor{
-	
-	private Map<String, String> requests = new HashMap<String, String>();
-	private Tpa tpa;
-	private SCGeneral instance;
-	
-	public TpaHere(Tpa tpa, SCGeneral instance){
+
+	private final Map<String, String> requests = new HashMap<String, String>();
+	private final Tpa tpa;
+	private final SCGeneral instance;
+
+	public TpaHere(final Tpa tpa, final SCGeneral instance){
 		this.tpa = tpa;
 		this.instance = instance;
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
-			String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
+			final String[] args) {
 		if(args.length == 0){
 			sender.sendMessage(ChatColor.RED+"You need to enter a player's name!");
 			return false;
 		}
-		if(sender instanceof ConsoleCommandSender){
+		if(sender instanceof ConsoleCommandSender)
 			sender.sendMessage(ChatColor.RED+"That command can only be executed in game!");
-		}
 		Player player = this.instance.getServer().getPlayer(args[0]);
 		final List<Player> players = this.instance.getServer().matchPlayer(args[0]);
 		if(player == null && players.size() < 1){
@@ -42,12 +44,16 @@ public class TpaHere implements CommandExecutor{
 		}else if(player == null && players.size() > 1){
 			sender.sendMessage(ChatColor.RED+"More than one player found! Please type more of their name.");
 			return false;
-		}else if(player == null){
+		}else if(player == null)
 			player = players.get(0);
+		final Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+		if(!ess.getUser(player.getName()).isTeleportEnabled()){
+			sender.sendMessage(ChatColor.RED+"That player has teleportation disabled!");
+			return false;
 		}
-		String tpa = this.tpa.removeOriginByDestination(sender.getName());
+		final String tpa = this.tpa.removeOriginByDestination(sender.getName());
 		if(tpa != null){
-			Player tpaPlayer = this.instance.getServer().getPlayer(tpa);
+			final Player tpaPlayer = this.instance.getServer().getPlayer(tpa);
 			if(tpaPlayer != null) tpaPlayer.sendMessage(ChatColor.RED+sender.getName()+" has cancelled their tpa request.");
 		}
 		this.requests.put(player.getName(), sender.getName());
@@ -58,10 +64,10 @@ public class TpaHere implements CommandExecutor{
 		return true;
 	}
 
-	public String getDestinationByOrigin(String origin){
+	public String getDestinationByOrigin(final String origin){
 		return this.requests.get(origin);
 	}
-	public String removeDestinationByOrigin(String origin){
+	public String removeDestinationByOrigin(final String origin){
 		return this.requests.remove(origin);
 	}
 }
