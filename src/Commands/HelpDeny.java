@@ -26,16 +26,17 @@ public class HelpDeny implements CommandExecutor{
 			arg0.sendMessage(ChatColor.RED+"You must specify a number!");
 			return false;
 		}
-		if(!arg3[0].matches("[0-9]")){
+		if(!arg3[0].matches("[0-9]*")){
 			arg0.sendMessage(ChatColor.RED+"You must specify a number!");
 			return false;
 		}
 		int number = Integer.parseInt(arg3[0]);
-		if(number == 0 || number-- > this.help.getRequests().size()){
+		String message = this.help.getRequests().remove(number);
+		if(message == null){
 			arg0.sendMessage(ChatColor.RED+"That help request doesn't exist!");
 			return false;
 		}
-		final String[] split = this.help.getRequests().remove(number).split("[:]", 2);
+		final String[] split = message.split("[:]", 2);
 		final Player player = Bukkit.getPlayer(split[0]);
 		if(player == null){
 			arg0.sendMessage(ChatColor.RED+"That player is for some reason offline... The request has been removed.");

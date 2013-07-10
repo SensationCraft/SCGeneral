@@ -1,8 +1,7 @@
 package Commands;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +12,8 @@ import org.bukkit.entity.Player;
 
 public class HelpRequest implements CommandExecutor{
 
-	private final List<String> requests = new ArrayList<String>(0);
+	private final Map<Integer, String> requests = new HashMap<Integer, String>(0);
+	private int counter = 1;
 
 	@Override
 	public boolean onCommand(final CommandSender arg0, final Command arg1, final String arg2,
@@ -27,10 +27,10 @@ public class HelpRequest implements CommandExecutor{
 			return false;
 		}
 		final String message = arg0.getName()+": "+this.translate(arg3);
-		this.requests.add(this.requests.size(), message);
+		this.requests.put(this.counter, message);
 		for(final Player player:Bukkit.getOnlinePlayers()){
 			if(!player.hasPermission("help.request")) continue;
-			player.sendMessage(ChatColor.AQUA+"A help request has been received from "+arg0.getName()+" numbered "+(this.requests.size()));
+			player.sendMessage(ChatColor.AQUA+"A help request has been received from "+arg0.getName()+" numbered "+(this.counter++));
 		}
 		arg0.sendMessage(ChatColor.GREEN+"\nYour request has been received. Please wait for a staff member to respond.");
 		return true;
@@ -45,21 +45,20 @@ public class HelpRequest implements CommandExecutor{
 	}
 
 	public boolean hasRequest(final String name){
-		for(final String string:this.requests)
-			if(string != null && string.split("[:]")[0].equals(name)) return true;
+		for(final Integer i:this.requests.keySet()){
+			String string = this.requests.get(i);
+			if(string.split("[:]")[0].equals(name)) return true;
+		}
 		return false;
 	}
-	public List<String> getRequests(){
+	public Map<Integer, String> getRequests(){
 		return this.requests;
 	}
 	public String removeRequest(final String name){
-		final ListIterator<String> it = this.requests.listIterator();
-		while(it.hasNext()){
-			final String string = it.next();
-			if(string.split("[:]")[0].equals(name)){
-				it.set(null);
-				return string;
-			}
+		for(final Integer i:this.requests.keySet()){
+			String string = this.requests.get(i);
+			if(string.split("[:]")[0].equals(name))
+				return this.requests.remove(i);
 		}
 		return null;
 	}

@@ -24,19 +24,19 @@ public class HelpRead implements CommandExecutor{
 			arg0.sendMessage(ChatColor.RED+"You must specify a number!");
 			return false;
 		}
-		if(!arg3[0].matches("[0-9]")){
+		if(!arg3[0].matches("[0-9]*")){
 			arg0.sendMessage(ChatColor.RED+"You must specify a number!");
 			return false;
 		}
 		int number = Integer.parseInt(arg3[0]);
-		if(number-- > this.help.getRequests().size()){
+		String message = this.help.getRequests().get(number);
+		if(message == null){
 			arg0.sendMessage(ChatColor.RED+"That help request doesn't exist!");
 			return false;
 		}
-		final StringBuilder sb = new StringBuilder("\n").append(ChatColor.GREEN).append(number + 1).append(". ").append(ChatColor.RESET).append(this.help.getRequests().get(number)).append("\n");
+		final StringBuilder sb = new StringBuilder("\n").append(ChatColor.GREEN).append(number).append(". ").append(ChatColor.RESET).append(message).append("\n");
 		arg0.sendMessage(sb.toString());
-		//TODO
-		return false;
+		return true;
 	}
 
 }
