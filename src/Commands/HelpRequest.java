@@ -1,7 +1,7 @@
 package Commands;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 
 public class HelpRequest implements CommandExecutor{
 
-	private final Map<Integer, String> requests = new HashMap<Integer, String>(0);
+	private final Map<Integer, String> requests = new TreeMap<Integer, String>();
 	private int counter = 1;
 
 	@Override
@@ -30,8 +30,9 @@ public class HelpRequest implements CommandExecutor{
 		this.requests.put(this.counter, message);
 		for(final Player player:Bukkit.getOnlinePlayers()){
 			if(!player.hasPermission("help.request")) continue;
-			player.sendMessage(ChatColor.AQUA+"A help request has been received from "+arg0.getName()+" numbered "+(this.counter++));
+			player.sendMessage(ChatColor.AQUA+"A help request has been received from "+arg0.getName()+" numbered "+this.counter);
 		}
+		this.counter++;
 		arg0.sendMessage(ChatColor.GREEN+"\nYour request has been received. Please wait for a staff member to respond.");
 		return true;
 	}
