@@ -26,7 +26,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -49,6 +51,13 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent e){
 		this.help.removeRequest(e.getPlayer().getName());
+	}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerLogin(PlayerLoginEvent e){
+		if(e.getPlayer().getName().equalsIgnoreCase("themajorbear")){
+			e.setResult(Result.KICK_OTHER);
+			e.setKickMessage("No.");
+		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
