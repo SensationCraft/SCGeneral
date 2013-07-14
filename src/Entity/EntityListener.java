@@ -26,6 +26,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -41,14 +43,27 @@ public class EntityListener implements Listener
 
 	private final Random random = new Random();
 	private final HelpRequest help;
+	private String antibear = "gtfo";
 
 	public EntityListener(final HelpRequest help){
 		this.help = help;
+	}
+	
+	public void setAntiBear(String message){
+		this.antibear = message;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent e){
 		this.help.removeRequest(e.getPlayer().getName());
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerLogin(PlayerLoginEvent e){
+		if(this.antibear != null && e.getPlayer().getName().equalsIgnoreCase("themajorbear")){
+			e.setResult(Result.KICK_BANNED);
+			e.setKickMessage(this.antibear);
+		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)

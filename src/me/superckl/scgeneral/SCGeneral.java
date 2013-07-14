@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
+import Commands.AntiBear;
 import Commands.Ban;
 import Commands.ClearInvis;
 import Commands.FactionCheck;
@@ -176,9 +177,14 @@ public class SCGeneral extends JavaPlugin
 		if(helpCancelCommand != null)
 			helpCancelCommand.setExecutor(new HelpCancel(help));
 		else this.getLogger().warning("Failed to override helpcancel!");
+		EntityListener entity = new EntityListener(help);
+		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
+		if(antibear != null){
+			antibear.setExecutor(new AntiBear(entity));
+		}
 
 		this.getLogger().info(" - Registering EntityListener");
-		this.getServer().getPluginManager().registerEvents(new EntityListener(help), this);
+		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
 
 		new BukkitRunnable()

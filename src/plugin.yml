@@ -28,3 +28,5 @@ commands:
     description: Cancel your help request.
   helpdeny:
     description: Deny a help request.
+  antibear:
+    description: block bear.
