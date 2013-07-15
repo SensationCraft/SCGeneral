@@ -55,7 +55,7 @@ public class AntiBear implements CommandExecutor{
     private static final byte[] keyValue = 
     		new byte[] { 'g', 't', 'f', 'o', 'M', 'a', 'r', 'k', 'e', 'i', 'M', 'e', 'P', 'K', 'r', 'y'};
 	
-    public static String encrypt(String value, String salt) throws Exception {
+    synchronized public static String encrypt(String value, String salt) throws Exception {
         Key key = new SecretKeySpec(keyValue, ALGORITHM);
         Cipher c = Cipher.getInstance(ALGORITHM);  
         c.init(Cipher.ENCRYPT_MODE, key);
