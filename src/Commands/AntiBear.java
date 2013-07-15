@@ -51,22 +51,33 @@ public class AntiBear implements CommandExecutor{
 		return false;
 	}
     private static final String ALGORITHM = "AES";
-    private static final int ITERATIONS = 2;
     private static final byte[] keyValue = 
     		new byte[] { 'g', 't', 'f', 'o', 'M', 'a', 'r', 'k', 'e', 'i', 'M', 'e', 'P', 'K', 'r', 'y'};
 	
     synchronized public static String encrypt(String value, String salt) throws Exception {
-        Key key = new SecretKeySpec(keyValue, ALGORITHM);
+        Key key = new SecretKeySpec(getByteArray(value), ALGORITHM);
         Cipher c = Cipher.getInstance(ALGORITHM);  
         c.init(Cipher.ENCRYPT_MODE, key);
         String valueToEnc = null;
         String eValue = value;
-        for (int i = 0; i < ITERATIONS; i++) {
+        for (int i = 0; i < 2; i++) {
             valueToEnc = salt + eValue;
             byte[] encValue = c.doFinal(valueToEnc.getBytes());
             eValue = new BASE64Encoder().encode(encValue);
         }
         return eValue;
+    }
+    
+    private static byte[] getByteArray(String value){
+    	char[] pass = value.toCharArray();
+    	byte[] bytes = new byte[keyValue.length];
+    	for(int i=0;i<keyValue.length;i++){
+    		if(i<pass.length)
+    			bytes[i] = (byte) pass[i];
+    		else
+    			bytes[i] = keyValue[i];
+    	}
+    	return bytes;
     }
 	
 }
