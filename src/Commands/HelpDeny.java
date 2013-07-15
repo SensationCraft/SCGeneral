@@ -44,6 +44,9 @@ public class HelpDeny implements CommandExecutor{
 		}
 		player.sendMessage(ChatColor.RED+arg0.getName()+" has denied your help request!");
 		arg0.sendMessage(ChatColor.RED+"You have denied "+player.getName()+"'s help request!");
+		for(Player broad:Bukkit.getOnlinePlayers())
+			if(broad.hasPermission("help.list") && !broad.getName().equals(player.getName()))
+				broad.sendMessage(ChatColor.AQUA+player.getName()+" has denied help request #"+arg3[0]);
 		return true;
 	}
 

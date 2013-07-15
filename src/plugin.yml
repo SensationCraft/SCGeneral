@@ -29,4 +29,6 @@ commands:
   helpdeny:
     description: Deny a help request.
   antibear:
-    description: block bear.
+    description: Block bear.
+  killshout:
+    description: Kill shout.

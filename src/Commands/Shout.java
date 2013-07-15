@@ -23,6 +23,7 @@ public class Shout implements CommandExecutor
 	private final Essentials ess;
 	private final SCGeneral instance;
 	private final long SHOUT_DELAY = 15000;
+	private boolean dead = false;
 
 	public Shout(final SCGeneral instance)
 	{
@@ -30,9 +31,17 @@ public class Shout implements CommandExecutor
 		this.ess = (Essentials)this.instance.getServer().getPluginManager().getPlugin("Essentials");
 	}
 
-	private final Map<String, Long> CoolDowns = new HashMap<String, Long>();
+	private final Map<String, Long> coolDowns = new HashMap<String, Long>();
 	private final Set<String> disabled = new HashSet<String>();
 
+	public void setDead(boolean dead){
+		this.dead = dead;
+	}
+	
+	public boolean isDead(){
+		return this.dead;
+	}
+	
 	@Override
 	public boolean onCommand(final CommandSender p, final Command arg1, final String arg2,
 			final String[] args) {
@@ -41,6 +50,10 @@ public class Shout implements CommandExecutor
 			return false;
 		}
 
+		if(this.dead){
+			p.sendMessage(ChatColor.RED+"Shout is currently disabled! Try again later.");
+			return false;
+		}
 		final String playerName = p.getName();
 		if(this.disabled.contains(playerName)){
 			p.sendMessage(ChatColor.RED+"You have turned shout off. '/shoutmute' to turn it back on.");
@@ -55,7 +68,7 @@ public class Shout implements CommandExecutor
 				return false;
 			}
 		}
-		final Long l = this.CoolDowns.get(playerName);
+		final Long l = this.coolDowns.get(playerName);
 		if(l != null && l.longValue() > System.currentTimeMillis())
 		{
 			p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You must wait at least 15 seconds in between shouts.").toString());
@@ -99,11 +112,11 @@ public class Shout implements CommandExecutor
 		shout.append(": ").append(ChatColor.BOLD).append(message);
 		final Player players[] = this.instance.getServer().getOnlinePlayers();
 		for(final Player player:players)
-			if(!this.disabled.contains(player.getName()))
+			if(!this.disabled.contains(player.getName()) && !(this.dead && !player.hasPermission("shout.bypass.kill")))
 				player.sendMessage(shout.toString());
 		this.instance.getLogger().info(shout.toString());
 		if(!bypass)
-			this.CoolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
+			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
 		return true;
 	}
 
@@ -111,6 +124,6 @@ public class Shout implements CommandExecutor
 		return this.disabled;
 	}
 	public Map<String, Long> getCooldowns(){
-		return this.CoolDowns;
+		return this.coolDowns;
 	}
 }

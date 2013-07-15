@@ -21,6 +21,7 @@ import Commands.HelpList;
 import Commands.HelpRead;
 import Commands.HelpRequest;
 import Commands.Kick;
+import Commands.KillShout;
 import Commands.Shout;
 import Commands.ShoutMute;
 import Commands.TpAccept;
@@ -177,6 +178,13 @@ public class SCGeneral extends JavaPlugin
 		if(helpCancelCommand != null)
 			helpCancelCommand.setExecutor(new HelpCancel(help));
 		else this.getLogger().warning("Failed to override helpcancel!");
+		
+		this.getLogger().info("   - killshout");
+		final PluginCommand killShout = this.getServer().getPluginCommand("killshout");
+		if(killShout != null)
+			killShout.setExecutor(new KillShout(this.shout));
+		else this.getLogger().warning("Failed to override killshout!");
+		
 		EntityListener entity = new EntityListener(help);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
 		if(antibear != null){
