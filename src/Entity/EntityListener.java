@@ -43,7 +43,7 @@ public class EntityListener implements Listener
 
 	private final Random random = new Random();
 	private final HelpRequest help;
-	private String antibear = "gtfo";
+	volatile private String antibear = "gtfo";
 
 	public EntityListener(final HelpRequest help){
 		this.help = help;

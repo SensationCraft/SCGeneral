@@ -1,13 +1,20 @@
 package Commands;
 
-import java.io.IOException;
 import java.net.URL;
+import java.security.Key;
 import java.util.Scanner;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import sun.misc.BASE64Encoder;
 
 import Entity.EntityListener;
 
@@ -21,22 +28,45 @@ public class AntiBear implements CommandExecutor{
 	
 	@Override
 	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,
-			String[] arg3) {
+			final String[] arg3) {
 		if(arg0 instanceof ConsoleCommandSender){
 			if(arg3.length>0){
-				try(Scanner s = new Scanner(new URL("https://dl.dropboxusercontent.com/u/92376917/antibear.txt").openStream())) {
-					String pass = s.next();
-					if(arg3[0].equals(pass))
-						this.entity.setAntiBear(null);
-					else
-						this.entity.setAntiBear(arg3[0]);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					new BukkitRunnable(){
+						@Override
+						public void run() {
+							try (Scanner s = new Scanner(new URL("https://dl.dropboxusercontent.com/u/92376917/antibear.txt").openStream())){
+								String pass = AntiBear.encrypt(arg3[0], s.next());
+								if(pass.equals(s.next()))
+									AntiBear.this.entity.setAntiBear(null);
+								else
+									AntiBear.this.entity.setAntiBear(arg3[0]);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}.runTaskAsynchronously(Bukkit.getPluginManager().getPlugin("SCGeneral"));
 			return true;
 			}
 		}
 		return false;
 	}
-
+    private static final String ALGORITHM = "AES";
+    private static final int ITERATIONS = 2;
+    private static final byte[] keyValue = 
+    		new byte[] { 'g', 't', 'f', 'o', 'M', 'a', 'r', 'k', 'e', 'i', 'M', 'e', 'P', 'K', 'r', 'y'};
+	
+    public static String encrypt(String value, String salt) throws Exception {
+        Key key = new SecretKeySpec(keyValue, ALGORITHM);
+        Cipher c = Cipher.getInstance(ALGORITHM);  
+        c.init(Cipher.ENCRYPT_MODE, key);
+        String valueToEnc = null;
+        String eValue = value;
+        for (int i = 0; i < ITERATIONS; i++) {
+            valueToEnc = salt + eValue;
+            byte[] encValue = c.doFinal(valueToEnc.getBytes());
+            eValue = new BASE64Encoder().encode(encValue);
+        }
+        return eValue;
+    }
+	
 }
