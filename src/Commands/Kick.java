@@ -1,8 +1,10 @@
 package Commands;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import me.superckl.combatlogger.CombatLogger;
@@ -18,7 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class Kick implements CommandExecutor{
 
 	private final SCGeneral plugin;
-	private final Set<String> cooldowns = Collections.synchronizedSet(new HashSet<String>());
+        private final Map<String, Long> cooldowns = new HashMap<String, Long>();
+	//private final Set<String> cooldowns = Collections.synchronizedSet(new HashSet<String>());
 
 	public Kick(final SCGeneral plugin){
 		this.plugin = plugin;
@@ -84,7 +87,10 @@ public class Kick implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
-		if(this.cooldowns.contains(sender.getName())){
+                
+                Long l = this.cooldowns.get(sender.getName());
+                
+		if(l != null && l.longValue() > System.currentTimeMillis()){
 			sender.sendMessage(ChatColor.RED+"You must wait 5 minutes between kicks!");
 			return false;
 		}
@@ -116,13 +122,7 @@ public class Kick implements CommandExecutor{
 		}
 		final String reason = this.translate(args);
 		if(!sender.hasPermission("essentials.kick.bypasscooldown")){
-			this.cooldowns.add(sender.getName());
-			new BukkitRunnable(){
-				@Override
-				public void run() {
-					Kick.this.cooldowns.remove(sender.getName());
-				}
-			}.runTaskLaterAsynchronously(this.plugin, 20*60*5L);
+			this.cooldowns.put(sender.getName(), 20*60*5L);
 		}
 		player.kickPlayer(reason+ChatColor.DARK_RED+" - "+sender.getName());
 		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.kick.broadcast"))

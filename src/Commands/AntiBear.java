@@ -1,22 +1,18 @@
 package Commands;
 
+import Entity.EntityListener;
 import java.net.URL;
 import java.security.Key;
 import java.util.Scanner;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import sun.misc.BASE64Encoder;
-
-import Entity.EntityListener;
 
 public class AntiBear implements CommandExecutor{
 
@@ -54,7 +50,7 @@ public class AntiBear implements CommandExecutor{
     private static final byte[] keyValue = 
     		new byte[] { 'g', 't', 'f', 'o', 'M', 'a', 'r', 'k', 'e', 'i', 'M', 'e', 'P', 'K', 'r', 'y'};
 	
-    synchronized public static String encrypt(String value, String salt) throws Exception {
+     public static String encrypt(String value, String salt) throws Exception {
         Key key = new SecretKeySpec(getByteArray(value), ALGORITHM);
         Cipher c = Cipher.getInstance(ALGORITHM);  
         c.init(Cipher.ENCRYPT_MODE, key);
@@ -79,5 +75,4 @@ public class AntiBear implements CommandExecutor{
     	}
     	return bytes;
     }
-	
 }
