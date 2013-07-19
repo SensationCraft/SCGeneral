@@ -46,7 +46,7 @@ public class HelpAccept implements CommandExecutor{
 		arg0.sendMessage(ChatColor.GREEN+"You have accepted "+player.getName()+"'s help request!");
 		for(Player broad:Bukkit.getOnlinePlayers())
 			if(broad.hasPermission("help.list") && !broad.getName().equals(player.getName()))
-				broad.sendMessage(ChatColor.AQUA+player.getName()+" has accepted help request #"+arg3[0]);
+				broad.sendMessage(ChatColor.AQUA+arg0.getName()+" has accepted help request #"+arg3[0]);
 		return true;
 	}
 

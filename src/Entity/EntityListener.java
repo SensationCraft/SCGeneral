@@ -1,5 +1,7 @@
 package Entity;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
@@ -30,6 +32,7 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 import Commands.HelpRequest;
@@ -43,7 +46,7 @@ public class EntityListener implements Listener
 
 	private final Random random = new Random();
 	private final HelpRequest help;
-	volatile private String antibear = "gtfo";
+	volatile private String antibear = null;
 
 	public EntityListener(final HelpRequest help){
 		this.help = help;
