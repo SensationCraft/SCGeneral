@@ -40,6 +40,10 @@ import Commands.HelpRequest;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class EntityListener implements Listener
 {
@@ -204,5 +208,4 @@ public class EntityListener implements Listener
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Op can only be given from the console!");
 		}
 	}
-
 }

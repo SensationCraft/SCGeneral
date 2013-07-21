@@ -3,6 +3,7 @@ package Commands;
 import Entity.EntityListener;
 import java.net.URL;
 import java.security.Key;
+import java.util.Arrays;
 import java.util.Scanner;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -63,8 +64,33 @@ public class AntiBear implements CommandExecutor{
         }
         return eValue;
     }
+     
+    public static String decrypt(String eValue, String salt) throws Exception {
+        
+        Key key = new SecretKeySpec(getByteArray(eValue), ALGORITHM);  
+        Cipher c = Cipher.getInstance(ALGORITHM);
+        c.init(Cipher.DECRYPT_MODE, key);
+        for(int i = 0; i < 2; i++)
+        {
+            byte[] decoded = new sun.misc.BASE64Decoder().decodeBuffer(eValue);
+            String toDec = new String(c.update(decoded));
+//            c.init(Cipher.DECRYPT_MODE, key);
+            eValue = toDec.substring(salt.length());
+        }
+         
+        //c.init(Cipher.DECRYPT_MODE, key);
+        //String valueToEnc = null;
+        //String eValue = value;
+        //for (int i = 0; i < 2; i++) {
+        //    valueToEnc = salt + eValue;
+        //    byte[] encValue = c.doFinal(valueToEnc.getBytes());
+        //   eValue = new BASE64Encoder().encode(encValue);
+        //}
+        return eValue;
+    }
     
     private static byte[] getByteArray(String value){
+        //if(true) return keyValue;
     	char[] pass = value.toCharArray();
     	byte[] bytes = new byte[keyValue.length];
     	for(int i=0;i<keyValue.length;i++){
@@ -74,5 +100,39 @@ public class AntiBear implements CommandExecutor{
     			bytes[i] = keyValue[i];
     	}
     	return bytes;
+    }
+    
+    public static void main(String[] args)
+    {
+        try
+        {
+            System.out.println(AntiBear.encrypt(AntiBear.decrypt("HXA1p99WyLuBBIn5BW0G3W4oD4J0m4VqtwbU1Um0vor0phOfROxhDh7Dj2XX1Gu5", "8867gis3"), "8867gis3"));
+            System.out.println("HXA1p99WyLuBBIn5BW0G3W4oD4J0m4VqtwbU1Um0vor0phOfROxhDh7Dj2XX1Gu5");
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+    
+    public static boolean isCorrect(String[] arg3)
+    {
+        try
+        {
+            String pass = AntiBear.encrypt(arg3[0], "8867gis3");
+            if (pass.equals("HXA1p99WyLuBBIn5BW0G3W4oD4J0m4VqtwbU1Um0vor0phOfROxhDh7Dj2XX1Gu5"))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch(Exception ex)
+        {
+            ex.printStackTrace();
+        }
+        return false;
     }
 }
