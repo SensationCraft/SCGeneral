@@ -59,7 +59,7 @@ public class Tpa implements CommandExecutor{
 		sender.sendMessage(ChatColor.GOLD+"Request sent to "+player.getName()+".");
 		player.sendMessage(ChatColor.GOLD+sender.getName()+" would like to teleport to "+ChatColor.RED+"you"+ChatColor.GOLD+":");
 		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.GREEN+"/tpaccept"+ChatColor.GOLD+"' to accept.");
-		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.RED+"/tpdeny"+ChatColor.GOLD+"' to accept.");
+		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.RED+"/tpdeny"+ChatColor.GOLD+"' to deny.");
 		return true;
 	}
 
