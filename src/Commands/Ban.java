@@ -12,12 +12,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.earth2me.essentials.Essentials;
+
 public class Ban implements CommandExecutor{
 
 	private final SCGeneral instance;
+	private final Essentials ess;
 
 	public Ban(final SCGeneral instance){
 		this.instance = instance;
+		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
 	@Override
@@ -62,11 +66,11 @@ public class Ban implements CommandExecutor{
 		return message;
 	}
 	public void performBan(OfflinePlayer player, CommandSender sender, String[] args){
-		String message = this.translate(args);
-		message += ChatColor.RED+" - "+sender.getName();
+		String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
 		player.setBanned(true);
+		this.ess.getUser(player.getName()).setBanReason(message);
 		if(player.isOnline())
-			((Player)player).kickPlayer(message+ChatColor.DARK_RED+" - "+sender.getName());
+			((Player)player).kickPlayer(message);
 		for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
 	}
