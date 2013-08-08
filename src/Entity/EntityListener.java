@@ -2,6 +2,8 @@ package Entity;
 
 import java.util.Random;
 
+import me.superckl.scgeneral.SCGeneral;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -44,9 +46,11 @@ public class EntityListener implements Listener
 	private final Random random = new Random();
 	private final HelpRequest help;
 	volatile private String antibear = null;
+	private final SCGeneral plugin;
 
-	public EntityListener(final HelpRequest help){
+	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.help = help;
+		this.plugin = plugin;
 	}
 	
 	public void setAntiBear(String message){
@@ -199,6 +203,10 @@ public class EntityListener implements Listener
 		if(e.getMessage().toLowerCase().startsWith("/op ") || e.getMessage().equalsIgnoreCase("/op")){
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Op can only be given from the console!");
+		}else if(this.plugin.getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme "))){
+			e.getPlayer().sendMessage(ChatColor.RED+"Shout is currently disabled! Try again later.");
+			e.setCancelled(true);
+			e.setMessage("/cockblocked");
 		}
 	}
 }

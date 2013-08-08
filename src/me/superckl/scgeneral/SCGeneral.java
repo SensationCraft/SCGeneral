@@ -172,7 +172,7 @@ public class SCGeneral extends JavaPlugin
 			killShout.setExecutor(new KillShout(this.shout));
 		else this.getLogger().warning("Failed to override killshout!");
 		
-		EntityListener entity = new EntityListener(help);
+		EntityListener entity = new EntityListener(help, this);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
 		if(antibear != null){
 			antibear.setExecutor(new AntiBear(entity));
