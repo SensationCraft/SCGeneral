@@ -1,73 +1,59 @@
 package Commands;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import me.superckl.scgeneral.SCGeneral;
-
+import Commands.TpSuite.TpRequest;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
+import me.superckl.combatlogger.CombatLogger;
 
-public class TpaHere implements CommandExecutor{
+public class TpaHere
+{
 
-	private final Map<String, String> requests = new HashMap<String, String>();
-	private final Tpa tpa;
-	private final SCGeneral instance;
+    private final CombatLogger combatLogger;
+    private final Essentials ess;
 
-	public TpaHere(final Tpa tpa, final SCGeneral instance){
-		this.tpa = tpa;
-		this.instance = instance;
-	}
+    public TpaHere()
+    {
+        this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
+        this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+    }
 
-	@Override
-	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
-			final String[] args) {
-		if(args.length == 0){
-			sender.sendMessage(ChatColor.RED+"You need to enter a player's name!");
-			return false;
-		}
-		if(sender instanceof ConsoleCommandSender)
-			sender.sendMessage(ChatColor.RED+"That command can only be executed in game!");
-		Player player = this.instance.getServer().getPlayer(args[0]);
-		final List<Player> players = this.instance.getServer().matchPlayer(args[0]);
-		if(player == null && players.size() < 1){
-			sender.sendMessage(ChatColor.RED+"Player not found.");
-			return false;
-		}else if(player == null && players.size() > 1){
-			sender.sendMessage(ChatColor.RED+"More than one player found! Please type more of their name.");
-			return false;
-		}else if(player == null)
-			player = players.get(0);
-		final Essentials ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-		if(!ess.getUser(player.getName()).isTeleportEnabled()){
-			sender.sendMessage(ChatColor.RED+"That player has teleportation disabled!");
-			return false;
-		}
-		final String tpa = this.tpa.removeOriginByDestination(sender.getName());
-		if(tpa != null){
-			final Player tpaPlayer = this.instance.getServer().getPlayer(tpa);
-			if(tpaPlayer != null) tpaPlayer.sendMessage(ChatColor.RED+sender.getName()+" has cancelled their tpa request.");
-		}
-		this.requests.put(player.getName(), sender.getName());
-		sender.sendMessage(ChatColor.GOLD+"Request sent to "+player.getName()+".");
-		player.sendMessage(ChatColor.GOLD+sender.getName()+" would like you to teleport to "+ChatColor.RED+"them"+ChatColor.GOLD+":");
-		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.GREEN+"/tpaccept"+ChatColor.GOLD+"' to accept.");
-		player.sendMessage(ChatColor.GOLD+"'"+ChatColor.RED+"/tpdeny"+ChatColor.GOLD+"' to accept.");
-		return true;
-	}
+    public void execute(Player player, TpSuite suite, TpRequest req, String[] args)
+    {
+        if (args.length == 0)
+        {
+            player.sendMessage(ChatColor.RED + "You need to enter a player's name!");
+            return;
+        }
 
-	public String getDestinationByOrigin(final String origin){
-		return this.requests.get(origin);
-	}
-	public String removeDestinationByOrigin(final String origin){
-		return this.requests.remove(origin);
-	}
+        Player other = Bukkit.getPlayerExact(args[0]);
+        if (other == null)
+        {
+            player.sendMessage(ChatColor.DARK_RED + "Player offline.");
+            return;
+        }
+
+        if (!ess.getUser(player.getName()).isTeleportEnabled())
+        {
+            player.sendMessage(ChatColor.RED + "That player has teleportation disabled!");
+            return;
+        }
+
+        if (req != null)
+        {
+            final Player third = Bukkit.getPlayerExact(req.getRequester());
+            if (third != null)
+            {
+                third.sendMessage(ChatColor.RED + String.format("%s has cancelled your teleport request.", player.getName()));
+            }
+        }
+
+        suite.request(player.getName(), other.getName(), true);
+        player.sendMessage(ChatColor.GOLD + "Request sent to " + other.getName() + ".");
+        other.sendMessage(ChatColor.GOLD + player.getName() + " would like to teleport to you " + ChatColor.RED + "to them" + ChatColor.GOLD + ":");
+        other.sendMessage(ChatColor.GOLD + "'" + ChatColor.GREEN + "/tpaccept" + ChatColor.GOLD + "' to accept.");
+        other.sendMessage(ChatColor.GOLD + "'" + ChatColor.RED + "/tpdeny" + ChatColor.GOLD + "' to deny.");
+    }
 }

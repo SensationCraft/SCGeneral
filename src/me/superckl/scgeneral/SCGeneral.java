@@ -24,12 +24,12 @@ import Commands.Kick;
 import Commands.KillShout;
 import Commands.Shout;
 import Commands.ShoutMute;
-import Commands.TpAccept;
-import Commands.TpDeny;
-import Commands.Tpa;
-import Commands.TpaHere;
+import Commands.StopCommand;
+import Commands.TpSuite;
 import Entity.EntityListener;
+import FactionFix.HomeFix;
 import Items.ItemLimiter;
+import Potion.PotionListener;
 
 
 public class SCGeneral extends JavaPlugin
@@ -41,9 +41,12 @@ public class SCGeneral extends JavaPlugin
 	public void onEnable()
 	{
 		this.getLogger().info("[SCGeneral] Startup.");
-		this.getLogger().info(" - Registering Scoreboard");
+		this.getLogger().info(" - Registering Faction fixes");
+                this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
+                this.getLogger().info(" - Registering PotionPatch");
+		this.getServer().getPluginManager().registerEvents(new PotionListener(), this);
 		this.getLogger().info(" - Registering AutoSaving");
 		new BukkitRunnable(){
 			@Override
@@ -55,7 +58,8 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Overriding commands");
-
+                // No its not ignored, it just handles the shizzle in the constructor
+                new StopCommand(this);
 		this.shout = new Shout(this);
 		this.getLogger().info("   - shout");
 		final PluginCommand shoutCommand = this.getServer().getPluginCommand("shout");
@@ -108,39 +112,22 @@ public class SCGeneral extends JavaPlugin
 			this.getLogger().warning("Failed to override heal!");
 
 		this.getLogger().info("   - tpa");
-		Tpa tpa = null;
+                TpSuite tpsuite = new TpSuite();
 		final PluginCommand tpaCommand = this.getServer().getPluginCommand("tpa");
-		if(tpaCommand != null){
-			tpa = new Tpa(this);
-			tpaCommand.setExecutor(tpa);
+                final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
+                final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
+                final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
+		if(tpaCommand != null && tpaHereCommand != null && tpAcceptCommand != null && tpDenyCommand != null)
+                {
+			tpaCommand.setExecutor(tpsuite);
 			tpaCommand.setUsage("");
-		}else this.getLogger().warning("Failed to override tpa!");
-
-		this.getLogger().info("   - tpahere");
-		TpaHere tpaHere = null;
-		final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
-		if(tpaHereCommand != null && tpa != null){
-			tpaHere = new TpaHere(tpa, this);
-			tpaHereCommand.setExecutor(tpaHere);
-			tpaHereCommand.setUsage("");
-			tpa.setTpaHere(tpaHere);
-		}else this.getLogger().warning("Failed to override tpahere!");
-
-		this.getLogger().info("   - tpaccept");
-		final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
-		if(tpAcceptCommand != null && tpa != null && tpaHere != null){
-			tpAcceptCommand.setExecutor(new TpAccept(tpa, tpaHere));
-			tpAcceptCommand.setUsage("");
-			tpAcceptCommand.getAliases().add("tpaaccept");
-		}else this.getLogger().warning("Failed to override tpaccept!");
-
-		this.getLogger().info("   - tpdeny");
-		final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
-		if(tpDenyCommand != null && tpa != null && tpaHere != null){
-			tpDenyCommand.setExecutor(new TpDeny(tpa, tpaHere));
-			tpDenyCommand.setUsage("");
-			tpDenyCommand.getAliases().add("tpadeny");
-		}else this.getLogger().warning("Failed to override tpdeny!");
+                        tpaHereCommand.setExecutor(tpsuite);
+                        tpaHereCommand.setUsage("");
+                        tpAcceptCommand.setExecutor(tpsuite);
+                        tpAcceptCommand.setUsage("");
+                        tpDenyCommand.setExecutor(tpsuite);
+                        tpDenyCommand.setUsage("");
+		}else this.getLogger().warning("Failed to override teleportation!");
 
 		this.getLogger().info("   - helprequest");
 		final HelpRequest help = new HelpRequest();

@@ -33,6 +33,7 @@ public class Heal implements CommandExecutor{
 		Player player = (Player) sender;
 		if(args.length <= 0){
 			if(sender.hasPermission("essentials.heal")){
+                                if(player.isDead() || player.getHealth() < 1) return true;
 				player.setHealth(20);
 				player.setFoodLevel(20);
 				sender.sendMessage(ChatColor.GOLD+"You have healed yourself.");
@@ -57,6 +58,7 @@ public class Heal implements CommandExecutor{
 					sender.sendMessage(ChatColor.RED+"You can't heal players that are in combat!");
 					return false;
 				}
+                                if(player.isDead() || player.getHealth() < 1) return true;
 				player.setHealth(20);
 				player.setFoodLevel(20);
 				sender.sendMessage(ChatColor.GOLD+"You have healed "+player.getName()+".");
