@@ -3,7 +3,6 @@ package Commands;
 import Entity.EntityListener;
 import java.net.URL;
 import java.security.Key;
-import java.util.Arrays;
 import java.util.Scanner;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

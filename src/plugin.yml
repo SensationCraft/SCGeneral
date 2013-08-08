@@ -32,3 +32,5 @@ commands:
     description: Block bear.
   killshout:
     description: Kill shout.
+  tpcheck:
+    description: Check the current tp request

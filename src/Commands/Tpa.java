@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
-import me.superckl.combatlogger.CombatLogger;
 
 public class Tpa
 {

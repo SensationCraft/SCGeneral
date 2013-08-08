@@ -1,11 +1,8 @@
 package Commands;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import me.superckl.combatlogger.CombatLogger;
 import me.superckl.scgeneral.SCGeneral;
@@ -15,7 +12,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class Kick implements CommandExecutor{
 
@@ -120,11 +116,11 @@ public class Kick implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You can't kick players while they are in combat!");
 			return false;
 		}
-		final String reason = this.translate(args);
+		final String reason = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();;
 		if(!sender.hasPermission("essentials.kick.bypasscooldown")){
 			this.cooldowns.put(sender.getName(), 20*60*5L);
 		}
-		player.kickPlayer(reason+ChatColor.DARK_RED+" - "+sender.getName());
+		player.kickPlayer(reason);
 		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.kick.broadcast"))
 			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);
 		return true;

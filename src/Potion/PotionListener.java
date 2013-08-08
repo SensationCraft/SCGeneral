@@ -1,0 +1,103 @@
+package Potion;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.BrewEvent;
+import org.bukkit.inventory.BrewerInventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
+
+
+/**
+ *
+ * @author DarkSeraphim
+ */
+public class PotionListener implements Listener
+{
+    
+    private final PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 320, 2);
+    
+    private final PotionEffect regenSplash = new PotionEffect(PotionEffectType.REGENERATION, 200, 2);
+    
+    private final PotionEffect str = new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 3600, 0);
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onBrew(BrewEvent event)
+    {
+        BrewerInventory bi = event.getContents();
+        if(bi.getIngredient() != null && bi.getIngredient().getType() == Material.GLOWSTONE_DUST)
+        {
+            boolean y = false;
+            ItemStack[] iss = bi.getContents();
+            for(int j = 0; j < iss.length; j++)
+            {
+                if(iss[j] == null) continue;
+                if(iss[j].getType() == Material.POTION)
+                {
+                    Potion pot = Potion.fromItemStack(iss[j]);
+                    if(pot.getType() == PotionType.STRENGTH)
+                    {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        }
+    }
+    
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onDrink(org.bukkit.event.player.PlayerItemConsumeEvent event)
+    {
+        if(event.getItem().getType() != Material.POTION) return;
+        Player player = event.getPlayer();
+        Potion pot = Potion.fromItemStack(event.getItem());
+        boolean update = false;
+        if(pot.getType() == PotionType.STRENGTH && pot.getLevel() == 2)
+        {
+            event.setCancelled(true);
+            player.setItemInHand(new ItemStack(Material.GLASS_BOTTLE));
+            player.addPotionEffect(this.str);
+            update = true;
+        }
+        else if(pot.getType() == PotionType.REGEN && pot.getLevel() == 2)
+        {
+            event.setCancelled(true);
+            player.setItemInHand(new ItemStack(Material.GLASS_BOTTLE));
+            player.addPotionEffect(this.regen);
+            update = true;
+        }
+        if(update)
+            player.updateInventory();
+    }
+    
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
+    public void onSplash(org.bukkit.event.entity.PotionSplashEvent event)
+    {
+        boolean buff = false;
+        for(PotionEffect pe : event.getPotion().getEffects())
+        {
+            if(pe.getType().equals(PotionEffectType.INCREASE_DAMAGE) && pe.getAmplifier() == 1)
+            {
+                event.setCancelled(true);
+                return;
+            }
+            else if(pe.getType().equals(PotionEffectType.REGENERATION))
+                buff = true;
+        }
+        if(buff)
+        {
+            event.setCancelled(true);
+            for(LivingEntity le : event.getAffectedEntities())
+            {
+                le.addPotionEffect(this.regenSplash);
+            }
+        }
+    }
+}
