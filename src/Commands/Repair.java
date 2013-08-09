@@ -43,7 +43,10 @@ public class Repair implements CommandExecutor
         if(args[0].equalsIgnoreCase("hand"))
         {
             ItemStack i = player.getItemInHand();
-            List<String> lore = i.getItemMeta().getLore();
+            
+            List<String> lore = null;
+            if(i.getItemMeta() != null)
+                lore = i.getItemMeta().getLore();
             if(i.getType().isBlock() || i.getType().getMaxDurability() < 1)
             {
                 player.sendMessage(ChatColor.DARK_RED+"Item cannot be repaired");
@@ -61,29 +64,9 @@ public class Repair implements CommandExecutor
         }
         else if(args[0].equalsIgnoreCase("all"))
         {
-            ItemStack[] iss = player.getInventory().getContents();
             List<String> repaired = new ArrayList<String>();
-            for(ItemStack is : iss)
-            {
-                List<String> lore = is.getItemMeta().getLore();
-                if(is.getType().isBlock() || is.getType().getMaxDurability() < 1)
-                {
-                    continue;
-                }
-                else if(is.getDurability() == 0)
-                {
-                    continue;
-                }
-                else if(lore != null && lore.contains(SuperItems.tag))
-                {
-                    continue;
-                }
-                else
-                {
-                    is.setDurability((short)0);
-                    repaired.add(is.getType().name().replace('_', ' ').toLowerCase());
-                }
-            }
+            repairItems(player.getInventory().getContents(), repaired);
+            repairItems(player.getInventory().getArmorContents(), repaired);
             if(repaired.isEmpty())
             {
                 player.sendMessage(ChatColor.DARK_RED+"There were no items that needed repair");
@@ -91,14 +74,41 @@ public class Repair implements CommandExecutor
             else
             {
                 player.sendMessage(String.format(repairAllMsg, Joiner.on(", ").join(repaired)));
+                player.updateInventory();
             }
         }
         else
         {
             sender.sendMessage(ChatColor.DARK_RED+"Correct usage: /repair all|hand");
-        }
-        
+        }        
         return true;
+    }
+    
+    private void repairItems(ItemStack[] iss, List<String> repaired)
+    {
+        for(ItemStack is : iss)
+        {
+            if(is == null || is.getItemMeta() == null)
+                continue;
+            List<String> lore = is.getItemMeta().getLore();
+            if(is.getType().isBlock() || is.getType().getMaxDurability() < 1)
+            {
+                continue;
+            }
+            else if(is.getDurability() == 0)
+            {
+                continue;
+            }
+            else if(lore != null && lore.contains(SuperItems.tag))
+            {
+                continue;
+            }
+            else
+            {
+                is.setDurability((short)0);
+                repaired.add(is.getType().name().replace('_', ' ').toLowerCase());
+            }
+        }
     }
 
 }

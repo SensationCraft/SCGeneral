@@ -20,5 +20,6 @@ public class TpDeny
         {
             other.sendMessage(ChatColor.RED + String.format("%s has cancelled your teleport request.", player.getName()));
         }
+        player.sendMessage(ChatColor.GOLD+String.format("You denied %s's request", req.getRequester()));
     }
 }

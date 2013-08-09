@@ -22,6 +22,7 @@ import Commands.HelpRead;
 import Commands.HelpRequest;
 import Commands.Kick;
 import Commands.KillShout;
+import Commands.Repair;
 import Commands.Shout;
 import Commands.ShoutMute;
 import Commands.StopCommand;
@@ -29,6 +30,7 @@ import Commands.TpSuite;
 import Entity.EntityListener;
 import FactionFix.HomeFix;
 import Items.ItemLimiter;
+import Items.SuperItems;
 import Potion.PotionListener;
 
 
@@ -75,6 +77,12 @@ public class SCGeneral extends JavaPlugin
 		else
 			this.getLogger().warning("Failed to override shoutmute!");
 
+                this.getLogger().info("   - repair");
+		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
+		if(repairCommand != null) repairCommand.setExecutor(new Repair());
+		else
+			this.getLogger().warning("Failed to override repair!");
+                
 		this.getLogger().info("   - factioncheck");
 		final PluginCommand factionCheckCommand = this.getServer().getPluginCommand("factioncheck");
 		if(factionCheckCommand != null)
@@ -180,6 +188,8 @@ public class SCGeneral extends JavaPlugin
 
 		this.getLogger().info(" - Registering EntityListener");
 		this.getServer().getPluginManager().registerEvents(entity, this);
+                this.getLogger().info(" - Registering Super items");
+		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
 
 		new BukkitRunnable()

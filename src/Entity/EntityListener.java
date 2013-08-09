@@ -37,6 +37,9 @@ import Commands.HelpRequest;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import me.superckl.combatlogger.CombatLogger;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class EntityListener implements Listener
 {
@@ -44,9 +47,11 @@ public class EntityListener implements Listener
 	private final Random random = new Random();
 	private final HelpRequest help;
 	volatile private String antibear = null;
+        final CombatLogger combatLogger;
 
 	public EntityListener(final HelpRequest help){
 		this.help = help;
+                this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 	}
 	
 	public void setAntiBear(String message){
@@ -201,4 +206,16 @@ public class EntityListener implements Listener
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Op can only be given from the console!");
 		}
 	}
+        
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onTeleport(PlayerTeleportEvent event)
+        {
+            if(event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
+                return;
+            
+            if(this.combatLogger.getCombatListeners().isInCombat(event.getPlayer().getName()))
+            {
+                event.setCancelled(true);
+            }
+        }
 }

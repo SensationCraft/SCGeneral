@@ -29,7 +29,7 @@ public class PotionListener implements Listener
     
     private final PotionEffect str = new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 3600, 0);
     
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    /*@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onBrew(BrewEvent event)
     {
         BrewerInventory bi = event.getContents();
@@ -50,7 +50,7 @@ public class PotionListener implements Listener
                 }
             }
         }
-    }
+    }*/
     
     @EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onDrink(org.bukkit.event.player.PlayerItemConsumeEvent event)

@@ -49,7 +49,7 @@ public class TpAccept {
             teleporter = other;
             to = player.getLocation();
         }
-        
+        player.sendMessage(ChatColor.GOLD+String.format("You accepted %s's request", other.getName()));
         teleporter.sendMessage(ChatColor.GOLD+"Teleporting...");
         teleporter.teleport(to);
     }
