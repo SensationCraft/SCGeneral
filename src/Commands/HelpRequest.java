@@ -47,7 +47,7 @@ public class HelpRequest implements CommandExecutor{
 
 	public boolean hasRequest(final String name){
 		for(final Integer i:this.requests.keySet()){
-			String string = this.requests.get(i);
+			final String string = this.requests.get(i);
 			if(string.split("[:]")[0].equals(name)) return true;
 		}
 		return false;
@@ -57,7 +57,7 @@ public class HelpRequest implements CommandExecutor{
 	}
 	public String removeRequest(final String name){
 		for(final Integer i:this.requests.keySet()){
-			String string = this.requests.get(i);
+			final String string = this.requests.get(i);
 			if(string.split("[:]")[0].equals(name))
 				return this.requests.remove(i);
 		}

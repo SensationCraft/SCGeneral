@@ -42,7 +42,7 @@ public class Ban implements CommandExecutor{
 		final List<Player> players = this.instance.getServer().matchPlayer(args[0]);
 		if(player == null && players.size() < 1){
 			sender.sendMessage(ChatColor.RED+"Player not found. Performing offline ban...");
-			OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(args[0]);
+			final OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(args[0]);
 			this.performBan(offPlayer, sender, args);
 			return false;
 		}else if(player == null && players.size() > 1){
@@ -65,8 +65,8 @@ public class Ban implements CommandExecutor{
 		message = ChatColor.stripColor(message);
 		return message;
 	}
-	public void performBan(OfflinePlayer player, CommandSender sender, String[] args){
-		String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
+	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
+		final String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
 		player.setBanned(true);
 		this.ess.getUser(player.getName()).setBanReason(message);
 		if(player.isOnline())

@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 public class Kick implements CommandExecutor{
 
 	private final SCGeneral plugin;
-        private final Map<String, Long> cooldowns = new HashMap<String, Long>();
+	private final Map<String, Long> cooldowns = new HashMap<String, Long>();
 	//private final Set<String> cooldowns = Collections.synchronizedSet(new HashSet<String>());
 
 	public Kick(final SCGeneral plugin){
@@ -83,9 +83,9 @@ public class Kick implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
-                
-                Long l = this.cooldowns.get(sender.getName());
-                
+
+		final Long l = this.cooldowns.get(sender.getName());
+
 		if(l != null && l.longValue() > System.currentTimeMillis()){
 			sender.sendMessage(ChatColor.RED+"You must wait 5 minutes between kicks!");
 			return false;
@@ -117,9 +117,8 @@ public class Kick implements CommandExecutor{
 			return false;
 		}
 		final String reason = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();;
-		if(!sender.hasPermission("essentials.kick.bypasscooldown")){
+		if(!sender.hasPermission("essentials.kick.bypasscooldown"))
 			this.cooldowns.put(sender.getName(), 20*60*5L);
-		}
 		player.kickPlayer(reason);
 		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.kick.broadcast"))
 			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);

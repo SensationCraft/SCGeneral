@@ -34,14 +34,14 @@ public class Shout implements CommandExecutor
 	private final Map<String, Long> coolDowns = new HashMap<String, Long>();
 	private final Set<String> disabled = new HashSet<String>();
 
-	public void setDead(boolean dead){
+	public void setDead(final boolean dead){
 		this.dead = dead;
 	}
-	
+
 	public boolean isDead(){
 		return this.dead;
 	}
-	
+
 	@Override
 	public boolean onCommand(final CommandSender p, final Command arg1, final String arg2,
 			final String[] args) {
@@ -117,8 +117,8 @@ public class Shout implements CommandExecutor
 		this.instance.getLogger().info(shout.toString());
 		if(!bypass)
 			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
-                else
-                        this.coolDowns.put(playerName,System.currentTimeMillis()+1000);
+		else
+			this.coolDowns.put(playerName,System.currentTimeMillis()+1000);
 		return true;
 	}
 

@@ -5,6 +5,7 @@ import lockpicks.Listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
@@ -44,10 +45,10 @@ public class SCGeneral extends JavaPlugin
 	{
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Faction fixes");
-                this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
+		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
-                this.getLogger().info(" - Registering PotionPatch");
+		this.getLogger().info(" - Registering PotionPatch");
 		this.getServer().getPluginManager().registerEvents(new PotionListener(), this);
 		this.getLogger().info(" - Registering AutoSaving");
 		new BukkitRunnable(){
@@ -60,8 +61,8 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Overriding commands");
-                // No its not ignored, it just handles the shizzle in the constructor
-                new StopCommand(this);
+		// No its not ignored, it just handles the shizzle in the constructor
+		new StopCommand(this);
 		this.shout = new Shout(this);
 		this.getLogger().info("   - shout");
 		final PluginCommand shoutCommand = this.getServer().getPluginCommand("shout");
@@ -77,12 +78,12 @@ public class SCGeneral extends JavaPlugin
 		else
 			this.getLogger().warning("Failed to override shoutmute!");
 
-                this.getLogger().info("   - repair");
+		this.getLogger().info("   - repair");
 		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
 		if(repairCommand != null) repairCommand.setExecutor(new Repair());
 		else
 			this.getLogger().warning("Failed to override repair!");
-                
+
 		this.getLogger().info("   - factioncheck");
 		final PluginCommand factionCheckCommand = this.getServer().getPluginCommand("factioncheck");
 		if(factionCheckCommand != null)
@@ -120,21 +121,21 @@ public class SCGeneral extends JavaPlugin
 			this.getLogger().warning("Failed to override heal!");
 
 		this.getLogger().info("   - tpa");
-                TpSuite tpsuite = new TpSuite();
+		final TpSuite tpsuite = new TpSuite();
 		final PluginCommand tpaCommand = this.getServer().getPluginCommand("tpa");
-                final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
-                final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
-                final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
+		final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
+		final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
+		final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
 		if(tpaCommand != null && tpaHereCommand != null && tpAcceptCommand != null && tpDenyCommand != null)
-                {
+		{
 			tpaCommand.setExecutor(tpsuite);
 			tpaCommand.setUsage("");
-                        tpaHereCommand.setExecutor(tpsuite);
-                        tpaHereCommand.setUsage("");
-                        tpAcceptCommand.setExecutor(tpsuite);
-                        tpAcceptCommand.setUsage("");
-                        tpDenyCommand.setExecutor(tpsuite);
-                        tpDenyCommand.setUsage("");
+			tpaHereCommand.setExecutor(tpsuite);
+			tpaHereCommand.setUsage("");
+			tpAcceptCommand.setExecutor(tpsuite);
+			tpAcceptCommand.setUsage("");
+			tpDenyCommand.setExecutor(tpsuite);
+			tpDenyCommand.setUsage("");
 		}else this.getLogger().warning("Failed to override teleportation!");
 
 		this.getLogger().info("   - helprequest");
@@ -173,22 +174,21 @@ public class SCGeneral extends JavaPlugin
 		if(helpCancelCommand != null)
 			helpCancelCommand.setExecutor(new HelpCancel(help));
 		else this.getLogger().warning("Failed to override helpcancel!");
-		
+
 		this.getLogger().info("   - killshout");
 		final PluginCommand killShout = this.getServer().getPluginCommand("killshout");
 		if(killShout != null)
 			killShout.setExecutor(new KillShout(this.shout));
 		else this.getLogger().warning("Failed to override killshout!");
-		
-		EntityListener entity = new EntityListener(help, this);
+
+		final EntityListener entity = new EntityListener(help, this);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
-		if(antibear != null){
+		if(antibear != null)
 			antibear.setExecutor(new AntiBear(entity));
-		}
 
 		this.getLogger().info(" - Registering EntityListener");
 		this.getServer().getPluginManager().registerEvents(entity, this);
-                this.getLogger().info(" - Registering Super items");
+		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
 
@@ -226,5 +226,10 @@ public class SCGeneral extends JavaPlugin
 
 	public Shout getShout() {
 		return this.shout;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static void updateInvWithSuppressedWarning(final Player player){
+		player.updateInventory();
 	}
 }

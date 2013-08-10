@@ -45,7 +45,7 @@ public class Listeners implements Listener
 		final Entity ent = e.getEntity();
 		if((ent instanceof Player))
 		{
-			BukkitTask task = this.picking.remove(((Player)ent).getName());
+			final BukkitTask task = this.picking.remove(((Player)ent).getName());
 			if(task != null){
 				task.cancel();
 				final Player player = ((Player)ent).getPlayer();
@@ -82,14 +82,14 @@ public class Listeners implements Listener
 							@Override
 							public void run() {
 								if(LockPickRank.getByPlayer(e.getPlayer()).tryPick()){
-										e.getClickedBlock().setTypeId(0);
-										e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.FIRE_IGNITE, 2.0F, 1.0F);
-										e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("Lock Pick successful!").toString());
-									} else
-										e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("Lock Pick failed!").toString());
-									Listeners.this.picking.remove(e.getPlayer().getName());
+									e.getClickedBlock().setTypeId(0);
+									e.getPlayer().getWorld().playSound(e.getPlayer().getLocation(), Sound.FIRE_IGNITE, 2.0F, 1.0F);
+									e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("Lock Pick successful!").toString());
+								} else
+									e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("Lock Pick failed!").toString());
+								Listeners.this.picking.remove(e.getPlayer().getName());
 							}
-							
+
 						}.runTaskLater(this.main, 100L));
 					} else
 						e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("You can only pick locks in the Wilderness!").toString());
@@ -100,7 +100,7 @@ public class Listeners implements Listener
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onPlayerMoveEvent(final PlayerMoveEvent e)
 	{
-		BukkitTask task = this.picking.remove(e.getPlayer().getName());
+		final BukkitTask task = this.picking.remove(e.getPlayer().getName());
 		if(task != null)
 		{
 			task.cancel();
@@ -109,6 +109,6 @@ public class Listeners implements Listener
 		}
 	}
 
-	private Map<String, BukkitTask> picking = new HashMap<String, BukkitTask>();
+	private final Map<String, BukkitTask> picking = new HashMap<String, BukkitTask>();
 
 }

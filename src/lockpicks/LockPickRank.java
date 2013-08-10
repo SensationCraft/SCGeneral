@@ -9,9 +9,9 @@ public enum LockPickRank {
 	DEFAULT,
 	VIP,
 	PREMIUM;
-	
-	private Random random = new Random();
-	
+
+	private final Random random = new Random();
+
 	public boolean tryPick(){
 		if(this == DEFAULT)
 			return this.random.nextBoolean();
@@ -20,8 +20,8 @@ public enum LockPickRank {
 		else
 			return true;
 	}
-	
-	public static LockPickRank getByPlayer(Player player){
+
+	public static LockPickRank getByPlayer(final Player player){
 		if(player.hasPermission("lockpicks.premium"))
 			return LockPickRank.PREMIUM;
 		else if(player.hasPermission("lockpicks.vip"))

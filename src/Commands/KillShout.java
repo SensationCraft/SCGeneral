@@ -9,20 +9,20 @@ import org.bukkit.command.CommandSender;
 public class KillShout implements CommandExecutor{
 
 	private final Shout shout;
-	
-	public KillShout(Shout shout){
+
+	public KillShout(final Shout shout){
 		this.shout = shout;
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,
-			String[] arg3) {
+	public boolean onCommand(final CommandSender arg0, final Command arg1, final String arg2,
+			final String[] arg3) {
 		if(!arg0.hasPermission("kill.shout")){
 			arg0.sendMessage(new StringBuilder().append(ChatColor.RED).append("You don't have permission for that!").toString());
 			return false;
 		}
 		this.shout.setDead(!this.shout.isDead());
-		StringBuilder sb = new StringBuilder().append(ChatColor.DARK_RED).append("Shout is now ");
+		final StringBuilder sb = new StringBuilder().append(ChatColor.DARK_RED).append("Shout is now ");
 		if(this.shout.isDead())
 			sb.append("dead.");
 		else

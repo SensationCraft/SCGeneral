@@ -78,11 +78,9 @@ public class ItemLimiter implements Listener
 		{
 			final Block b = ((BlockState)src.getHolder()).getBlock();
 			if(Lockette.isProtected(b))
-			{
 				event.setCancelled(true);
-                                // Note: please, don't. You will crash the server.
-				//((BlockState)initiator.getHolder()).getBlock().breakNaturally();
-			}
+			// Note: please, don't. You will crash the server.
+			//((BlockState)initiator.getHolder()).getBlock().breakNaturally();
 		}
 	}
 	//@EventHandler(priority = EventPriority.MONITOR)

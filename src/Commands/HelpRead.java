@@ -28,8 +28,8 @@ public class HelpRead implements CommandExecutor{
 			arg0.sendMessage(ChatColor.RED+"You must specify a number!");
 			return false;
 		}
-		int number = Integer.parseInt(arg3[0]);
-		String message = this.help.getRequests().get(number);
+		final int number = Integer.parseInt(arg3[0]);
+		final String message = this.help.getRequests().get(number);
 		if(message == null){
 			arg0.sendMessage(ChatColor.RED+"That help request doesn't exist!");
 			return false;

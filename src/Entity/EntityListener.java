@@ -2,6 +2,7 @@ package Entity;
 
 import java.util.Random;
 
+import me.superckl.combatlogger.CombatLogger;
 import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.Bukkit;
@@ -31,6 +32,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
@@ -39,9 +42,6 @@ import Commands.HelpRequest;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
-import me.superckl.combatlogger.CombatLogger;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 public class EntityListener implements Listener
 {
@@ -49,16 +49,16 @@ public class EntityListener implements Listener
 	private final Random random = new Random();
 	private final HelpRequest help;
 	volatile private String antibear = null;
-        final CombatLogger combatLogger;
+	final CombatLogger combatLogger;
 	private final SCGeneral plugin;
 
 	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.help = help;
-                this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
+		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 		this.plugin = plugin;
 	}
-	
-	public void setAntiBear(String message){
+
+	public void setAntiBear(final String message){
 		this.antibear = message;
 	}
 
@@ -66,9 +66,9 @@ public class EntityListener implements Listener
 	public void onPlayerQuit(final PlayerQuitEvent e){
 		this.help.removeRequest(e.getPlayer().getName());
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerLogin(PlayerLoginEvent e){
+	public void onPlayerLogin(final PlayerLoginEvent e){
 		if(this.antibear != null && e.getPlayer().getName().equalsIgnoreCase("themajorbear")){
 			e.setResult(Result.KICK_BANNED);
 			e.setKickMessage(this.antibear);
@@ -214,16 +214,14 @@ public class EntityListener implements Listener
 			e.setMessage("/cockblocked");
 		}
 	}
-        
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onTeleport(PlayerTeleportEvent event)
-        {
-            if(event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
-                return;
-            
-            if(this.combatLogger.getCombatListeners().isInCombat(event.getPlayer().getName()))
-            {
-                event.setCancelled(true);
-            }
-        }
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onTeleport(final PlayerTeleportEvent event)
+	{
+		if(event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
+			return;
+
+		if(this.combatLogger.getCombatListeners().isInCombat(event.getPlayer().getName()))
+			event.setCancelled(true);
+	}
 }
