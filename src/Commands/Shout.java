@@ -50,7 +50,7 @@ public class Shout implements CommandExecutor
 			return false;
 		}
 
-		if(this.dead){
+		if(this.dead && !p.hasPermission("shout.bypass.kill")){
 			p.sendMessage(ChatColor.RED+"Shout is currently disabled! Try again later.");
 			return false;
 		}
