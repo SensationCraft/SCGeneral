@@ -29,10 +29,6 @@ import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 
-/**
- *
- * @author DarkSeraphim
- */
 public class SuperItems implements Listener
 {
 

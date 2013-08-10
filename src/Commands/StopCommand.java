@@ -21,10 +21,6 @@ import org.bukkit.conversations.ConversationPrefix;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-/**
- *
- * @author DarkSeraphim
- */
 public class StopCommand extends Command implements CommandExecutor
 {
 

@@ -14,10 +14,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.google.common.base.Joiner;
 
-/**
- *
- * @author DarkSeraphim
- */
 public class Repair implements CommandExecutor
 {
 

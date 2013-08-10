@@ -14,11 +14,6 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-
-/**
- *
- * @author DarkSeraphim
- */
 public class PotionListener implements Listener
 {
 

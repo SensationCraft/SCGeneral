@@ -20,10 +20,6 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Relation;
 
-/**
- *
- * @author DarkSeraphim
- */
 public class HomeFix implements Listener
 {
 

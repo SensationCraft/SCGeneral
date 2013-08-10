@@ -10,10 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-/**
- *
- * @author DarkSeraphim
- */
 public class StopConvo extends BooleanPrompt
 {
 

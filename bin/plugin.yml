@@ -1,5 +1,5 @@
 name: SCGeneral
-author: superckl
+authors: [superckl, DarkSeraphim]
 version: 3.0
 main: me.superckl.scgeneral.SCGeneral
 website: www.sensationcraft.info
@@ -32,3 +32,5 @@ commands:
     description: Block bear.
   killshout:
     description: Kill shout.
+  tpcheck:
+    description: Check the current tp request
