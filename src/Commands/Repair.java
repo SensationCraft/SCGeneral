@@ -44,20 +44,18 @@ public class Repair implements CommandExecutor
         {
             ItemStack i = player.getItemInHand();
             
-            List<String> lore = null;
-            if(i.getItemMeta() != null)
-                lore = i.getItemMeta().getLore();
-            if(i.getType().isBlock() || i.getType().getMaxDurability() < 1)
+            if(i == null)
+            {
+                player.sendMessage(ChatColor.DARK_RED+"No item found");
+                return true;
+            }
+            else if(i.getType().isBlock() || i.getType().getMaxDurability() < 1)
             {
                 player.sendMessage(ChatColor.DARK_RED+"Item cannot be repaired");
             }
             else if(i.getDurability() == 0)
             {
                 player.sendMessage(ChatColor.DARK_RED+"Item did not need a repair");
-            }
-            else if(lore != null && lore.contains(SuperItems.tag))
-            {
-                player.sendMessage(ChatColor.DARK_RED+"You cannot repair super items");
             }
             else
                 i.setDurability((short)0);
@@ -90,16 +88,11 @@ public class Repair implements CommandExecutor
         {
             if(is == null || is.getItemMeta() == null)
                 continue;
-            List<String> lore = is.getItemMeta().getLore();
             if(is.getType().isBlock() || is.getType().getMaxDurability() < 1)
             {
                 continue;
             }
             else if(is.getDurability() == 0)
-            {
-                continue;
-            }
-            else if(lore != null && lore.contains(SuperItems.tag))
             {
                 continue;
             }

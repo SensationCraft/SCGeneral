@@ -3,6 +3,7 @@ package Commands;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import me.superckl.combatlogger.CombatLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -29,6 +30,7 @@ public class StopCommand extends Command implements CommandExecutor
 {
     
     private final Plugin pl;
+    private final CombatLogger combatLogger;
     
     public StopCommand(Plugin pl)
     {
@@ -66,6 +68,8 @@ public class StopCommand extends Command implements CommandExecutor
             ex.printStackTrace();
         }
         
+        this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
+        
     }
 
     @Override
@@ -97,6 +101,7 @@ public class StopCommand extends Command implements CommandExecutor
             for(Player p : Bukkit.getOnlinePlayers())
             {
                 // Get them out of combat!
+                this.combatLogger.getCombatListeners().destroy(p.getName());
                 p.kickPlayer(message);
             }
             Bukkit.shutdown();
@@ -109,7 +114,7 @@ public class StopCommand extends Command implements CommandExecutor
         Conversation c = new ConversationFactory(pl)
             .thatExcludesNonPlayersWithMessage("How did you get here?")
             .withLocalEcho(false)
-            .withFirstPrompt(new StopConvo())
+            .withFirstPrompt(new StopConvo(this.pl, this.combatLogger))
             .withModality(true)
             .withTimeout(30)
             .withPrefix(new ConversationPrefix() 
@@ -131,61 +136,6 @@ public class StopCommand extends Command implements CommandExecutor
     public boolean execute(CommandSender cs, String label, String[] args)
     {
         return this.onCommand(cs, this, label, args);
-    }
-    
-    private class StopConvo extends BooleanPrompt
-    {
-
-        @Override
-        protected Prompt acceptValidatedInput(ConversationContext cc, String in)
-        {
-            return this.acceptValidatedInput(cc, in.equalsIgnoreCase("yes") || in.equalsIgnoreCase("y"));
-        }
-        
-        @Override
-        protected Prompt acceptValidatedInput(ConversationContext cc, boolean bln)
-        {
-            System.out.println("Bln: "+bln);
-            if(bln)
-            {
-                String mes = (String) cc.getSessionData("msg");
-                if(mes == null || mes.isEmpty())
-                    mes = "We will be back as soon as possible :3";
-                final String message = mes;
-                new BukkitRunnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        for(Player player : Bukkit.getOnlinePlayers())
-                        {
-                            player.kickPlayer(message);
-                        }
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
-                        Bukkit.shutdown();
-                    }
-                }.runTask(pl);
-                return Prompt.END_OF_CONVERSATION;
-            }
-            else
-            {
-                cc.getForWhom().sendRawMessage("Stopping server cancelled.");
-            }
-            return Prompt.END_OF_CONVERSATION;
-        }
-
-        @Override
-        public String getPromptText(ConversationContext cc)
-        {
-            return "Are you sure you want to stop the server? [y/n]";
-        }
-
-        @Override
-        protected boolean isInputValid(ConversationContext context, String input)
-        {
-            return true;
-        }
-        
     }
 
 }

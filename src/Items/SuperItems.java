@@ -68,7 +68,7 @@ public class SuperItems implements Listener
         armor.put(Enchantment.PROTECTION_EXPLOSIONS, 6);
         armor.put(Enchantment.PROTECTION_PROJECTILE, 6);
         armor.put(Enchantment.PROTECTION_FALL,10);
-        armor.put(Enchantment.THORNS, 3);
+        armor.put(Enchantment.DURABILITY, 3);
         armor.put(Enchantment.WATER_WORKER, 1);
         armor.put(Enchantment.OXYGEN, 10);
         
@@ -78,12 +78,12 @@ public class SuperItems implements Listener
         bow.put(Enchantment.ARROW_INFINITE, 10);
         
         sword.put(Enchantment.DAMAGE_ALL, 7);
-        sword.put(Enchantment.FIRE_ASPECT, 3);
+        sword.put(Enchantment.FIRE_ASPECT, 7);
         sword.put(Enchantment.KNOCKBACK, 2);
         
         stick.put(Enchantment.KNOCKBACK, 10);
         
-        tool.put(Enchantment.DURABILITY, 5);
+        tool.put(Enchantment.DURABILITY, 3);
         tool.put(Enchantment.DIG_SPEED, 10);
         tool.put(Enchantment.LOOT_BONUS_BLOCKS, 3);
         
@@ -193,6 +193,10 @@ public class SuperItems implements Listener
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onSignChange(SignChangeEvent event)
     {
+        if(event.getBlock().getType() != Material.WALL_SIGN)
+            return;
+        if(!event.getLine(0).equalsIgnoreCase("[purchase]"))
+            return;
         if(!event.getPlayer().isOp())
         {
             event.setCancelled(true);
@@ -201,11 +205,6 @@ public class SuperItems implements Listener
             event.setLine(2, "");
             event.setLine(3, "");
         }
-        if(event.getBlock().getType() != Material.WALL_SIGN)
-            return;
-        if(!event.getLine(0).equalsIgnoreCase("[purchase]"))
-            return;
-        
         if(check(event))
         {
             event.setLine(0, ChatColor.BLUE+"[Purchase]");
@@ -321,6 +320,9 @@ public class SuperItems implements Listener
             case HOE:
                 superitem = this.superhoe.clone();
                 break;
+            case BOW:
+                superitem = this.superbow.clone();
+                break;
             default:
                 return;       
         }
@@ -329,9 +331,15 @@ public class SuperItems implements Listener
         {
             BigDecimal bdprice = BigDecimal.valueOf(price);
             if(!Economy.hasEnough(name, bdprice))
+            {
+                player.sendMessage(ChatColor.RED+"Not enough money!");
                 return;
+            }
             if(InventoryWorkaround.addAllItems(player.getInventory(), superitem) != null)
+            {
+                player.sendMessage(ChatColor.RED+"Not enough space in your inventory!");
                 return;
+            }
             Economy.substract(name, bdprice);
             player.updateInventory();
             Bukkit.broadcastMessage(String.format(this.broadcast, name, superitem.getItemMeta().getDisplayName()));
@@ -344,65 +352,6 @@ public class SuperItems implements Listener
         catch(NoLoanPermittedException ex)
         {   
             // Swallow it you cumbucket
-        }
-    }
-    
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
-    public void onPrepareRepair(PrepareItemCraftEvent event)
-    {
-        if(!event.isRepair())
-            return;
-        Recipe r = event.getRecipe();
-        if(isSuper(r.getResult()))
-            event.getInventory().setResult(null);
-        else
-            for(ItemStack i : event.getInventory().getMatrix())
-                if(isSuper(i))
-                {
-                    event.getInventory().setResult(null);
-                    break;
-                }
-        for(HumanEntity he : event.getViewers())
-            if(he instanceof Player)
-                ((Player)he).updateInventory();
-    }
-    
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
-    public void onRepair(CraftItemEvent event)
-    {
-        Recipe r = event.getRecipe();
-        boolean cancel = false;
-        for(ItemStack i : event.getInventory().getMatrix())
-            if(isSuper(i))
-            {
-                cancel = true;
-                break;
-            }
-        
-        if(cancel)
-        {
-            event.setResult(Event.Result.DENY);
-            event.setCancelled(true);
-        }
-        for(HumanEntity he : event.getViewers())
-            if(he instanceof Player)
-                ((Player)he).updateInventory();
-    }
-    
-    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
-    public void onClick(InventoryClickEvent event)
-    {
-        if(event.getWhoClicked() instanceof Player == false)
-            return;
-        if(event.getInventory().getType() != InventoryType.ANVIL)
-            return;
-        Player player = (Player) event.getWhoClicked();
-        if(event.getRawSlot() < 0 || event.getRawSlot() > 2)
-            return;
-        if(isSuper(event.getCurrentItem()) || isSuper(event.getCursor()))
-        {
-            event.setCancelled(true);
-            event.setResult(Event.Result.DENY);
         }
     }
     
