@@ -41,19 +41,7 @@ public class HomeFix implements Listener
 		if(this.ess == null) return;
 		final String[] msg = event.getMessage().substring(1).split(" ");
 		final String cmd = msg[0];
-		if(cmd.equalsIgnoreCase("sethome") || cmd.equalsIgnoreCase("esethome"))
-		{
-			final FLocation loc = new FLocation(event.getPlayer().getLocation());
-			final Faction fac = Board.getFactionAt(loc);
-			final Faction fme = FPlayers.i.get(event.getPlayer()).getFaction();
-			if(fme.getRelationTo(fac).isEnemy())
-			{
-				event.getPlayer().sendMessage(ChatColor.RED+"You cannot set your home inside enemy territory!");
-				event.setMessage("/peniscraft");
-				event.setCancelled(true);
-			}
-		}
-		else if(cmd.equalsIgnoreCase("home") || cmd.equalsIgnoreCase("ehome"))
+		if(cmd.equalsIgnoreCase("home") || cmd.equalsIgnoreCase("ehome"))
 			if(msg.length > 1)
 			{
 				final User user = this.ess.getUser(event.getPlayer());
