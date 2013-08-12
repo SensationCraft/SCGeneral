@@ -1,10 +1,10 @@
-package Commands;
+package Commands.tp;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import Commands.TpSuite.TpRequest;
+import Commands.tp.TpSuite.TpRequest;
 
 import com.earth2me.essentials.Essentials;
 

@@ -11,23 +11,25 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import Commands.AntiBear;
-import Commands.Ban;
 import Commands.ClearInvis;
 import Commands.FactionCheck;
 import Commands.Heal;
-import Commands.HelpAccept;
-import Commands.HelpCancel;
-import Commands.HelpDeny;
-import Commands.HelpList;
-import Commands.HelpRead;
-import Commands.HelpRequest;
 import Commands.Kick;
 import Commands.KillShout;
 import Commands.Repair;
 import Commands.Shout;
 import Commands.ShoutMute;
 import Commands.StopCommand;
-import Commands.TpSuite;
+import Commands.Bans.Ban;
+import Commands.Bans.OverrideBan;
+import Commands.Bans.Unban;
+import Commands.help.HelpAccept;
+import Commands.help.HelpCancel;
+import Commands.help.HelpDeny;
+import Commands.help.HelpList;
+import Commands.help.HelpRead;
+import Commands.help.HelpRequest;
+import Commands.tp.TpSuite;
 import Entity.EntityListener;
 import FactionFix.HomeFix;
 import Items.ItemLimiter;
@@ -105,13 +107,31 @@ public class SCGeneral extends JavaPlugin
 			kickCommand.setUsage("");
 		} else
 			this.getLogger().warning("Failed to override kick!");
+		this.getLogger().info("   - overrideban");
+		final PluginCommand overbanCommand = this.getServer().getPluginCommand("overrideban");
+		OverrideBan overBan = new OverrideBan(this);
+		if(overbanCommand != null){
+			overbanCommand.setExecutor(overBan);
+			overbanCommand.setUsage("");
+		} else
+			this.getLogger().warning("Failed to override ban!");
+		
 		this.getLogger().info("   - ban");
 		final PluginCommand banCommand = this.getServer().getPluginCommand("ban");
 		if(banCommand != null){
-			banCommand.setExecutor(new Ban(this));
+			banCommand.setExecutor(new Ban(this, overBan));
 			banCommand.setUsage("");
-		} else
+		}else
 			this.getLogger().warning("Failed to override ban!");
+
+		this.getLogger().info("   - unban");
+		final PluginCommand unbanCommand = this.getServer().getPluginCommand("unban");
+		if(unbanCommand != null){
+			unbanCommand.setExecutor(new Unban());
+			unbanCommand.setUsage("");
+		}else
+			this.getLogger().warning("Failed to override unban!");
+		
 		this.getLogger().info("   - heal");
 		final PluginCommand healCommand = this.getServer().getPluginCommand("heal");
 		if(healCommand != null) {

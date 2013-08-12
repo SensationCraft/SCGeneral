@@ -1,4 +1,4 @@
-package Commands;
+package Commands.tp;
 
 import me.superckl.combatlogger.CombatLogger;
 
@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import Commands.TpSuite.TpRequest;
+import Commands.tp.TpSuite.TpRequest;
 
 public class TpAccept {
 

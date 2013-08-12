@@ -37,7 +37,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-import Commands.HelpRequest;
+import Commands.help.HelpRequest;
 
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;

@@ -1,4 +1,4 @@
-package Commands;
+package Commands.Bans;
 
 import java.util.List;
 
@@ -13,13 +13,14 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 
-public class Ban implements CommandExecutor{
+public class OverrideBan implements CommandExecutor{
 
 	private final SCGeneral instance;
 	private final Essentials ess;
 
-	public Ban(final SCGeneral instance){
+	public OverrideBan(final SCGeneral instance){
 		this.instance = instance;
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
@@ -27,7 +28,7 @@ public class Ban implements CommandExecutor{
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
 			final String[] args) {
-		if(!sender.hasPermission("essentials.ban")){
+		if(!sender.hasPermission("essentials.overrideban")){
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
@@ -50,6 +51,13 @@ public class Ban implements CommandExecutor{
 			return false;
 		}else if(player == null)
 			player = players.get(0);
+		if(player.isBanned()){
+			sender.sendMessage(ChatColor.RED+"That user is already banned! Making ban permanent...");
+			User user = this.ess.getUser(player.getName());
+			user.setBanTimeout(0);
+			user.setBanned(true);
+			return true;
+		}
 		if(player.hasPermission("essentials.ban.exempt")){
 			sender.sendMessage(ChatColor.RED+"That player is exempt to bans!");
 			return false;
@@ -67,10 +75,10 @@ public class Ban implements CommandExecutor{
 	}
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		final String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
-		player.setBanned(true);
-		this.ess.getUser(player.getName()).setBanReason(message);
-		if(player.isOnline())
-			((Player)player).kickPlayer(message);
+		User user = this.ess.getOfflineUser(player.getName());
+		user.setBanReason(message);
+		user.setBanned(true);
+		user.kickPlayer(message);
 		for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
 	}

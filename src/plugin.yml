@@ -34,3 +34,5 @@ commands:
     description: Kill shout.
   tpcheck:
     description: Check the current tp request
+  overrideban:
+    description: Perform a permanent ban overriding the ban system.
