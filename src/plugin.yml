@@ -36,6 +36,7 @@ commands:
     description: Check the current tp request
   overrideban:
     description: Perform a permanent ban overriding the ban system.
+    aliases: [oban]
   resetbans:
     description: Reset the bans for a player.
   getbans:
