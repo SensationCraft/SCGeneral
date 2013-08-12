@@ -21,7 +21,9 @@ import Commands.Shout;
 import Commands.ShoutMute;
 import Commands.StopCommand;
 import Commands.Bans.Ban;
+import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
+import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
 import Commands.help.HelpAccept;
 import Commands.help.HelpCancel;
@@ -115,6 +117,20 @@ public class SCGeneral extends JavaPlugin
 			overbanCommand.setUsage("");
 		} else
 			this.getLogger().warning("Failed to override ban!");
+		
+		this.getLogger().info("   - resetbans");
+		final PluginCommand resetBansCommand = this.getServer().getPluginCommand("resetbans");
+		if(resetBansCommand != null)
+			resetBansCommand.setExecutor(new ResetBans());
+		else
+			this.getLogger().warning("Failed to override resetbans!");
+		
+		this.getLogger().info("   - getbans");
+		final PluginCommand getBansCommand = this.getServer().getPluginCommand("getbans");
+		if(getBansCommand != null)
+			getBansCommand.setExecutor(new GetBans());
+		else
+			this.getLogger().warning("Failed to override getbans!");
 		
 		this.getLogger().info("   - ban");
 		final PluginCommand banCommand = this.getServer().getPluginCommand("ban");

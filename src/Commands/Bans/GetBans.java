@@ -5,23 +5,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
-public class ResetBans implements CommandExecutor{
+public class GetBans implements CommandExecutor{
 
 	private final Essentials ess;
 
-	public ResetBans(){
+	public GetBans(){
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
 			String[] args) {
-		if(!sender.hasPermission("essentials.resetbans")){
+		if(!sender.hasPermission("essentials.getbans")){
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
@@ -34,18 +33,7 @@ public class ResetBans implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"Player not found, did you spell it right?");
 			return false;
 		}
-		if(!user.isBanned()){
-			sender.sendMessage(ChatColor.RED+"That player isn't banned!");
-			return false;
-		}
-		user.setConfigProperty("bans", 0);
-		user.setBanned(false);
-		user.setBanTimeout(0);
-		user.saveData();
-		sender.sendMessage(ChatColor.GREEN+"Player's bans reset.");
-		for(Player player:Bukkit.getOnlinePlayers())
-			if(player.hasPermission("essentials.unban") || player.hasPermission("essentials.resetbans"))
-				player.sendMessage(ChatColor.AQUA+sender.getName()+" has reset bans for "+user.getName());
+		sender.sendMessage(ChatColor.GREEN+"Bans: "+user.getConfigMap().get("bans"));
 		return true;
 	}
 
