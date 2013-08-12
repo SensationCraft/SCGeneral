@@ -4,6 +4,7 @@ version: 3.0
 main: me.superckl.scgeneral.SCGeneral
 website: www.sensationcraft.info
 depend: [Factions, Lockette, Votifier, Essentials, SCLogin, CombatLogger]
+softdepend: [mcMMO]
 commands:
   shout:
     description: Shout a message

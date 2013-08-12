@@ -25,6 +25,7 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
+import Commands.NullParty;
 import Commands.help.HelpAccept;
 import Commands.help.HelpCancel;
 import Commands.help.HelpDeny;
@@ -216,6 +217,12 @@ public class SCGeneral extends JavaPlugin
 		if(killShout != null)
 			killShout.setExecutor(new KillShout(this.shout));
 		else this.getLogger().warning("Failed to override killshout!");
+                
+                this.getLogger().info("   - party");
+                final PluginCommand party = this.getServer().getPluginCommand("party");
+                if(party != null)
+                        party.setExecutor(new NullParty());
+                else this.getLogger().warning("Failed to override party (is mcMMO enabled?)");
 
 		final EntityListener entity = new EntityListener(help, this);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");

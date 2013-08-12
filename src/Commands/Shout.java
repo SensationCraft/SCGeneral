@@ -117,8 +117,7 @@ public class Shout implements CommandExecutor
 		this.instance.getLogger().info(shout.toString());
 		if(!bypass)
 			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
-		else
-			this.coolDowns.put(playerName,System.currentTimeMillis()+1000);
+		
 		return true;
 	}
 
