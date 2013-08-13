@@ -1,6 +1,7 @@
 package me.superckl.scgeneral;
 
 import lockpicks.Listeners;
+import mcMMOFix.Fix;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,6 +52,8 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Faction fixes");
 		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
+		this.getLogger().info(" - Registering mcMMO fixes");
+		this.getServer().getPluginManager().registerEvents(new Fix(), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");

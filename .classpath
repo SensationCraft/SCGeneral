@@ -15,5 +15,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/SCPvP.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/mcMMO.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
