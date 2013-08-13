@@ -38,6 +38,8 @@ import FactionFix.HomeFix;
 import Items.ItemLimiter;
 import Items.SuperItems;
 import Potion.PotionListener;
+import mcMMOFix.DisarmBlocker;
+import mcMMOFix.FactionParty;
 
 
 public class SCGeneral extends JavaPlugin
@@ -51,6 +53,10 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Faction fixes");
 		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
+                this.getLogger().info(" - Registering mcMMO fixes");
+		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
+                this.getLogger().info(" - Registering mcMMO party control");
+		this.getServer().getPluginManager().registerEvents(new FactionParty(this), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");
@@ -218,11 +224,11 @@ public class SCGeneral extends JavaPlugin
 			killShout.setExecutor(new KillShout(this.shout));
 		else this.getLogger().warning("Failed to override killshout!");
                 
-                this.getLogger().info("   - party");
+                /*this.getLogger().info("   - party");
                 final PluginCommand party = this.getServer().getPluginCommand("party");
                 if(party != null)
                         party.setExecutor(new NullParty());
-                else this.getLogger().warning("Failed to override party (is mcMMO enabled?)");
+                else this.getLogger().warning("Failed to override party (is mcMMO enabled?)");*/
 
 		final EntityListener entity = new EntityListener(help, this);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
