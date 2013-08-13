@@ -73,7 +73,7 @@ public class Ban implements CommandExecutor{
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		try {
 			User user = this.ess.getOfflineUser(player.getName());
-			Integer i = (Integer)user.getConfigMap().get("ban");
+			Integer i = (Integer)user.getConfigMap().get("bans");
 			int bans = i == null ? 0:i.intValue();
 			if(bans == 2){
 				this.overBan.performBan(player, sender, args);
@@ -86,12 +86,11 @@ public class Ban implements CommandExecutor{
 			user.setBanTimeout(timeout);
 			user.kickPlayer(message);
 			user.setConfigProperty("bans", bans+1);
-			user.saveData();
 			for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 				loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
+			user.saveData();
 		} catch (Exception e) {
-			sender.sendMessage(ChatColor.RED+"Ban failed!");
-			e.printStackTrace();
+			this.instance.getLogger().info("Essentials is annoying.");
 		}
 	}
 	

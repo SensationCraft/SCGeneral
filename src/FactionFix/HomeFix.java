@@ -50,7 +50,7 @@ public class HomeFix implements Listener
 				{
 					home = user.getHome(msg[1]);
 					if(home == null)
-						home = user.getHome();
+						home = user.getHome("home");
 					if(home == null) return;
 				}
 				catch (final Exception ex)

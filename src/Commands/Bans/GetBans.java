@@ -20,12 +20,15 @@ public class GetBans implements CommandExecutor{
 	@Override
 	public boolean onCommand(CommandSender sender, Command arg1, String arg2,
 			String[] args) {
+		if(args.length == 0){
+			User user = this.ess.getUser(sender.getName());
+			Integer i = (Integer) user.getConfigMap().get("bans");
+			int bans = i == null ? 0:i.intValue();
+			sender.sendMessage(ChatColor.GREEN+"You have "+ChatColor.RED+bans+ChatColor.GREEN+" bans.");
+			return true;
+		}
 		if(!sender.hasPermission("essentials.getbans")){
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
-			return false;
-		}
-		if(args.length == 0){
-			sender.sendMessage(ChatColor.RED+"You need to enter a player's name!");
 			return false;
 		}
 		User user = this.ess.getOfflineUser(args[0]);
