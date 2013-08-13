@@ -3,8 +3,7 @@ authors: [superckl, DarkSeraphim]
 version: 3.0
 main: me.superckl.scgeneral.SCGeneral
 website: www.sensationcraft.info
-depend: [Factions, Lockette, Votifier, Essentials, SCLogin, CombatLogger]
-softdepend: [mcMMO]
+depend: [Factions, Lockette, Votifier, Essentials, SCLogin, CombatLogger, mcMMO]
 commands:
   shout:
     description: Shout a message
