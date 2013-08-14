@@ -26,7 +26,6 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
-import Commands.NullParty;
 import Commands.help.HelpAccept;
 import Commands.help.HelpCancel;
 import Commands.help.HelpDeny;

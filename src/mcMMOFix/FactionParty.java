@@ -112,6 +112,8 @@ public class FactionParty implements Listener
             case MEMBER:
             case ALLY:
                 return;
+            default:
+            	break;
         }
         cleanseParties(event.getFaction());
         cleanseParties(event.getTargetFaction());
