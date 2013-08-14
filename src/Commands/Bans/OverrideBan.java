@@ -57,7 +57,6 @@ public class OverrideBan implements CommandExecutor{
 			user.setBanTimeout(0);
 			user.setBanned(true);
 			user.setConfigProperty("bans", 3);
-			user.saveData();
 			return true;
 		}
 		if(player.hasPermission("essentials.ban.exempt")){
@@ -85,10 +84,5 @@ public class OverrideBan implements CommandExecutor{
 		user.setConfigProperty("bans", 3);
 		for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
-		try{
-			user.saveData();
-		}catch(Exception e){
-			this.instance.getLogger().info("Essentials is annoying.");
-		}
 	}
 }
