@@ -41,6 +41,7 @@ import Items.SuperItems;
 import Potion.PotionListener;
 import mcMMOFix.DisarmBlocker;
 import mcMMOFix.FactionParty;
+import org.bukkit.command.CommandExecutor;
 
 
 public class SCGeneral extends JavaPlugin
@@ -94,7 +95,11 @@ public class SCGeneral extends JavaPlugin
 
 		this.getLogger().info("   - repair");
 		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
-		if(repairCommand != null) repairCommand.setExecutor(new Repair());
+		if(repairCommand != null) 
+                {
+                    CommandExecutor ce = repairCommand.getExecutor();
+                    repairCommand.setExecutor(new Repair(ce));
+                }
 		else
 			this.getLogger().warning("Failed to override repair!");
 
