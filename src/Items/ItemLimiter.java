@@ -9,18 +9,26 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class ItemLimiter implements Listener
 {
+        public ItemLimiter()
+        {   
+        }
+    
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onBlockPlace(final BlockPlaceEvent event)
 	{
@@ -95,4 +103,26 @@ public class ItemLimiter implements Listener
 		meta.setLore(lore);
 		e.getItem().getItemStack().setItemMeta(meta);
 	}
+        
+        //@EventHandler
+        public void onPrepareCraft(PrepareItemCraftEvent event)
+        {
+            ItemStack i = event.getRecipe().getResult();
+            if(i.getType() == Material.GOLDEN_APPLE && i.getDurability() == 1)
+            {
+                event.getInventory().setResult(null);
+            }
+        }
+        
+        //@EventHandler
+        public void onCraft(CraftItemEvent event)
+        {
+            ItemStack i = event.getRecipe().getResult();
+            if(i.getType() == Material.GOLDEN_APPLE && i.getDurability() == 1)
+            {
+                event.getInventory().setResult(null);
+                event.setCancelled(true);
+                event.setResult(Event.Result.DENY);
+            }
+        }
 }

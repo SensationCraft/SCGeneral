@@ -135,32 +135,17 @@ public class EntityListener implements Listener
 		if(e.isCancelled()) return;
 		if(e.getCause() != DamageCause.ENTITY_ATTACK) return;
 		if(e.getDamager().getType() != EntityType.PLAYER) return;
-		final Location entloc = e.getEntity().getLocation();
-		final Location damloc = e.getDamager().getLocation();
-		final double entlocx = entloc.getX();
-		final double entlocz = entloc.getZ();
-		final double damlocx = damloc.getX();
-		final double damlocz = damloc.getZ();
-		final double adjx = (entlocx-damlocx);
-		final double adjz = entlocz-damlocz;
-		final Vector adjvector = new Vector(adjx, 0, adjz);
-		final Vector basevector = new Vector(0,0,1);
-		float angle = adjvector.angle(basevector);
-		angle = (float) (angle*(180/Math.PI));
-		if(adjx<0)
-			angle=360-angle;
-		float yaw = damloc.getYaw();
-		if(yaw>0)
-			yaw=Math.abs(yaw-360);
-		else
-			yaw = Math.abs(yaw);
-		final float finalAngle = Math.abs(angle-yaw);
-		if(finalAngle>40){
+		final Vector entloc = e.getEntity().getLocation().toVector();
+		final Vector damloc = e.getDamager().getLocation().toVector();
+		Vector attackdir = entloc.subtract(damloc).setY(0).normalize();
+		Vector hitdir = e.getDamager().getLocation().getDirection().setY(0).normalize();
+		
+                double angle = (attackdir.angle(hitdir)/(Math.PI*2) * 360);
+                
+		if(angle>40)
+                {
 			e.setCancelled(true);
-			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+finalAngle);
-			for(final Player player:Bukkit.getOnlinePlayers())
-				if(player.hasPermission("antif.broadcast"))
-					player.sendMessage(ChatColor.AQUA+"Detected forcefield for "+((Player)e.getDamager()).getName()+": "+finalAngle);
+			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 		}
 	}
 	/*@EventHandler(priority = EventPriority.HIGHEST)

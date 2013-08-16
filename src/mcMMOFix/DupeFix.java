@@ -9,7 +9,7 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 
 import com.gmail.nossr50.mcMMO;
 
-public class Fix implements Listener{
+public class DupeFix implements Listener{
 	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPistonExtend(BlockPistonExtendEvent e){

@@ -1,7 +1,7 @@
 package me.superckl.scgeneral;
 
 import lockpicks.Listeners;
-import mcMMOFix.Fix;
+import mcMMOFix.DupeFix;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,7 +59,7 @@ public class SCGeneral extends JavaPlugin
                 this.getLogger().info(" - Registering mcMMO party control");
 		this.getServer().getPluginManager().registerEvents(new FactionParty(this), this);
 		this.getLogger().info(" - Registering mcMMO fixes");
-		this.getServer().getPluginManager().registerEvents(new Fix(), this);
+		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");
@@ -170,13 +170,14 @@ public class SCGeneral extends JavaPlugin
 		} else
 			this.getLogger().warning("Failed to override heal!");
 
-		this.getLogger().info("   - tpa");
+		this.getLogger().info("   - teleportation commands [tpa,tpahere,tpaccept,tpdeny,tpcheck]");
 		final TpSuite tpsuite = new TpSuite();
 		final PluginCommand tpaCommand = this.getServer().getPluginCommand("tpa");
 		final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
 		final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
 		final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
-		if(tpaCommand != null && tpaHereCommand != null && tpAcceptCommand != null && tpDenyCommand != null)
+		final PluginCommand tpCheckCommand = this.getServer().getPluginCommand("tpcheck");
+		if(tpaCommand != null && tpaHereCommand != null && tpAcceptCommand != null && tpDenyCommand != null && tpCheckCommand != null)
 		{
 			tpaCommand.setExecutor(tpsuite);
 			tpaCommand.setUsage("");
@@ -186,6 +187,8 @@ public class SCGeneral extends JavaPlugin
 			tpAcceptCommand.setUsage("");
 			tpDenyCommand.setExecutor(tpsuite);
 			tpDenyCommand.setUsage("");
+                        tpCheckCommand.setExecutor(tpsuite);
+                        tpCheckCommand.setUsage("");
 		}else this.getLogger().warning("Failed to override teleportation!");
 
 		this.getLogger().info("   - helprequest");
