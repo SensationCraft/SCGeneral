@@ -120,7 +120,7 @@ public class DisarmBlocker implements Listener
         
         try
         {
-            bd = BigDecimal.valueOf(Double.valueOf(sign.getLine(2)));
+            bd = BigDecimal.valueOf(Double.valueOf(sign.getLine(2).substring(1)));
         }
         catch(NumberFormatException ex)
         {

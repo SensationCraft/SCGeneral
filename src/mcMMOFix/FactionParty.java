@@ -42,12 +42,19 @@ public class FactionParty implements Listener
         {
             case CHANGED_PARTIES:
             case JOINED_PARTY:
-                FPlayer newLeader = FPlayers.i.get(PartyAPI.getPartyLeader(event.getNewParty()));
-                if(newLeader.getRelationTo(fme).isAtMost(Relation.NEUTRAL))
-                {
-                    fme.sendMessage(ChatColor.RED+"You are not allowed to party with non-members/non-allies.");
-                    event.setCancelled(true);
-                }
+                String leader = PartyAPI.getPartyLeader(event.getNewParty());
+                if(leader == null)
+                    break;
+                Party p = UserManager.getPlayer(leader).getParty();
+                if(p == null)
+                    break; // Weird party xD
+                for(String member : p.getMembers())
+                    if(FPlayers.i.get(member).getRelationTo(fme).isAtMost(Relation.NEUTRAL))
+                    {
+                        fme.sendMessage(ChatColor.RED+"You are not allowed to party with non-members/non-allies.");
+                        event.setCancelled(true);
+                        break;
+                    }
                 break;
             case LEFT_PARTY:
             case KICKED_FROM_PARTY:
@@ -126,6 +133,10 @@ public class FactionParty implements Listener
         for(FPlayer fplayer : fme.getFPlayers())
         {
             p = UserManager.getPlayer(fplayer.getName()).getParty();
+            if(p == null)
+                continue;
+            if(p.getLeader() == null)
+                continue;
             pleader = FPlayers.i.get(p.getLeader());
             if(pleader.getRelationTo(fplayer).isAtMost(Relation.NEUTRAL))
                 PartyManager.removeFromParty(Bukkit.getOfflinePlayer(fplayer.getName()), p);

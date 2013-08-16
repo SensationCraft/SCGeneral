@@ -95,6 +95,7 @@ public class StopCommand extends Command implements CommandExecutor
 				this.combatLogger.getCombatListeners().destroy(p.getName());
 				p.kickPlayer(message);
 			}
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
 			Bukkit.shutdown();
 			return true;
 		}
