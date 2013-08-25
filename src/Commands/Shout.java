@@ -1,21 +1,19 @@
 package Commands;
 
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
+import com.github.DarkSeraphim.SCPvP.Titles;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import me.superckl.scgeneral.SCGeneral;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
-import com.github.DarkSeraphim.SCPvP.Titles;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class Shout implements CommandExecutor
 {
@@ -24,6 +22,8 @@ public class Shout implements CommandExecutor
 	private final SCGeneral instance;
 	private final long SHOUT_DELAY = 15000;
 	private boolean dead = false;
+        private final String shoutFormat = "&c[S] %s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
+        private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
 
 	public Shout(final SCGeneral instance)
 	{
@@ -74,7 +74,7 @@ public class Shout implements CommandExecutor
 			p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You must wait at least 15 seconds in between shouts.").toString());
 			return false;
 		}
-
+                
 		final boolean bypass = p.hasPermission("Shout.Bypass");
 
 		final StringBuilder sb = new StringBuilder();
@@ -82,39 +82,39 @@ public class Shout implements CommandExecutor
 			sb.append(s).append(" ");
 
 		final String message = sb.toString().trim();
-		final String title = Titles.getInstance().getTitle(playerName);
-		final StringBuilder shout = (new StringBuilder()).append(ChatColor.RED).append("[S] ").append(ChatColor.RESET);
+                String title = Titles.getInstance().getTitle(playerName);
 		if(!title.equals(""))
-			shout.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("[").append(title)
-			.append(ChatColor.DARK_RED).append(ChatColor.BOLD).append("] ").append(ChatColor.RESET);
+			title = String.format(titleFormat, title);
 
+                String prefix = "";
+                
 		if (p.isOp())
-			shout.append(ChatColor.GOLD).append(playerName).append(ChatColor.RESET);
+			prefix = (ShoutPrefix.OP.get(playerName));
 		else if (p.hasPermission("Shout.HeadAdmin"))
-			shout.append("[").append(ChatColor.BLACK).append("H").append(ChatColor.GOLD).append("A").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
+			prefix = (ShoutPrefix.HA.get(playerName));
 		else if (p.hasPermission("Shout.AdminPlus"))
-			shout.append("[").append(ChatColor.DARK_RED).append("A").append(ChatColor.YELLOW).append("+").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
+			prefix = (ShoutPrefix.AP.get(playerName));
 		else if (p.hasPermission("Shout.Admin"))
-			shout.append("[").append(ChatColor.DARK_RED).append("A").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
+			prefix = (ShoutPrefix.A.get(playerName));
 		else if (p.hasPermission("Shout.Mod"))
-			shout.append("[").append(ChatColor.BLUE).append("M").append(ChatColor.RESET).append("] ").append(playerName).append(ChatColor.RESET);
+			prefix = (ShoutPrefix.MOD.get(playerName));
 		else if (p.hasPermission("Shout.PremiumPlus"))
-			shout.append(ChatColor.BLUE).append(playerName).append(ChatColor.YELLOW).append("+").append(ChatColor.RESET);
+			prefix = (ShoutPrefix.PREMIUMP.get(playerName));
 		else if (p.hasPermission("Shout.Premium"))
-			shout.append(ChatColor.BLUE).append(playerName).append(ChatColor.RESET);
+			prefix = (ShoutPrefix.PREMIUM.get(playerName));
 		else if (p.hasPermission("Shout.VIPPlus"))
-			shout.append(ChatColor.GREEN).append(playerName).append(ChatColor.YELLOW).append("+").append(ChatColor.RESET);
+			prefix = (ShoutPrefix.VIPP.get(playerName));
 		else if (p.hasPermission("Shout.VIP"))
-			shout.append(ChatColor.GREEN).append(playerName).append(ChatColor.RESET);
-		else
-			shout.append(playerName);
+			prefix = (ShoutPrefix.VIP.get(playerName));
+		
 
-		shout.append(": ").append(ChatColor.BOLD).append(message);
+		String shout = String.format(shoutFormat, title, prefix, message);
+                
 		final Player players[] = this.instance.getServer().getOnlinePlayers();
 		for(final Player player:players)
 			if(!this.disabled.contains(player.getName()) && !(this.dead && !player.hasPermission("shout.bypass.kill")))
-				player.sendMessage(shout.toString());
-		this.instance.getLogger().info(shout.toString());
+				player.sendMessage(shout);
+		this.instance.getLogger().info(shout);
 		if(!bypass)
 			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
 		
@@ -124,7 +124,34 @@ public class Shout implements CommandExecutor
 	public Set<String> getDisabled() {
 		return this.disabled;
 	}
+        
 	public Map<String, Long> getCooldowns(){
 		return this.coolDowns;
 	}
+        
+        private enum ShoutPrefix
+        {
+            OP(ChatColor.GOLD+"%s"),
+            HA("["+ChatColor.BLACK+"H"+ChatColor.GOLD+"A"+ChatColor.RESET+"] %s"),
+            AP("["+ChatColor.DARK_RED+"A"+ChatColor.YELLOW+"+"+ChatColor.RESET+"] %s"),
+            A("["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] %s"),
+            MOD("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] %s"),
+            PREMIUMP(ChatColor.BLUE+"%s"+ChatColor.YELLOW+"+"),
+            PREMIUM(ChatColor.BLUE+"%s"),
+            VIPP(ChatColor.GREEN+"%s"+ChatColor.YELLOW+"+"),
+            VIP(ChatColor.GREEN+"%s"),
+            ;
+            
+            final String prefix;
+            
+            ShoutPrefix(String prefix)
+            {
+                this.prefix = prefix;
+            }
+            
+            public String get(String name)
+            {
+                return String.format(this.prefix, name);
+            }
+        }
 }

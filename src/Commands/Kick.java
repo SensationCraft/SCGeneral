@@ -121,7 +121,7 @@ public class Kick implements CommandExecutor{
 			this.cooldowns.put(sender.getName(), 20*60*5L);
 		player.kickPlayer(reason);
 		for(final Player loopPlayer:this.plugin.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.kick.broadcast"))
-			loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);
+			loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);
 		return true;
 	}
 }

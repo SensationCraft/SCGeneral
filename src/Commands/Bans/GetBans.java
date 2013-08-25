@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
+import org.bukkit.entity.Player;
 
 public class GetBans implements CommandExecutor{
 
@@ -36,7 +37,10 @@ public class GetBans implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"Player not found, did you spell it right?");
 			return false;
 		}
-		sender.sendMessage(ChatColor.GREEN+"Bans: "+user.getConfigMap().get("bans"));
+                if(sender instanceof Player)
+                    ((Player)sender).sendRawMessage(ChatColor.GREEN+"Bans: "+user.getConfigMap().get("bans"));
+                else
+                    sender.sendMessage(ChatColor.GREEN+"Bans: "+user.getConfigMap().get("bans"));
 		return true;
 	}
 

@@ -26,12 +26,6 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
-import Commands.help.HelpAccept;
-import Commands.help.HelpCancel;
-import Commands.help.HelpDeny;
-import Commands.help.HelpList;
-import Commands.help.HelpRead;
-import Commands.help.HelpRequest;
 import Commands.tp.TpSuite;
 import Entity.EntityListener;
 import FactionFix.HomeFix;
@@ -39,6 +33,7 @@ import Items.ItemLimiter;
 import Items.SuperItems;
 import Potion.PotionListener;
 import mcMMOFix.DisarmBlocker;
+import mcMMOFix.ExpFarmFix;
 import mcMMOFix.FactionParty;
 import org.bukkit.command.CommandExecutor;
 
@@ -60,6 +55,7 @@ public class SCGeneral extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new FactionParty(this), this);
 		this.getLogger().info(" - Registering mcMMO fixes");
 		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
+		this.getServer().getPluginManager().registerEvents(new ExpFarmFix(this), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");
@@ -191,43 +187,6 @@ public class SCGeneral extends JavaPlugin
                         tpCheckCommand.setUsage("");
 		}else this.getLogger().warning("Failed to override teleportation!");
 
-		this.getLogger().info("   - helprequest");
-		final HelpRequest help = new HelpRequest();
-		final PluginCommand helpRequestCommand = this.getServer().getPluginCommand("helprequest");
-		if(helpRequestCommand != null)
-			helpRequestCommand.setExecutor(help);
-		else this.getLogger().warning("Failed to override helprequest!");
-
-		this.getLogger().info("   - helpread");
-		final PluginCommand helpReadCommand = this.getServer().getPluginCommand("helpread");
-		if(helpReadCommand != null)
-			helpReadCommand.setExecutor(new HelpRead(help));
-		else this.getLogger().warning("Failed to override helpread!");
-
-		this.getLogger().info("   - helplist");
-		final PluginCommand helpListCommand = this.getServer().getPluginCommand("helplist");
-		if(helpListCommand != null)
-			helpListCommand.setExecutor(new HelpList(help));
-		else this.getLogger().warning("Failed to override helplist!");
-
-		this.getLogger().info("   - helpaccept");
-		final PluginCommand helpAcceptCommand = this.getServer().getPluginCommand("helpaccept");
-		if(helpAcceptCommand != null)
-			helpAcceptCommand.setExecutor(new HelpAccept(help));
-		else this.getLogger().warning("Failed to override helpaccept!");
-
-		this.getLogger().info("   - helpdeny");
-		final PluginCommand helpDenyCommand = this.getServer().getPluginCommand("helpdeny");
-		if(helpDenyCommand != null)
-			helpDenyCommand.setExecutor(new HelpDeny(help));
-		else this.getLogger().warning("Failed to override helpdeny!");
-
-		this.getLogger().info("   - helpcancel");
-		final PluginCommand helpCancelCommand = this.getServer().getPluginCommand("helpcancel");
-		if(helpCancelCommand != null)
-			helpCancelCommand.setExecutor(new HelpCancel(help));
-		else this.getLogger().warning("Failed to override helpcancel!");
-
 		this.getLogger().info("   - killshout");
 		final PluginCommand killShout = this.getServer().getPluginCommand("killshout");
 		if(killShout != null)
@@ -240,7 +199,7 @@ public class SCGeneral extends JavaPlugin
                         party.setExecutor(new NullParty());
                 else this.getLogger().warning("Failed to override party (is mcMMO enabled?)");*/
 
-		final EntityListener entity = new EntityListener(help, this);
+		final EntityListener entity = new EntityListener(this);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
 		if(antibear != null)
 			antibear.setExecutor(new AntiBear(entity));

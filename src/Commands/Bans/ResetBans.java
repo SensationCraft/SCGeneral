@@ -41,10 +41,13 @@ public class ResetBans implements CommandExecutor{
 		user.setConfigProperty("bans", 0);
 		user.setBanned(false);
 		user.setBanTimeout(0);
-		sender.sendMessage(ChatColor.GREEN+"Player's bans reset.");
+                if(sender instanceof Player)
+                    ((Player)sender).sendRawMessage(ChatColor.GREEN+"Player's bans reset.");
+                else
+                    sender.sendMessage(ChatColor.GREEN+"Player's bans reset.");
 		for(Player player:Bukkit.getOnlinePlayers())
 			if(player.hasPermission("essentials.unban") || player.hasPermission("essentials.resetbans"))
-				player.sendMessage(ChatColor.AQUA+sender.getName()+" has reset bans for "+user.getName());
+				player.sendRawMessage(ChatColor.AQUA+sender.getName()+" has reset bans for "+user.getName());
 		return true;
 	}
 

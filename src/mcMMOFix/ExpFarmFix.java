@@ -24,12 +24,20 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class ExpFarmFix implements Listener
 {
 
-    Set<String> sameIp = new HashSet<String>();
+    private final Set<String> sameIp = new HashSet<String>();
+    
+    private final Plugin plugin;
+    
+    public ExpFarmFix(Plugin plugin)
+    {
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDamage(EntityDamageByEntityEvent event)
@@ -82,7 +90,7 @@ public class ExpFarmFix implements Listener
                         sameIp.remove(p.getName());
                         sameIp.remove(a.getName());
                     }
-                }.runTaskLater(null, 1L);
+                }.runTaskLater(this.plugin, 1L);
             }
         }
     }

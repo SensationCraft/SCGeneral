@@ -45,10 +45,13 @@ public class Unban implements CommandExecutor{
 		}
 		user.setBanned(false);
 		user.setBanTimeout(0);
-		sender.sendMessage(ChatColor.GREEN+"Player unbanned.");
+                if(sender instanceof Player)
+                    ((Player)sender).sendRawMessage(ChatColor.GREEN+"Player unbanned.");
+                else
+                    sender.sendMessage(ChatColor.GREEN+"Player unbanned.");
 		for(Player player:Bukkit.getOnlinePlayers())
 			if(player.hasPermission("essentials.unban"))
-				player.sendMessage(ChatColor.AQUA+sender.getName()+" has unbanned "+user.getName());
+				player.sendRawMessage(ChatColor.AQUA+sender.getName()+" has unbanned "+user.getName());
 		return true;
 	}
 

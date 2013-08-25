@@ -87,7 +87,7 @@ public class Ban implements CommandExecutor{
 			user.kickPlayer(message);
 			user.setConfigProperty("bans", bans+1);
 			for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
-				loopPlayer.sendMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
+				loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
 		} catch (Exception e) {
 			this.instance.getLogger().info("Essentials is annoying.");
 		}
