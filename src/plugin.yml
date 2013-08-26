@@ -42,4 +42,6 @@ commands:
   getbans:
     description: Get the ban count for a player.
   delhomes:
-    description: Deletes the homes within a certain radius of yourself
+    description: Deletes the homes within a certain radius of yourself.
+  head:
+    description: Get the head of a player.

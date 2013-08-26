@@ -1,6 +1,6 @@
 name: SCGeneral
 authors: [superckl, DarkSeraphim]
-version: 3.0
+version: 3.1
 main: me.superckl.scgeneral.SCGeneral
 website: www.sensationcraft.info
 depend: [Factions, Lockette, Votifier, Essentials, SCLogin, CombatLogger, mcMMO]
@@ -17,7 +17,7 @@ commands:
     aliases: [toggleshout, stfushout]
   helprequest:
     description: Request help from a staff member.
-    aliases: [requesthelp]
+    aliases: [requesthelp, halp]
   helpread:
     description: Read a help request.
   helplist:
@@ -41,3 +41,7 @@ commands:
     description: Reset the bans for a player.
   getbans:
     description: Get the ban count for a player.
+  delhomes:
+    description: Deletes the homes within a certain radius of yourself.
+  head:
+    description: Get the head of a player.

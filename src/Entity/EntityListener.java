@@ -14,7 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
@@ -23,15 +22,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -46,7 +42,6 @@ public class EntityListener implements Listener
 {
 
 	private final Random random = new Random();
-	volatile private String antibear = null;
 	final CombatLogger combatLogger;
 	private final SCGeneral plugin;
         private final HelpRequest help;
@@ -55,18 +50,6 @@ public class EntityListener implements Listener
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 		this.plugin = plugin;
                 this.help = help;
-	}
-
-	public void setAntiBear(final String message){
-		this.antibear = message;
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerLogin(final PlayerLoginEvent e){
-		if(this.antibear != null && e.getPlayer().getName().equalsIgnoreCase("themajorbear")){
-			e.setResult(Result.KICK_BANNED);
-			e.setKickMessage(this.antibear);
-		}
 	}
  
         @EventHandler(priority = EventPriority.MONITOR)

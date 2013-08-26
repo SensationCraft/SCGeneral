@@ -2,7 +2,6 @@ package Commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import me.superckl.scgeneral.SCGeneral;
 import org.bukkit.Bukkit;
 
 import org.bukkit.ChatColor;
@@ -14,12 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class ClearInvis implements CommandExecutor{
-
-	private final SCGeneral instance;
-
-	public ClearInvis(final SCGeneral instance){
-		this.instance = instance;
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,

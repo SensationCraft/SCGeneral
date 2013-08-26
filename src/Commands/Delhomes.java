@@ -5,8 +5,6 @@ import com.earth2me.essentials.User;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

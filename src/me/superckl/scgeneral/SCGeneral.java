@@ -1,5 +1,8 @@
 package me.superckl.scgeneral;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import lockpicks.Listeners;
 import mcMMOFix.DupeFix;
 
@@ -11,9 +14,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
-import Commands.AntiBear;
 import Commands.ClearInvis;
 import Commands.FactionCheck;
+import Commands.Head;
 import Commands.Heal;
 import Commands.Kick;
 import Commands.KillShout;
@@ -44,6 +47,7 @@ public class SCGeneral extends JavaPlugin
 {
 	private Scoreboard scoreboard;
 	private Shout shout;
+	private HelpRequest help;
 
 	@Override
 	public void onEnable()
@@ -51,9 +55,9 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Faction fixes");
 		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
-                this.getLogger().info(" - Registering mcMMO disarm protect");
+        this.getLogger().info(" - Registering mcMMO disarm protect");
 		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
-                this.getLogger().info(" - Registering mcMMO party control");
+        this.getLogger().info(" - Registering mcMMO party control");
 		this.getServer().getPluginManager().registerEvents(new FactionParty(this), this);
 		this.getLogger().info(" - Registering mcMMO fixes");
 		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
@@ -73,217 +77,13 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Overriding commands");
-		// No its not ignored, it just handles the shizzle in the constructor
-		new StopCommand(this);
-		this.shout = new Shout(this);
-		this.getLogger().info("   - shout");
-		final PluginCommand shoutCommand = this.getServer().getPluginCommand("shout");
-		if(shoutCommand != null) {
-			shoutCommand.setExecutor(this.shout);
-			shoutCommand.setUsage("");
-		} else
-			this.getLogger().warning("Failed to override shout!");
-
-		this.getLogger().info("   - shoutmute");
-		final PluginCommand shoutToggleCommand = this.getServer().getPluginCommand("shoutmute");
-		if(shoutToggleCommand != null) shoutToggleCommand.setExecutor(new ShoutMute(this));
-		else
-			this.getLogger().warning("Failed to override shoutmute!");
-
-		this.getLogger().info("   - repair");
-		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
-		if(repairCommand != null) 
-                {
-                    CommandExecutor ce = repairCommand.getExecutor();
-                    repairCommand.setExecutor(new Repair(ce));
-                }
-		else
-			this.getLogger().warning("Failed to override repair!");
-
-		this.getLogger().info("   - factioncheck");
-		final PluginCommand factionCheckCommand = this.getServer().getPluginCommand("factioncheck");
-		if(factionCheckCommand != null)
-			factionCheckCommand.setExecutor(new FactionCheck());
-		else
-			this.getLogger().warning("Failed to override factioncheck!");
-
-		this.getLogger().info("   - clearinvis");
-		final PluginCommand clearInvisCommand = this.getServer().getPluginCommand("clearinvis");
-		if(clearInvisCommand != null)
-			clearInvisCommand.setExecutor(new ClearInvis(this));
-		else
-			this.getLogger().warning("Failed to override clearinvis!");
-                
-                this.getLogger().info("   - delhomes");
-		final PluginCommand delhomesCommand = this.getServer().getPluginCommand("delhomes");
-		if(delhomesCommand != null)
-			delhomesCommand.setExecutor(new Delhomes());
-		else
-			this.getLogger().warning("Failed to override delhomes!");
-
-		this.getLogger().info("   - kick");
-		final PluginCommand kickCommand = this.getServer().getPluginCommand("kick");
-		if(kickCommand != null) {
-			kickCommand.setExecutor(new Kick(this));
-			kickCommand.setUsage("");
-		} else
-			this.getLogger().warning("Failed to override kick!");
-		this.getLogger().info("   - overrideban");
-		final PluginCommand overbanCommand = this.getServer().getPluginCommand("overrideban");
-		OverrideBan overBan = new OverrideBan(this);
-		if(overbanCommand != null){
-			overbanCommand.setExecutor(overBan);
-			overbanCommand.setUsage("");
-		} else
-			this.getLogger().warning("Failed to override ban!");
-		
-		this.getLogger().info("   - resetbans");
-		final PluginCommand resetBansCommand = this.getServer().getPluginCommand("resetbans");
-		if(resetBansCommand != null)
-			resetBansCommand.setExecutor(new ResetBans());
-		else
-			this.getLogger().warning("Failed to override resetbans!");
-		
-		this.getLogger().info("   - getbans");
-		final PluginCommand getBansCommand = this.getServer().getPluginCommand("getbans");
-		if(getBansCommand != null)
-			getBansCommand.setExecutor(new GetBans());
-		else
-			this.getLogger().warning("Failed to override getbans!");
-		
-		this.getLogger().info("   - ban");
-		final PluginCommand banCommand = this.getServer().getPluginCommand("ban");
-		if(banCommand != null){
-			banCommand.setExecutor(new Ban(this, overBan));
-			banCommand.setUsage("");
-		}else
-			this.getLogger().warning("Failed to override ban!");
-
-		this.getLogger().info("   - unban");
-		final PluginCommand unbanCommand = this.getServer().getPluginCommand("unban");
-		if(unbanCommand != null){
-			unbanCommand.setExecutor(new Unban());
-			unbanCommand.setUsage("");
-		}else
-			this.getLogger().warning("Failed to override unban!");
-		
-		this.getLogger().info("   - heal");
-		final PluginCommand healCommand = this.getServer().getPluginCommand("heal");
-		if(healCommand != null) {
-			healCommand.setExecutor(new Heal(this));
-			healCommand.setUsage("");
-		} else
-			this.getLogger().warning("Failed to override heal!");
-
-		this.getLogger().info("   - teleportation commands [tpa,tpahere,tpaccept,tpdeny,tpcheck]");
-		final TpSuite tpsuite = new TpSuite();
-		final PluginCommand tpaCommand = this.getServer().getPluginCommand("tpa");
-		final PluginCommand tpaHereCommand = this.getServer().getPluginCommand("tpahere");
-		final PluginCommand tpAcceptCommand = this.getServer().getPluginCommand("tpaccept");
-		final PluginCommand tpDenyCommand = this.getServer().getPluginCommand("tpdeny");
-		final PluginCommand tpCheckCommand = this.getServer().getPluginCommand("tpcheck");
-		if(tpaCommand != null && tpaHereCommand != null && tpAcceptCommand != null && tpDenyCommand != null && tpCheckCommand != null)
-		{
-			tpaCommand.setExecutor(tpsuite);
-			tpaCommand.setUsage("");
-			tpaHereCommand.setExecutor(tpsuite);
-			tpaHereCommand.setUsage("");
-			tpAcceptCommand.setExecutor(tpsuite);
-			tpAcceptCommand.setUsage("");
-			tpDenyCommand.setExecutor(tpsuite);
-			tpDenyCommand.setUsage("");
-                        tpCheckCommand.setExecutor(tpsuite);
-                        tpCheckCommand.setUsage("");
-		}else this.getLogger().warning("Failed to override teleportation!");
-
-		this.getLogger().info("   - killshout");
-		final PluginCommand killShout = this.getServer().getPluginCommand("killshout");
-		if(killShout != null)
-			killShout.setExecutor(new KillShout(this.shout));
-		else this.getLogger().warning("Failed to override killshout!");
-                
-                /*this.getLogger().info("   - party");
-                final PluginCommand party = this.getServer().getPluginCommand("party");
-                if(party != null)
-                        party.setExecutor(new NullParty());
-                else this.getLogger().warning("Failed to override party (is mcMMO enabled?)");*/
-                this.getLogger().info("   - helprequest");
-                final HelpRequest help = new HelpRequest();
-                final PluginCommand helpRequestCommand = this.getServer().getPluginCommand("helprequest");
-                if (helpRequestCommand != null)
-                {
-                    helpRequestCommand.setExecutor(help);
-                }
-                else
-                {
-                    this.getLogger().warning("Failed to override helprequest!");
-                }
-
-                this.getLogger().info("   - helpread");
-                final PluginCommand helpReadCommand = this.getServer().getPluginCommand("helpread");
-                if (helpReadCommand != null)
-                {
-                    helpReadCommand.setExecutor(new HelpRead(help));
-                }
-                else
-                {
-                    this.getLogger().warning("Failed to override helpread!");
-                }
-
-                this.getLogger().info("   - helplist");
-                final PluginCommand helpListCommand = this.getServer().getPluginCommand("helplist");
-                if (helpListCommand != null)
-                {
-                    helpListCommand.setExecutor(new HelpList(help));
-                }
-                else
-                {
-                    this.getLogger().warning("Failed to override helplist!");
-                }
-
-                this.getLogger().info("   - helpaccept");
-                final PluginCommand helpAcceptCommand = this.getServer().getPluginCommand("helpaccept");
-                if (helpAcceptCommand != null)
-                {
-                    helpAcceptCommand.setExecutor(new HelpAccept(help));
-                }
-                else
-                {
-                    this.getLogger().warning("Failed to override helpaccept!");
-                }
-
-                this.getLogger().info("   - helpdeny");
-                final PluginCommand helpDenyCommand = this.getServer().getPluginCommand("helpdeny");
-                if (helpDenyCommand != null)
-                {
-                    helpDenyCommand.setExecutor(new HelpDeny(help));
-                }
-                else
-                {
-                    this.getLogger().warning("Failed to override helpdeny!");
-                }
-
-                this.getLogger().info("   - helpcancel");
-                final PluginCommand helpCancelCommand = this.getServer().getPluginCommand("helpcancel");
-                if (helpCancelCommand != null)
-                {
-                    helpCancelCommand.setExecutor(new HelpCancel(help));
-                }
-                else
-                {
-                    this.getLogger().warning("Failed to override helpcancel!");
-                }
-                
-		final EntityListener entity = new EntityListener(help, this);
-		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
-		if(antibear != null)
-			antibear.setExecutor(new AntiBear(entity));
-
+		this.overrideCommands();
 		this.getLogger().info(" - Registering EntityListener");
+		final EntityListener entity = new EntityListener(this.help, this);
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
-		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
+		this.getLogger().info(" - Starting broadcast loop");
 
 		new BukkitRunnable()
 		{
@@ -311,6 +111,7 @@ public class SCGeneral extends JavaPlugin
 				}
 			}
 		}.runTaskTimer(this, 20*30L, 20*30L);
+		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
 	}
 
 	public Scoreboard getScoreboard() {
@@ -324,5 +125,60 @@ public class SCGeneral extends JavaPlugin
 	@SuppressWarnings("deprecation")
 	public static void updateInvWithSuppressedWarning(final Player player){
 		player.updateInventory();
+	}
+	
+	private final Map<String, CommandExecutor> commandMap = new HashMap<>();
+	
+	private void initializeCommandMap(){
+		this.commandMap.clear();
+		// No its not ignored, it just handles the shizzle in the constructor
+		new StopCommand(this);
+		this.shout = new Shout(this);
+		this.commandMap.put("shout", this.shout);
+		this.commandMap.put("shoutmute", new ShoutMute(this));
+		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
+		if(repairCommand != null)
+			this.commandMap.put("repair", new Repair(repairCommand.getExecutor()));
+		this.commandMap.put("factioncheck", new FactionCheck());
+		this.commandMap.put("clearinvis", new ClearInvis());
+        this.commandMap.put("delhomes", new Delhomes());
+        this.commandMap.put("kick", new Kick(this));
+        final OverrideBan overBan = new OverrideBan(this);
+        this.commandMap.put("overrideban", overBan);
+		this.commandMap.put("ban", new Ban(this, overBan));
+		this.commandMap.put("resetBans", new ResetBans());
+		this.commandMap.put("getbans", new GetBans());
+		this.commandMap.put("unban", new Unban());
+		this.commandMap.put("heal", new Heal(this));
+		final TpSuite tpsuite = new TpSuite();
+		this.commandMap.put("tpa", tpsuite);
+		this.commandMap.put("tpahere", tpsuite);
+		this.commandMap.put("tpaccept", tpsuite);
+		this.commandMap.put("tpdeny", tpsuite);
+		this.commandMap.put("tpcheck", tpsuite);
+		this.commandMap.put("killshout", new KillShout(this.shout));
+		this.commandMap.put("head", new Head());
+		final HelpRequest help = new HelpRequest();
+        this.commandMap.put("helprequest", help);
+        this.commandMap.put("helpread", new HelpRead(help));
+        this.commandMap.put("helplist", new HelpList(help));
+        this.commandMap.put("helpaccept", new HelpAccept(help));
+        this.commandMap.put("helpdeny", new HelpDeny(help));
+        this.commandMap.put("helpcancel", new HelpCancel(help));
+	}
+	private void overrideCommands(){
+		this.initializeCommandMap();
+		for(String name:this.commandMap.keySet()){
+			this.getLogger().info("   - "+name);
+			PluginCommand pCommand = this.getServer().getPluginCommand(name);
+			if(pCommand == null){
+				this.getLogger().warning("Failed to override "+name);
+				continue;
+			}
+			CommandExecutor command = this.commandMap.get(name);
+			pCommand.setExecutor(command);
+			pCommand.setUsage("");
+		}
+		this.commandMap.clear();
 	}
 }
