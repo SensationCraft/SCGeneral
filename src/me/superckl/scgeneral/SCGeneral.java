@@ -26,6 +26,8 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
+import Commands.Delhomes;
+import Commands.help.*;
 import Commands.tp.TpSuite;
 import Entity.EntityListener;
 import FactionFix.HomeFix;
@@ -111,6 +113,13 @@ public class SCGeneral extends JavaPlugin
 			clearInvisCommand.setExecutor(new ClearInvis(this));
 		else
 			this.getLogger().warning("Failed to override clearinvis!");
+                
+                this.getLogger().info("   - delhomes");
+		final PluginCommand delhomesCommand = this.getServer().getPluginCommand("delhomes");
+		if(delhomesCommand != null)
+			delhomesCommand.setExecutor(new Delhomes());
+		else
+			this.getLogger().warning("Failed to override delhomes!");
 
 		this.getLogger().info("   - kick");
 		final PluginCommand kickCommand = this.getServer().getPluginCommand("kick");
@@ -198,8 +207,74 @@ public class SCGeneral extends JavaPlugin
                 if(party != null)
                         party.setExecutor(new NullParty());
                 else this.getLogger().warning("Failed to override party (is mcMMO enabled?)");*/
+                this.getLogger().info("   - helprequest");
+                final HelpRequest help = new HelpRequest();
+                final PluginCommand helpRequestCommand = this.getServer().getPluginCommand("helprequest");
+                if (helpRequestCommand != null)
+                {
+                    helpRequestCommand.setExecutor(help);
+                }
+                else
+                {
+                    this.getLogger().warning("Failed to override helprequest!");
+                }
 
-		final EntityListener entity = new EntityListener(this);
+                this.getLogger().info("   - helpread");
+                final PluginCommand helpReadCommand = this.getServer().getPluginCommand("helpread");
+                if (helpReadCommand != null)
+                {
+                    helpReadCommand.setExecutor(new HelpRead(help));
+                }
+                else
+                {
+                    this.getLogger().warning("Failed to override helpread!");
+                }
+
+                this.getLogger().info("   - helplist");
+                final PluginCommand helpListCommand = this.getServer().getPluginCommand("helplist");
+                if (helpListCommand != null)
+                {
+                    helpListCommand.setExecutor(new HelpList(help));
+                }
+                else
+                {
+                    this.getLogger().warning("Failed to override helplist!");
+                }
+
+                this.getLogger().info("   - helpaccept");
+                final PluginCommand helpAcceptCommand = this.getServer().getPluginCommand("helpaccept");
+                if (helpAcceptCommand != null)
+                {
+                    helpAcceptCommand.setExecutor(new HelpAccept(help));
+                }
+                else
+                {
+                    this.getLogger().warning("Failed to override helpaccept!");
+                }
+
+                this.getLogger().info("   - helpdeny");
+                final PluginCommand helpDenyCommand = this.getServer().getPluginCommand("helpdeny");
+                if (helpDenyCommand != null)
+                {
+                    helpDenyCommand.setExecutor(new HelpDeny(help));
+                }
+                else
+                {
+                    this.getLogger().warning("Failed to override helpdeny!");
+                }
+
+                this.getLogger().info("   - helpcancel");
+                final PluginCommand helpCancelCommand = this.getServer().getPluginCommand("helpcancel");
+                if (helpCancelCommand != null)
+                {
+                    helpCancelCommand.setExecutor(new HelpCancel(help));
+                }
+                else
+                {
+                    this.getLogger().warning("Failed to override helpcancel!");
+                }
+                
+		final EntityListener entity = new EntityListener(help, this);
 		final PluginCommand antibear = this.getServer().getPluginCommand("antibear");
 		if(antibear != null)
 			antibear.setExecutor(new AntiBear(entity));

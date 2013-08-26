@@ -17,7 +17,7 @@ commands:
     aliases: [toggleshout, stfushout]
   helprequest:
     description: Request help from a staff member.
-    aliases: [requesthelp]
+    aliases: [requesthelp, halp]
   helpread:
     description: Read a help request.
   helplist:
@@ -41,3 +41,5 @@ commands:
     description: Reset the bans for a player.
   getbans:
     description: Get the ban count for a player.
+  delhomes:
+    description: Deletes the homes within a certain radius of yourself

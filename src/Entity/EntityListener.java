@@ -1,5 +1,6 @@
 package Entity;
 
+import Commands.help.HelpRequest;
 import java.util.Random;
 
 import me.superckl.combatlogger.CombatLogger;
@@ -48,10 +49,12 @@ public class EntityListener implements Listener
 	volatile private String antibear = null;
 	final CombatLogger combatLogger;
 	private final SCGeneral plugin;
+        private final HelpRequest help;
 
-	public EntityListener(final SCGeneral plugin){
+	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 		this.plugin = plugin;
+                this.help = help;
 	}
 
 	public void setAntiBear(final String message){
@@ -65,6 +68,12 @@ public class EntityListener implements Listener
 			e.setKickMessage(this.antibear);
 		}
 	}
+ 
+        @EventHandler(priority = EventPriority.MONITOR)
+        public void onPlayerQuit(final PlayerQuitEvent e)
+        {
+            this.help.removeRequest(e.getPlayer().getName());
+        }
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
 	public void onEntityDeath(final EntityDeathEvent event)
