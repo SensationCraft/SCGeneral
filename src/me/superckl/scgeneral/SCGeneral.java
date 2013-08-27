@@ -4,10 +4,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lockpicks.Listeners;
+import mcMMOFix.DisarmBlocker;
 import mcMMOFix.DupeFix;
+import mcMMOFix.ExpFarmFix;
+import mcMMOFix.FactionParty;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,6 +19,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import Commands.ClearInvis;
+import Commands.Delhomes;
 import Commands.Expel;
 import Commands.FactionCheck;
 import Commands.Head;
@@ -30,18 +35,18 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
-import Commands.Delhomes;
-import Commands.help.*;
+import Commands.help.HelpAccept;
+import Commands.help.HelpCancel;
+import Commands.help.HelpDeny;
+import Commands.help.HelpList;
+import Commands.help.HelpRead;
+import Commands.help.HelpRequest;
 import Commands.tp.TpSuite;
 import Entity.EntityListener;
 import FactionFix.HomeFix;
 import Items.ItemLimiter;
 import Items.SuperItems;
 import Potion.PotionListener;
-import mcMMOFix.DisarmBlocker;
-import mcMMOFix.ExpFarmFix;
-import mcMMOFix.FactionParty;
-import org.bukkit.command.CommandExecutor;
 
 
 public class SCGeneral extends JavaPlugin
@@ -56,9 +61,9 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Faction fixes");
 		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
-        this.getLogger().info(" - Registering mcMMO disarm protect");
+		this.getLogger().info(" - Registering mcMMO disarm protect");
 		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
-        this.getLogger().info(" - Registering mcMMO party control");
+		this.getLogger().info(" - Registering mcMMO party control");
 		this.getServer().getPluginManager().registerEvents(new FactionParty(this), this);
 		this.getLogger().info(" - Registering mcMMO fixes");
 		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
@@ -127,9 +132,9 @@ public class SCGeneral extends JavaPlugin
 	public static void updateInvWithSuppressedWarning(final Player player){
 		player.updateInventory();
 	}
-	
+
 	private final Map<String, CommandExecutor> commandMap = new HashMap<>();
-	
+
 	private void initializeCommandMap(){
 		this.commandMap.clear();
 		// No its not ignored, it just handles the shizzle in the constructor
@@ -142,10 +147,10 @@ public class SCGeneral extends JavaPlugin
 			this.commandMap.put("repair", new Repair(repairCommand.getExecutor()));
 		this.commandMap.put("factioncheck", new FactionCheck());
 		this.commandMap.put("clearinvis", new ClearInvis());
-        this.commandMap.put("delhomes", new Delhomes());
-        this.commandMap.put("kick", new Kick(this));
-        final OverrideBan overBan = new OverrideBan(this);
-        this.commandMap.put("overrideban", overBan);
+		this.commandMap.put("delhomes", new Delhomes());
+		this.commandMap.put("kick", new Kick(this));
+		final OverrideBan overBan = new OverrideBan(this);
+		this.commandMap.put("overrideban", overBan);
 		this.commandMap.put("ban", new Ban(this, overBan));
 		this.commandMap.put("resetBans", new ResetBans());
 		this.commandMap.put("getbans", new GetBans());
@@ -161,23 +166,23 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("head", new Head());
 		this.commandMap.put("expel", new Expel());
 		final HelpRequest help = new HelpRequest();
-        this.commandMap.put("helprequest", help);
-        this.commandMap.put("helpread", new HelpRead(help));
-        this.commandMap.put("helplist", new HelpList(help));
-        this.commandMap.put("helpaccept", new HelpAccept(help));
-        this.commandMap.put("helpdeny", new HelpDeny(help));
-        this.commandMap.put("helpcancel", new HelpCancel(help));
+		this.commandMap.put("helprequest", help);
+		this.commandMap.put("helpread", new HelpRead(help));
+		this.commandMap.put("helplist", new HelpList(help));
+		this.commandMap.put("helpaccept", new HelpAccept(help));
+		this.commandMap.put("helpdeny", new HelpDeny(help));
+		this.commandMap.put("helpcancel", new HelpCancel(help));
 	}
 	private void overrideCommands(){
 		this.initializeCommandMap();
-		for(String name:this.commandMap.keySet()){
+		for(final String name:this.commandMap.keySet()){
 			this.getLogger().info("   - "+name);
-			PluginCommand pCommand = this.getServer().getPluginCommand(name);
+			final PluginCommand pCommand = this.getServer().getPluginCommand(name);
 			if(pCommand == null){
 				this.getLogger().warning("Failed to override "+name);
 				continue;
 			}
-			CommandExecutor command = this.commandMap.get(name);
+			final CommandExecutor command = this.commandMap.get(name);
 			pCommand.setExecutor(command);
 			pCommand.setUsage("");
 		}

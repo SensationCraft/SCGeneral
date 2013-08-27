@@ -10,15 +10,15 @@ import org.bukkit.event.block.BlockPistonRetractEvent;
 import com.gmail.nossr50.mcMMO;
 
 public class DupeFix implements Listener{
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPistonExtend(BlockPistonExtendEvent e){
-		for(Block b:e.getBlocks())
+	public void onPistonExtend(final BlockPistonExtendEvent e){
+		for(final Block b:e.getBlocks())
 			mcMMO.getPlaceStore().setTrue(b);
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPistonRetract(BlockPistonRetractEvent e){
+	public void onPistonRetract(final BlockPistonRetractEvent e){
 		if(e.getBlock() != null)
 			mcMMO.getPlaceStore().setTrue(e.getBlock());
 	}

@@ -5,11 +5,11 @@ import me.superckl.combatlogger.CombatLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.entity.Animals;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import Commands.tp.TpSuite.TpRequest;
-import org.bukkit.entity.Animals;
-import org.bukkit.entity.Entity;
 
 public class TpAccept {
 
@@ -55,20 +55,18 @@ public class TpAccept {
 		player.sendMessage(ChatColor.GOLD+String.format("You accepted %s's request", other.getName()));
 		other.sendMessage(ChatColor.GOLD+String.format("%s accepted your request", player.getName()));
 		teleporter.sendMessage(ChatColor.GOLD+"Teleporting...");
-                Entity vehicle = null;
-                if(teleporter.getVehicle() instanceof Animals && teleporter.getVehicle() != null)
-                {
-                    if(to.getWorld() != null && !to.getWorld().getName().equalsIgnoreCase("spawn"))
-                    {
-                        vehicle = teleporter.getVehicle();
-                    }
-                    teleporter.getVehicle().eject();
-                }
+		Entity vehicle = null;
+		if(teleporter.getVehicle() instanceof Animals && teleporter.getVehicle() != null)
+		{
+			if(to.getWorld() != null && !to.getWorld().getName().equalsIgnoreCase("spawn"))
+				vehicle = teleporter.getVehicle();
+			teleporter.getVehicle().eject();
+		}
 		teleporter.teleport(to);
-                if(vehicle != null)
-                {
-                    vehicle.teleport(to);
-                    vehicle.setPassenger(teleporter);
-                }
+		if(vehicle != null)
+		{
+			vehicle.teleport(to);
+			vehicle.setPassenger(teleporter);
+		}
 	}
 }

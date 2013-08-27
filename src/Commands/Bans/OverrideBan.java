@@ -53,7 +53,7 @@ public class OverrideBan implements CommandExecutor{
 			player = players.get(0);
 		if(player.isBanned()){
 			sender.sendMessage(ChatColor.RED+"That user is already banned! Making ban permanent...");
-			User user = this.ess.getUser(player.getName());
+			final User user = this.ess.getUser(player.getName());
 			user.setBanTimeout(0);
 			user.setBanned(true);
 			user.setConfigProperty("bans", 3);
@@ -76,7 +76,7 @@ public class OverrideBan implements CommandExecutor{
 	}
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		final String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
-		User user = this.ess.getOfflineUser(player.getName());
+		final User user = this.ess.getOfflineUser(player.getName());
 		user.setBanReason(message);
 		user.setBanned(true);
 		user.setBanTimeout(0);

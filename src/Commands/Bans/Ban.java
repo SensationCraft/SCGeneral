@@ -17,12 +17,12 @@ import com.earth2me.essentials.User;
 import com.earth2me.essentials.utils.DateUtil;
 
 public class Ban implements CommandExecutor{
-	
+
 	private final SCGeneral instance;
 	private final Essentials ess;
 	private final OverrideBan overBan;
 
-	public Ban(final SCGeneral instance, OverrideBan overBan){
+	public Ban(final SCGeneral instance, final OverrideBan overBan){
 		this.instance = instance;
 		this.overBan = overBan;
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
@@ -69,17 +69,17 @@ public class Ban implements CommandExecutor{
 		message = ChatColor.stripColor(message);
 		return message;
 	}
-	
+
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		try {
-			User user = this.ess.getOfflineUser(player.getName());
-			Integer i = (Integer)user.getConfigMap().get("bans");
-			int bans = i == null ? 0:i.intValue();
+			final User user = this.ess.getOfflineUser(player.getName());
+			final Integer i = (Integer)user.getConfigMap().get("bans");
+			final int bans = i == null ? 0:i.intValue();
 			if(bans == 2){
 				this.overBan.performBan(player, sender, args);
 				return;
 			}
-			Long timeout = DateUtil.parseDateDiff(this.translateBansToLengthString(bans), true);
+			final Long timeout = DateUtil.parseDateDiff(this.translateBansToLengthString(bans), true);
 			final String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
 			user.setBanReason(message);
 			user.setBanned(true);
@@ -88,14 +88,14 @@ public class Ban implements CommandExecutor{
 			user.setConfigProperty("bans", bans+1);
 			for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 				loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.instance.getLogger().info("Essentials is annoying.");
 		}
 	}
-	
-	
-	
-	private String translateBansToLengthString(int bans){
+
+
+
+	private String translateBansToLengthString(final int bans){
 		if(bans == 0)
 			return "3h";
 		else if(bans == 1)

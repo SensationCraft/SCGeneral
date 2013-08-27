@@ -25,10 +25,10 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class ItemLimiter implements Listener
 {
-        public ItemLimiter()
-        {   
-        }
-    
+	public ItemLimiter()
+	{
+	}
+
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onBlockPlace(final BlockPlaceEvent event)
 	{
@@ -103,26 +103,24 @@ public class ItemLimiter implements Listener
 		meta.setLore(lore);
 		e.getItem().getItemStack().setItemMeta(meta);
 	}
-        
-        //@EventHandler
-        public void onPrepareCraft(PrepareItemCraftEvent event)
-        {
-            ItemStack i = event.getRecipe().getResult();
-            if(i.getType() == Material.GOLDEN_APPLE && i.getDurability() == 1)
-            {
-                event.getInventory().setResult(null);
-            }
-        }
-        
-        //@EventHandler
-        public void onCraft(CraftItemEvent event)
-        {
-            ItemStack i = event.getRecipe().getResult();
-            if(i.getType() == Material.GOLDEN_APPLE && i.getDurability() == 1)
-            {
-                event.getInventory().setResult(null);
-                event.setCancelled(true);
-                event.setResult(Event.Result.DENY);
-            }
-        }
+
+	//@EventHandler
+	public void onPrepareCraft(final PrepareItemCraftEvent event)
+	{
+		final ItemStack i = event.getRecipe().getResult();
+		if(i.getType() == Material.GOLDEN_APPLE && i.getDurability() == 1)
+			event.getInventory().setResult(null);
+	}
+
+	//@EventHandler
+	public void onCraft(final CraftItemEvent event)
+	{
+		final ItemStack i = event.getRecipe().getResult();
+		if(i.getType() == Material.GOLDEN_APPLE && i.getDurability() == 1)
+		{
+			event.getInventory().setResult(null);
+			event.setCancelled(true);
+			event.setResult(Event.Result.DENY);
+		}
+	}
 }

@@ -1,18 +1,21 @@
 package Commands;
 
-import com.earth2me.essentials.Essentials;
-import com.earth2me.essentials.User;
-import com.github.DarkSeraphim.SCPvP.Titles;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
 import me.superckl.scgeneral.SCGeneral;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
+import com.github.DarkSeraphim.SCPvP.Titles;
 
 public class Shout implements CommandExecutor
 {
@@ -21,8 +24,8 @@ public class Shout implements CommandExecutor
 	private final SCGeneral instance;
 	private final long SHOUT_DELAY = 15000;
 	private boolean dead = false;
-        private final String shoutFormat = "&c[S] %s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
-        private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
+	private final String shoutFormat = "&c[S] %s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
+	private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
 
 	public Shout(final SCGeneral instance)
 	{
@@ -73,7 +76,7 @@ public class Shout implements CommandExecutor
 			p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You must wait at least 15 seconds in between shouts.").toString());
 			return false;
 		}
-                
+
 		final boolean bypass = p.hasPermission("Shout.Bypass");
 
 		final StringBuilder sb = new StringBuilder();
@@ -81,12 +84,12 @@ public class Shout implements CommandExecutor
 			sb.append(s).append(" ");
 
 		final String message = sb.toString().trim();
-                String title = Titles.getInstance().getTitle(playerName);
+		String title = Titles.getInstance().getTitle(playerName);
 		if(!title.equals(""))
-			title = String.format(titleFormat, title);
+			title = String.format(this.titleFormat, title);
 
-                String prefix = "";
-                
+		String prefix = "";
+
 		if (p.isOp())
 			prefix = (ShoutPrefix.OP.get(playerName));
 		else if (p.hasPermission("Shout.HeadAdmin"))
@@ -105,10 +108,10 @@ public class Shout implements CommandExecutor
 			prefix = (ShoutPrefix.VIPP.get(playerName));
 		else if (p.hasPermission("Shout.VIP"))
 			prefix = (ShoutPrefix.VIP.get(playerName));
-		
 
-		String shout = String.format(shoutFormat, title, prefix, message);
-                
+
+		final String shout = String.format(this.shoutFormat, title, prefix, message);
+
 		final Player players[] = this.instance.getServer().getOnlinePlayers();
 		for(final Player player:players)
 			if(!this.disabled.contains(player.getName()) && !(this.dead && !player.hasPermission("shout.bypass.kill")))
@@ -116,41 +119,41 @@ public class Shout implements CommandExecutor
 		this.instance.getLogger().info(shout);
 		if(!bypass)
 			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
-		
+
 		return true;
 	}
 
 	public Set<String> getDisabled() {
 		return this.disabled;
 	}
-        
+
 	public Map<String, Long> getCooldowns(){
 		return this.coolDowns;
 	}
-        
-        private enum ShoutPrefix
-        {
-            OP(ChatColor.GOLD+"%s"),
-            HA("["+ChatColor.BLACK+"H"+ChatColor.GOLD+"A"+ChatColor.RESET+"] %s"),
-            AP("["+ChatColor.DARK_RED+"A"+ChatColor.YELLOW+"+"+ChatColor.RESET+"] %s"),
-            A("["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] %s"),
-            MOD("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] %s"),
-            PREMIUMP(ChatColor.BLUE+"%s"+ChatColor.YELLOW+"+"),
-            PREMIUM(ChatColor.BLUE+"%s"),
-            VIPP(ChatColor.GREEN+"%s"+ChatColor.YELLOW+"+"),
-            VIP(ChatColor.GREEN+"%s"),
-            ;
-            
-            final String prefix;
-            
-            ShoutPrefix(String prefix)
-            {
-                this.prefix = prefix;
-            }
-            
-            public String get(String name)
-            {
-                return String.format(this.prefix, name);
-            }
-        }
+
+	private enum ShoutPrefix
+	{
+		OP(ChatColor.GOLD+"%s"),
+		HA("["+ChatColor.BLACK+"H"+ChatColor.GOLD+"A"+ChatColor.RESET+"] %s"),
+		AP("["+ChatColor.DARK_RED+"A"+ChatColor.YELLOW+"+"+ChatColor.RESET+"] %s"),
+		A("["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] %s"),
+		MOD("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] %s"),
+		PREMIUMP(ChatColor.BLUE+"%s"+ChatColor.YELLOW+"+"),
+		PREMIUM(ChatColor.BLUE+"%s"),
+		VIPP(ChatColor.GREEN+"%s"+ChatColor.YELLOW+"+"),
+		VIP(ChatColor.GREEN+"%s"),
+		;
+
+		final String prefix;
+
+		ShoutPrefix(final String prefix)
+		{
+			this.prefix = prefix;
+		}
+
+		public String get(final String name)
+		{
+			return String.format(this.prefix, name);
+		}
+	}
 }

@@ -3,7 +3,9 @@ package Commands;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+
 import me.superckl.combatlogger.CombatLogger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -95,7 +97,7 @@ public class StopCommand extends Command implements CommandExecutor
 				this.combatLogger.getCombatListeners().destroy(p.getName());
 				p.kickPlayer(message);
 			}
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
 			Bukkit.shutdown();
 			return true;
 		}

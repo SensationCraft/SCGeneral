@@ -225,9 +225,8 @@ public class SuperItems implements Listener
 		if(!event.getLine(2).startsWith("$"))
 			return false;
 
-		if(!event.getLine(2).matches("[0-9]*.[0-9]*")){
+		if(!event.getLine(2).matches("[0-9]*.[0-9]*"))
 			return false;
-		}
 		return true;
 	}
 

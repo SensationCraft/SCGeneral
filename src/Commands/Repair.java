@@ -1,6 +1,5 @@
 package Commands;
 
-import com.gmail.nossr50.commands.skills.RepairCommand;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,21 +12,22 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.gmail.nossr50.commands.skills.RepairCommand;
 import com.google.common.base.Joiner;
 
 public class Repair implements CommandExecutor
 {
 
-        private final RepairCommand mcMMOCommand;
-    
-        public Repair(CommandExecutor ce)
-        {
-            if(ce instanceof RepairCommand)
-                this.mcMMOCommand = (RepairCommand) ce;
-            else
-                this.mcMMOCommand = null;
-        }
-    
+	private final RepairCommand mcMMOCommand;
+
+	public Repair(final CommandExecutor ce)
+	{
+		if(ce instanceof RepairCommand)
+			this.mcMMOCommand = (RepairCommand) ce;
+		else
+			this.mcMMOCommand = null;
+	}
+
 	private final String repairAllMsg = "&6You have successfully repaired your: &c%s".replace('&', ChatColor.COLOR_CHAR);
 
 	@Override
@@ -38,11 +38,9 @@ public class Repair implements CommandExecutor
 			sender.sendMessage(ChatColor.RED+"Console cannot repair items, you silly :3");
 			return true;
 		}
-                if(label.equalsIgnoreCase("repair") && this.mcMMOCommand != null)
-                {
-                    return this.mcMMOCommand.onCommand(sender, cmd, label, args);
-                }
-                
+		if(label.equalsIgnoreCase("repair") && this.mcMMOCommand != null)
+			return this.mcMMOCommand.onCommand(sender, cmd, label, args);
+
 		if(!sender.hasPermission("essentials.repair"))
 		{
 			sender.sendMessage(ChatColor.DARK_RED+"You do not have the permission to do that!");

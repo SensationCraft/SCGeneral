@@ -1,6 +1,5 @@
 package Entity;
 
-import Commands.help.HelpRequest;
 import java.util.Random;
 
 import me.superckl.combatlogger.CombatLogger;
@@ -34,6 +33,8 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import Commands.help.HelpRequest;
+
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
@@ -44,19 +45,19 @@ public class EntityListener implements Listener
 	private final Random random = new Random();
 	final CombatLogger combatLogger;
 	private final SCGeneral plugin;
-        private final HelpRequest help;
+	private final HelpRequest help;
 
 	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 		this.plugin = plugin;
-                this.help = help;
+		this.help = help;
 	}
- 
-        @EventHandler(priority = EventPriority.MONITOR)
-        public void onPlayerQuit(final PlayerQuitEvent e)
-        {
-            this.help.removeRequest(e.getPlayer().getName());
-        }
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(final PlayerQuitEvent e)
+	{
+		this.help.removeRequest(e.getPlayer().getName());
+	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
 	public void onEntityDeath(final EntityDeathEvent event)
@@ -109,37 +110,37 @@ public class EntityListener implements Listener
 		player.sendMessage(ChatColor.YELLOW+"You killed "+e.getEntity().getName());
 		player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
 	}
-        
+
 	/**
 	 * Anti-forcefield
-         * @param e - the event
+	 * @param e - the event
 	 */
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onEntityDamageByEntity(final EntityDamageByEntityEvent e){
 		if(e.getDamage() == 0.0) return;
-                if(e.getEntity() instanceof Player == false) 
-                    return;
-		if(e.getDamager() instanceof Player == false) 
-                    return;
-                
-                Player attacker = (Player) e.getDamager();
-                Player attacked = (Player) e.getEntity();
-                
-                if(!attacked.canSee(attacker))
-                {
-                    e.setCancelled(true);
-                    return;
-                }
-                
+		if(e.getEntity() instanceof Player == false)
+			return;
+		if(e.getDamager() instanceof Player == false)
+			return;
+
+		final Player attacker = (Player) e.getDamager();
+		final Player attacked = (Player) e.getEntity();
+
+		if(!attacked.canSee(attacker))
+		{
+			e.setCancelled(true);
+			return;
+		}
+
 		final Vector entloc = attacked.getLocation().toVector();
 		final Vector damloc = attacker.getLocation().toVector();
-		Vector attackdir = entloc.subtract(damloc).setY(0).normalize();
-		Vector hitdir = attacker.getLocation().getDirection().setY(0).normalize();
-		
-                double angle = (attackdir.angle(hitdir)/(Math.PI*2) * 360);
-                
+		final Vector attackdir = entloc.subtract(damloc).setY(0).normalize();
+		final Vector hitdir = attacker.getLocation().getDirection().setY(0).normalize();
+
+		final double angle = (attackdir.angle(hitdir)/(Math.PI*2) * 360);
+
 		if(angle > 40)
-                {
+		{
 			e.setCancelled(true);
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 		}
@@ -199,7 +200,7 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onTeleport(final PlayerTeleportEvent event)
 	{
-            System.out.println(event.getCause());
+		System.out.println(event.getCause());
 		if(event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
 			return;
 
