@@ -81,7 +81,7 @@ public class SCGeneral extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info(" - Overriding commands");
 		this.overrideCommands();
-		this.getLogger().info(" - Starting auto-saving");
+		this.getLogger().info(" - Starting save-all loop");
 		new BukkitRunnable(){
 			@Override
 			public void run()
