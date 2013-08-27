@@ -54,7 +54,7 @@ public class SCGeneral extends JavaPlugin
 	private Scoreboard scoreboard;
 	private Shout shout;
 	private HelpRequest help;
-
+	
 	@Override
 	public void onEnable()
 	{
@@ -82,15 +82,14 @@ public class SCGeneral extends JavaPlugin
 		}.runTaskTimer(this, 6000L, 6000L);
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
-		this.getLogger().info(" - Overriding commands");
-		this.overrideCommands();
 		this.getLogger().info(" - Registering EntityListener");
 		final EntityListener entity = new EntityListener(this.help, this);
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
+		this.getLogger().info(" - Overriding commands");
+		this.overrideCommands();
 		this.getLogger().info(" - Starting broadcast loop");
-
 		new BukkitRunnable()
 		{
 			private int counter = 0;
