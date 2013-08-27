@@ -72,14 +72,6 @@ public class SCGeneral extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");
 		this.getServer().getPluginManager().registerEvents(new PotionListener(), this);
-		this.getLogger().info(" - Registering AutoSaving");
-		new BukkitRunnable(){
-			@Override
-			public void run()
-			{
-				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
-			}
-		}.runTaskTimer(this, 6000L, 6000L);
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Registering EntityListener");
@@ -89,6 +81,14 @@ public class SCGeneral extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info(" - Overriding commands");
 		this.overrideCommands();
+		this.getLogger().info(" - Starting auto-saving");
+		new BukkitRunnable(){
+			@Override
+			public void run()
+			{
+				Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
+			}
+		}.runTaskTimer(this, 6000L, 6000L);
 		this.getLogger().info(" - Starting broadcast loop");
 		new BukkitRunnable()
 		{
