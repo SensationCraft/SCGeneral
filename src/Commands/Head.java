@@ -25,7 +25,7 @@ public class Head implements CommandExecutor{
 		if(arg3.length != 1){
 			arg0.sendMessage(ChatColor.RED+"Syntax Error. Proper usage: '/head {name}");
 		}
-		if(!arg3[0].matches("[a-zA-Z0-9_\\-]*")){
+		if(arg3[0].length() > 16 || !arg3[0].matches("[a-zA-Z0-9_\\-]*")){
 			arg0.sendMessage(ChatColor.RED+"That can't be a username!");
 			return false;
 		}
