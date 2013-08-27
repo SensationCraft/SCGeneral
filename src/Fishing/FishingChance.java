@@ -1,6 +1,6 @@
 package Fishing;
 
-import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 public enum FishingChance {
 
@@ -20,7 +20,7 @@ public enum FishingChance {
 		return this.modifer;
 	}
 
-	public static FishingChance getByPlayer(final Player player){
+	public static FishingChance getByPlayer(final Permissible player){
 		if(player.hasPermission("fishing.premiumplus"))
 			return PREMIUM_PLUS;
 		else if(player.hasPermission("fishing.premium"))

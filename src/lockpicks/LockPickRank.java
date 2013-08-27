@@ -2,7 +2,7 @@ package lockpicks;
 
 import java.util.Random;
 
-import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permissible;
 
 public enum LockPickRank {
 
@@ -21,7 +21,7 @@ public enum LockPickRank {
 			return true;
 	}
 
-	public static LockPickRank getByPlayer(final Player player){
+	public static LockPickRank getByPlayer(final Permissible player){
 		if(player.hasPermission("lockpicks.premium"))
 			return LockPickRank.PREMIUM;
 		else if(player.hasPermission("lockpicks.vip"))
