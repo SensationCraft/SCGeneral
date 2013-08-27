@@ -45,3 +45,5 @@ commands:
     description: Deletes the homes within a certain radius of yourself.
   head:
     description: Get the head of a player.
+  expel:
+    description: Expel all players in a radius.

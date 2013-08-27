@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import Commands.ClearInvis;
+import Commands.Expel;
 import Commands.FactionCheck;
 import Commands.Head;
 import Commands.Heal;
@@ -158,6 +159,7 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("tpcheck", tpsuite);
 		this.commandMap.put("killshout", new KillShout(this.shout));
 		this.commandMap.put("head", new Head());
+		this.commandMap.put("expel", new Expel());
 		final HelpRequest help = new HelpRequest();
         this.commandMap.put("helprequest", help);
         this.commandMap.put("helpread", new HelpRead(help));

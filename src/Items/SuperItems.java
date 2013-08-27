@@ -225,12 +225,7 @@ public class SuperItems implements Listener
 		if(!event.getLine(2).startsWith("$"))
 			return false;
 
-		try
-		{
-			Double.parseDouble(event.getLine(2).substring(1));
-		}
-		catch(final NumberFormatException ex)
-		{
+		if(!event.getLine(2).matches("[0-9]*.[0-9]*")){
 			return false;
 		}
 		return true;
