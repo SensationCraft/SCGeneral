@@ -49,14 +49,14 @@ public class FactionParty implements Listener
 			final Party p = UserManager.getPlayer(leader).getParty();
 			if(p == null)
 				break; // Weird party xD
-				for(final String member : p.getMembers())
-					if(FPlayers.i.get(member).getRelationTo(fme).isAtMost(Relation.NEUTRAL))
-					{
-						fme.sendMessage(ChatColor.RED+"You are not allowed to party with non-members/non-allies.");
-						event.setCancelled(true);
-						break;
-					}
-				break;
+			for(final String member : p.getMembers())
+				if(FPlayers.i.get(member).getRelationTo(fme).isAtMost(Relation.NEUTRAL))
+				{
+					fme.sendMessage(ChatColor.RED+"You are not allowed to party with non-members/non-allies.");
+					event.setCancelled(true);
+					break;
+				}
+			break;
 		case LEFT_PARTY:
 		case KICKED_FROM_PARTY:
 			// Let them leave/get kicked
