@@ -22,8 +22,10 @@ public class Head implements CommandExecutor{
 			arg0.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
-		if(arg3.length != 1)
+		if(arg3.length != 1){
 			arg0.sendMessage(ChatColor.RED+"Syntax Error. Proper usage: '/head {name}");
+			return false;
+		}
 		if(arg3[0].length() > 16 || !arg3[0].matches("[a-zA-Z0-9_\\-]*")){
 			arg0.sendMessage(ChatColor.RED+"That can't be a username!");
 			return false;
