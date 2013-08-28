@@ -171,6 +171,11 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("helpaccept", new HelpAccept(help));
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
+                final PluginCommand essHelp = Bukkit.getPluginCommand("help");
+                if(essHelp != null)
+                {
+                    this.commandMap.put("?", essHelp.getExecutor());
+                }
 	}
 	private void overrideCommands(){
 		this.initializeCommandMap();
