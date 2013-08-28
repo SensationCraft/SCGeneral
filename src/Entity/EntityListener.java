@@ -113,7 +113,6 @@ public class EntityListener implements Listener
 
 	/**
 	 * Anti-forcefield
-	 * @param e - the event
 	 */
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onEntityDamageByEntity(final EntityDamageByEntityEvent e){
@@ -145,38 +144,7 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 		}
 	}
-	/*@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(final AsyncPlayerChatEvent e) {
-		if (e.isCancelled())
-			return;
-		if(e.getMessage().startsWith("!")){
-			e.setCancelled(true);
-			e.setMessage("I'm a herp");
-			e.getPlayer().sendMessage(ChatColor.DARK_RED+"I will eat your soul if you chat like that. -superckl");
-			return;
-		}
-		final PermissionUser user = PermissionsEx.getUser(e.getPlayer());
-		e.setFormat(ChatColor.translateAlternateColorCodes('&', user.getPrefix() + "%1$s" + user.getSuffix() + ": %2$s"));
-		final Location loc = e.getPlayer().getLocation();
-		e.setMessage(e.getMessage().trim());
-		final Iterator<Player> it = e.getRecipients().iterator();
-		while (it.hasNext()) {
-			final Player player = it.next();
-			if (loc.distanceSquared(player.getLocation()) > 144 && !player.hasPermission("chat.seelocal")) {
-				it.remove();
-			}
-		}
-		if (e.getRecipients().size() == 1) {
-			Bukkit.getScheduler()
-			.runTaskLater(Bukkit.getPluginManager().getPlugin("SCGeneral"), new BukkitRunnable() {
-				@Override
-				public void run() {
-					e.getPlayer().sendMessage(
-							ChatColor.YELLOW + "No one hears you.");
-				}
-			}, 2L);
-		}
-	}*/
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
 		if(e.getMessage().startsWith("!")){

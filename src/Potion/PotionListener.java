@@ -23,29 +23,6 @@ public class PotionListener implements Listener
 
 	private final PotionEffect str = new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 3600, 0);
 
-	/*@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onBrew(BrewEvent event)
-    {
-        BrewerInventory bi = event.getContents();
-        if(bi.getIngredient() != null && bi.getIngredient().getType() == Material.GLOWSTONE_DUST)
-        {
-            boolean y = false;
-            ItemStack[] iss = bi.getContents();
-            for(int j = 0; j < iss.length; j++)
-            {
-                if(iss[j] == null) continue;
-                if(iss[j].getType() == Material.POTION)
-                {
-                    Potion pot = Potion.fromItemStack(iss[j]);
-                    if(pot.getType() == PotionType.STRENGTH)
-                    {
-                        event.setCancelled(true);
-                    }
-                }
-            }
-        }
-    }*/
-
 	@EventHandler (ignoreCancelled = true, priority = EventPriority.LOWEST)
 	public void onDrink(final org.bukkit.event.player.PlayerItemConsumeEvent event)
 	{
