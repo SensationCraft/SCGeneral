@@ -5,10 +5,10 @@ import org.bukkit.permissions.Permissible;
 public enum FishingChance {
 
 	DEFAULT(1.0),
-	VIP(1.0),
-	VIP_PLUS(1.0),
-	PREMIUM(1.0),
-	PREMIUM_PLUS(1.0);
+	VIP(1.25),
+	VIP_PLUS(1.5),
+	PREMIUM(1.75),
+	PREMIUM_PLUS(2.0);
 
 	private double modifer;
 
