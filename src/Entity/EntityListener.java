@@ -11,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -32,6 +33,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.yi.acru.bukkit.Lockette.Lockette;
 
 import Commands.help.HelpRequest;
 
@@ -124,7 +126,6 @@ public class EntityListener implements Listener
 
 		final Player attacker = (Player) e.getDamager();
 		final Player attacked = (Player) e.getEntity();
-
 		if(!attacked.canSee(attacker))
 		{
 			e.setCancelled(true);
@@ -142,7 +143,13 @@ public class EntityListener implements Listener
 		{
 			e.setCancelled(true);
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
+			return;
 		}
+		for(Block block:attacker.getLineOfSight(null, 2))
+			if(block.getType() == Material.GLASS || (block.getType() == Material.WOOD_DOOR && Lockette.isProtected(block) && !Lockette.getProtectedOwner(block).equalsIgnoreCase(attacker.getName()))){
+				e.setCancelled(true);
+				break;
+			}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
