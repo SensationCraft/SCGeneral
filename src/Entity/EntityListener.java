@@ -32,6 +32,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Door;
+import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
@@ -146,7 +148,7 @@ public class EntityListener implements Listener
 			return;
 		}
 		for(Block block:attacker.getLineOfSight(null, 2))
-			if(block.getType() == Material.GLASS || (block.getType() == Material.WOOD_DOOR && Lockette.isProtected(block) && !Lockette.getProtectedOwner(block).equalsIgnoreCase(attacker.getName()))){
+			if(block.getType() == Material.GLASS || (block.getType() == Material.WOOD_DOOR && !((Door)block).isOpen() && Lockette.isProtected(block) && !Lockette.getProtectedOwner(block).equalsIgnoreCase(attacker.getName()))){
 				e.setCancelled(true);
 				break;
 			}
