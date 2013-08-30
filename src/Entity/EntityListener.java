@@ -46,6 +46,7 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import org.bukkit.block.BlockFace;
 
 public class EntityListener implements Listener
 {
@@ -182,9 +183,27 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 			return;
 		}
+                
+                boolean flag = false;
+                Block b;
+                for(Block block:attacker.getLineOfSight(null, 2))
+                    if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
+                    {
+                        b = block;
+                        if((block.getData() & 8) != 0)
+                        {
+                            b = b.getRelative(BlockFace.DOWN);
+                        }
+                        if((b.getData() & 4) == 1 && Lockette.isProtected(block))
+                        {
+                            flag = true;
+                            break;
+                        }
+                    }
+                
 		//Door.isOpen is deprecated, using openable to supress the warning.
 		for(Block block:attacker.getLineOfSight(null, 2))
-			if(block.getType() == Material.GLASS || (block.getType() == Material.WOOD_DOOR && !((Openable)block).isOpen() && Lockette.isProtected(block) && !Lockette.getProtectedOwner(block).equalsIgnoreCase(attacker.getName()))){
+			if(block.getType() == Material.GLASS || flag){
 				e.setCancelled(true);
 				break;
 			}
