@@ -1,6 +1,5 @@
 package Potion;
 
-import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +12,7 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class PotionListener implements Listener
 {

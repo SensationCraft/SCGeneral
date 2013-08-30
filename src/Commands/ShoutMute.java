@@ -1,11 +1,11 @@
 package Commands;
 
-import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class ShoutMute implements CommandExecutor{
 

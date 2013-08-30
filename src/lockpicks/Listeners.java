@@ -3,7 +3,6 @@ package lockpicks;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -23,6 +22,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.sensationcraft.scgeneral.SCGeneral;
 import org.yi.acru.bukkit.PluginCore;
 
 import com.massivecraft.factions.Board;

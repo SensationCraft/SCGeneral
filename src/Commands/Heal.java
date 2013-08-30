@@ -3,7 +3,6 @@ package Commands;
 import java.util.List;
 
 import me.superckl.combatlogger.CombatLogger;
-import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -12,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class Heal implements CommandExecutor{
 

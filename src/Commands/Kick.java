@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import me.superckl.combatlogger.CombatLogger;
-import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class Kick implements CommandExecutor{
 

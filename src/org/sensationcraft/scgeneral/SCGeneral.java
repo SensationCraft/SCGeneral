@@ -1,4 +1,4 @@
-package me.superckl.scgeneral;
+package org.sensationcraft.scgeneral;
 
 import java.util.HashMap;
 import java.util.Map;

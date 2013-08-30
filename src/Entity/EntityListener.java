@@ -3,7 +3,6 @@ package Entity;
 import java.util.Random;
 
 import me.superckl.combatlogger.CombatLogger;
-import me.superckl.scgeneral.SCGeneral;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +36,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
 import org.bukkit.util.Vector;
+import org.sensationcraft.scgeneral.SCGeneral;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 import Commands.help.HelpRequest;
