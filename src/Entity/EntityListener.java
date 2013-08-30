@@ -182,6 +182,7 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 			return;
 		}
+		//Door.isOpen is deprecated, using openable to supress the warning.
 		for(Block block:attacker.getLineOfSight(null, 2))
 			if(block.getType() == Material.GLASS || (block.getType() == Material.WOOD_DOOR && !((Openable)block).isOpen() && Lockette.isProtected(block) && !Lockette.getProtectedOwner(block).equalsIgnoreCase(attacker.getName()))){
 				e.setCancelled(true);
