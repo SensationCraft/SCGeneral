@@ -76,6 +76,7 @@ public class SCGeneral extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Registering EntityListener");
 		final EntityListener entity = new EntityListener(this.help, this);
+		this.help = null;
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);

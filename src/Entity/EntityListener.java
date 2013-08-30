@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,24 +22,27 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Door;
-import org.bukkit.material.WoodenStep;
 import org.bukkit.util.Vector;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
 import Commands.help.HelpRequest;
 
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
@@ -50,17 +54,35 @@ public class EntityListener implements Listener
 	final CombatLogger combatLogger;
 	private final SCGeneral plugin;
 	private final HelpRequest help;
+	private final Essentials ess;
 
 	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 		this.plugin = plugin;
 		this.help = help;
+		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent e)
 	{
 		this.help.removeRequest(e.getPlayer().getName());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerInteract(PlayerInteractEvent e){
+		if(e.getAction() != Action.RIGHT_CLICK_BLOCK)
+			return;
+		if(e.getClickedBlock().getState() instanceof Chest == false)
+			return;
+		User user = this.ess.getUser(e.getPlayer().getName());
+		if(user == null)
+			return;
+		if(user.isVanished()){
+			e.setCancelled(true);
+			e.getPlayer().openInventory(((Chest)e.getClickedBlock().getState()).getBlockInventory());
+			e.getPlayer().sendMessage(ChatColor.AQUA+"Silent chest editting brought to you by the wonderful developers of SC. ;D");
+		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
