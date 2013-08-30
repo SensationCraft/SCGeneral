@@ -67,6 +67,19 @@ public class EntityListener implements Listener
 	public void onPlayerQuit(final PlayerQuitEvent e)
 	{
 		this.help.removeRequest(e.getPlayer().getName());
+		for(Player player:Bukkit.getOnlinePlayers()){
+			User user = this.ess.getUser(player.getName());
+			if(user == null)
+				continue;
+			if(!user.isInvSee())
+				return;
+			if(user.getOpenInventory() == null)
+				return;
+			if(user.getOpenInventory().getTopInventory() == e.getPlayer().getInventory()){
+				user.closeInventory();
+				user.sendMessage(ChatColor.RED+e.getPlayer().getName()+" has logged off!");
+			}
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
