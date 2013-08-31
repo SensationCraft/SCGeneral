@@ -39,7 +39,7 @@ public class Unban implements CommandExecutor{
 			return false;
 		}
 		final Integer bans = (Integer) user.getConfigMap().get("bans");
-		if(bans == null || (bans != null && bans.intValue() == 3)){
+		if(bans == null || (bans != null && bans.intValue() == 4)){
 			sender.sendMessage(ChatColor.RED+"That player is permanently banned! Please use /resetbans");
 			return false;
 		}

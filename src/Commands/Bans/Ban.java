@@ -75,7 +75,7 @@ public class Ban implements CommandExecutor{
 			final User user = this.ess.getOfflineUser(player.getName());
 			final Integer i = (Integer)user.getConfigMap().get("bans");
 			final int bans = i == null ? 0:i.intValue();
-			if(bans == 2){
+			if(bans == 3){
 				this.overBan.performBan(player, sender, args);
 				return;
 			}
