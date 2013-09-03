@@ -131,7 +131,7 @@ public class FactionParty implements Listener
 		Party p;
 		for(final FPlayer fplayer : fme.getFPlayers())
 		{
-			p = UserManager.getPlayer(fplayer.getName()).getParty();
+			p = PartyManager.getPlayerParty(fplayer.getName());
 			if(p == null)
 				continue;
 			if(p.getLeader() == null)

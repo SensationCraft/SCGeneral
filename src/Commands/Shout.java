@@ -24,7 +24,7 @@ public class Shout implements CommandExecutor
 	private final SCGeneral instance;
 	private final long SHOUT_DELAY = 15000;
 	private boolean dead = false;
-	private final String shoutFormat = "&c[S] %s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
+	private final String shoutFormat = "&c[S] &r%s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
 	private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
 
 	public Shout(final SCGeneral instance)
@@ -88,7 +88,7 @@ public class Shout implements CommandExecutor
 		if(!title.equals(""))
 			title = String.format(this.titleFormat, title);
 
-		String prefix = "";
+		String prefix = playerName;
 
 		if (p.isOp())
 			prefix = (ShoutPrefix.OP.get(playerName));

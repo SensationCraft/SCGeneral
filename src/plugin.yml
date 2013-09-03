@@ -1,7 +1,7 @@
 name: SCGeneral
 authors: [superckl, DarkSeraphim]
 version: 3.1
-main: me.superckl.scgeneral.SCGeneral
+main: org.sensationcraft.scgeneral.SCGeneral
 website: www.sensationcraft.info
 depend: [Factions, Lockette, Votifier, Essentials, SCLogin, CombatLogger, mcMMO]
 commands:

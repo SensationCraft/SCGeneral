@@ -232,7 +232,6 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onTeleport(final PlayerTeleportEvent event)
 	{
-		System.out.println(event.getCause());
 		if(event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
 			return;
 

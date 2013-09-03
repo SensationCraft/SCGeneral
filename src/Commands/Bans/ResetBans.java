@@ -39,6 +39,7 @@ public class ResetBans implements CommandExecutor{
 			return false;
 		}
 		user.setConfigProperty("bans", 0);
+                user.setConfigProperty("ban-reason", "");
 		user.setBanned(false);
 		user.setBanTimeout(0);
 		if(sender instanceof Player)
