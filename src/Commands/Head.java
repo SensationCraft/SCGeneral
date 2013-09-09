@@ -2,6 +2,7 @@ package Commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.SkullType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -30,7 +31,7 @@ public class Head implements CommandExecutor{
 			arg0.sendMessage(ChatColor.RED+"That can't be a username!");
 			return false;
 		}
-		final ItemStack head = new ItemStack(Material.SKULL_ITEM);
+		final ItemStack head = new ItemStack(Material.SKULL_ITEM, 1, (short)3);
 		final SkullMeta meta = (SkullMeta) head.getItemMeta();
 		meta.setOwner(arg3[0]);
 		head.setItemMeta(meta);

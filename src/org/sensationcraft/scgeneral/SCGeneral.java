@@ -47,6 +47,26 @@ import FactionFix.HomeFix;
 import Items.ItemLimiter;
 import Items.SuperItems;
 import Potion.PotionListener;
+import com.comphenix.protocol.Packets;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ConnectionSide;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.earth2me.essentials.IEssentials;
+import com.earth2me.essentials.User;
+import com.earth2me.essentials.utils.LocationUtil;
+import com.earth2me.essentials.utils.LocationUtil.Vector3D;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.event.EventHandler;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.plugin.Plugin;
+import protocol.VanishFix;
 
 
 public class SCGeneral extends JavaPlugin
@@ -75,13 +95,17 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Registering EntityListener");
-		final EntityListener entity = new EntityListener(this.help, this);
-		this.help = null;
+                this.help = new HelpRequest();
+                final EntityListener entity = new EntityListener(this.help, this);
+                this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
+                ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
 		this.getServer().getPluginManager().registerEvents(entity, this);
+		this.getLogger().info(" - Fixing some Essentials 'safe' (actually glitching) teleporting");
+                fixEssentialsTp();
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info(" - Overriding commands");
-		this.overrideCommands();
+		this.overrideCommands(this.help);
 		this.getLogger().info(" - Starting save-all loop");
 		new BukkitRunnable(){
 			@Override
@@ -135,7 +159,7 @@ public class SCGeneral extends JavaPlugin
 
 	private final Map<String, CommandExecutor> commandMap = new HashMap<>();
 
-	private void initializeCommandMap(){
+	private void initializeCommandMap(final HelpRequest help){
 		this.commandMap.clear();
 		// No its not ignored, it just handles the shizzle in the constructor
 		new StopCommand(this);
@@ -165,7 +189,6 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("killshout", new KillShout(this.shout));
 		this.commandMap.put("head", new Head());
 		this.commandMap.put("expel", new Expel());
-		final HelpRequest help = new HelpRequest();
 		this.commandMap.put("helprequest", help);
 		this.commandMap.put("helpread", new HelpRead(help));
 		this.commandMap.put("helplist", new HelpList(help));
@@ -173,16 +196,18 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
                 final PluginCommand essHelp = Bukkit.getPluginCommand("help");
-                if(essHelp != null)
+                /*if(essHelp != null)
                 {
                     this.commandMap.put("?", essHelp.getExecutor());
-                }
+                }*/
 	}
-	private void overrideCommands(){
-		this.initializeCommandMap();
+	private void overrideCommands(final HelpRequest help){
+		this.initializeCommandMap(help);
 		for(final String name:this.commandMap.keySet()){
 			this.getLogger().info("   - "+name);
 			final PluginCommand pCommand = this.getServer().getPluginCommand(name);
+                        System.out.println(pCommand);
+                        System.out.println(pCommand.getAliases());
 			if(pCommand == null){
 				this.getLogger().warning("Failed to override "+name);
 				continue;
@@ -193,4 +218,29 @@ public class SCGeneral extends JavaPlugin
 		}
 		this.commandMap.clear();
 	}
+        private void fixEssentialsTp()
+        {
+            try
+            {
+                Field f = LocationUtil.class.getDeclaredField("VOLUME");
+                if(!f.isAccessible())
+                    f.setAccessible(true);
+                int mods = f.getModifiers();
+                if((mods & Modifier.FINAL) != 0)
+                {
+                    Field m = Field.class.getDeclaredField("modifiers");
+                    if(!m.isAccessible())
+                        m.setAccessible(true);
+                    m.setInt(f, mods & ~Modifier.FINAL);
+                }
+                f.set(null, new Vector3D[]{});
+            }
+            catch(Exception ex)
+            {
+                getLogger().warning("Failed to fix Essentials safe teleportation");
+                // We failed, too bad
+                ex.printStackTrace();
+            }
+            
+        }
 }

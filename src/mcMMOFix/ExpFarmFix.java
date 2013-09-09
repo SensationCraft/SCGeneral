@@ -106,8 +106,16 @@ public class ExpFarmFix implements Listener
 
 		final LivingEntity target = (LivingEntity) defender;
 
-		if (CombatUtils.isInvincible(target, damage))
-			return false;
+                try
+                {
+                    CombatUtils.class.getDeclaredMethod("isInvincible", LivingEntity.class, double.class);
+                    if (CombatUtils.isInvincible(target, damage))
+                    	return false;
+                }
+                catch(Exception ex)
+                {
+                    // Swallow
+                }
 
 		Entity attacker = event.getDamager();
 

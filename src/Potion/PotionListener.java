@@ -30,6 +30,8 @@ public class PotionListener implements Listener
 		final Player player = event.getPlayer();
 		final Potion pot = Potion.fromItemStack(event.getItem());
 		boolean update = false;
+                if(pot.getType() == PotionType.WATER)
+                    return;
 		if(pot.getType() == PotionType.STRENGTH && pot.getLevel() == 2)
 		{
 			event.setCancelled(true);

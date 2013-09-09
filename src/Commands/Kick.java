@@ -99,14 +99,19 @@ public class Kick implements CommandExecutor{
 		}
 		Player player = this.plugin.getServer().getPlayer(args[0]);
 		final List<Player> players = this.plugin.getServer().matchPlayer(args[0]);
-		if(player == null && players.size() < 1){
+		if(player == null || players.size() < 1){
 			sender.sendMessage(ChatColor.RED+"Player not found.");
 			return false;
-		}else if(player == null && players.size() > 1){
+		}else if( players.size() > 1){
 			sender.sendMessage(ChatColor.RED+"More than one player found! Please refine your name.");
 			return false;
-		}else if(player == null)
+		}else
 			player = players.get(0);
+                if((sender instanceof Player) && !((Player)sender).canSee(player))
+                {
+                    sender.sendMessage(ChatColor.RED+"Player not found.");
+                    return false;
+                }
 		if(player.hasPermission("essentials.kick.exempt")){
 			sender.sendMessage(ChatColor.RED+"That player is exempt to kicks!");
 			return false;

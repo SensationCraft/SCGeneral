@@ -34,7 +34,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Openable;
 import org.bukkit.util.Vector;
 import org.sensationcraft.scgeneral.SCGeneral;
 import org.yi.acru.bukkit.Lockette.Lockette;
@@ -46,7 +45,12 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import java.util.List;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class EntityListener implements Listener
 {
@@ -85,6 +89,11 @@ public class EntityListener implements Listener
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e){
+                if(e.getMaterial() == Material.ENDER_PEARL && checkBlock(e.getPlayer()))
+                {
+                    e.setCancelled(true);
+                    return;
+                }
 		if(e.getAction() != Action.RIGHT_CLICK_BLOCK)
 			return;
 		if(e.getClickedBlock().getState() instanceof Chest == false)
@@ -94,7 +103,7 @@ public class EntityListener implements Listener
 			return;
 		if(user.isVanished()){
 			e.setCancelled(true);
-			e.getPlayer().openInventory(((Chest)e.getClickedBlock().getState()).getBlockInventory());
+			e.getPlayer().openInventory(((Chest)e.getClickedBlock().getState()).getInventory());
 			e.getPlayer().sendMessage(ChatColor.AQUA+"Silent chest editting brought to you by the wonderful developers of SC. ;D");
 		}
 	}
@@ -111,6 +120,17 @@ public class EntityListener implements Listener
 			loc.getWorld().dropItem(loc, new ItemStack(Material.GHAST_TEAR, 1));
 		else if (ent instanceof Spider && chance == 0)
 			loc.getWorld().dropItem(loc, new ItemStack(Material.MAGMA_CREAM, 1));
+                if(ent instanceof PigZombie)
+                {
+                    List<ItemStack> drops = event.getDrops();
+                    for(ItemStack i : drops)
+                    {
+                        if(i.getType() == Material.GOLD_NUGGET || i.getType() == Material.GOLD_INGOT)
+                        {
+                            i.setType(Material.DIRT);
+                        }
+                    }
+                }
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -126,6 +146,10 @@ public class EntityListener implements Listener
 			if(chance == 0)
 				loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
 		}
+                if(ent.getType() == EntityType.ENDER_DRAGON)
+                {
+                    event.setCancelled(true);
+                }
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -183,10 +207,19 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 			return;
 		}
+                if(checkBlock(attacker))
+                {
+                    attacker.sendMessage(ChatColor.RED+"Glitching is bad :(");
+                    e.setCancelled(true);
+                }
                 
-                boolean flag = false;
-                Block b;
-                for(Block block:attacker.getLineOfSight(null, 2))
+	}
+        
+        private boolean checkBlock(Player attacker)
+        {
+            boolean flag = false;
+            Block b;
+            for(Block block:attacker.getLineOfSight(null, 2))
                     if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
                     {
                         b = block;
@@ -194,7 +227,12 @@ public class EntityListener implements Listener
                         {
                             b = b.getRelative(BlockFace.DOWN);
                         }
-                        if((b.getData() & 4) == 1 && Lockette.isProtected(block))
+                        if((b.getData() & 4) == 0 && Lockette.isProtected(block))
+                        {
+                            flag = true;
+                            break;
+                        }
+                        else if((b.getData() & 4) == 0)
                         {
                             flag = true;
                             break;
@@ -203,11 +241,13 @@ public class EntityListener implements Listener
                 
 		//Door.isOpen is deprecated, using openable to supress the warning.
 		for(Block block:attacker.getLineOfSight(null, 2))
-			if(block.getType() == Material.GLASS || flag){
-				e.setCancelled(true);
-				break;
+			if(block.getType().isBlock() || flag)
+                        {
+                                attacker.sendMessage(ChatColor.RED+"Glitching is bad :(");
+				return true;
 			}
-	}
+                return false;
+        }
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
@@ -227,6 +267,9 @@ public class EntityListener implements Listener
 			e.setCancelled(true);
 			e.setMessage("/cockblocked");
 		}
+                else if(e.getMessage().startsWith("/?")){
+                        e.setMessage(e.getMessage().replace("/?", "/help"));
+                }
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -238,4 +281,14 @@ public class EntityListener implements Listener
 		if(this.combatLogger.getCombatListeners().isInCombat(event.getPlayer().getName()))
 			event.setCancelled(true);
 	}
+        
+        @EventHandler
+        public void onPickup(final PlayerPickupItemEvent event)
+        {
+            User user = this.ess.getUser(event.getPlayer());
+            if(user.isVanished())
+            {
+                event.setCancelled(true);
+            }
+        }
 }
