@@ -47,25 +47,11 @@ import FactionFix.HomeFix;
 import Items.ItemLimiter;
 import Items.SuperItems;
 import Potion.PotionListener;
-import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ConnectionSide;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.earth2me.essentials.IEssentials;
-import com.earth2me.essentials.User;
 import com.earth2me.essentials.utils.LocationUtil;
 import com.earth2me.essentials.utils.LocationUtil.Vector3D;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.List;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.event.EventHandler;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.Plugin;
 import protocol.VanishFix;
 
 
@@ -195,19 +181,12 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("helpaccept", new HelpAccept(help));
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
-                final PluginCommand essHelp = Bukkit.getPluginCommand("help");
-                /*if(essHelp != null)
-                {
-                    this.commandMap.put("?", essHelp.getExecutor());
-                }*/
 	}
 	private void overrideCommands(final HelpRequest help){
 		this.initializeCommandMap(help);
 		for(final String name:this.commandMap.keySet()){
 			this.getLogger().info("   - "+name);
 			final PluginCommand pCommand = this.getServer().getPluginCommand(name);
-                        System.out.println(pCommand);
-                        System.out.println(pCommand.getAliases());
 			if(pCommand == null){
 				this.getLogger().warning("Failed to override "+name);
 				continue;

@@ -45,9 +45,9 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import java.util.EnumSet;
 import java.util.List;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.PigZombie;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -60,6 +60,14 @@ public class EntityListener implements Listener
 	private final SCGeneral plugin;
 	private final HelpRequest help;
 	private final Essentials ess;
+        private final EnumSet<Material> hax = EnumSet.of(
+            Material.THIN_GLASS, 
+            Material.IRON_FENCE, 
+            Material.FENCE,
+            Material.FENCE_GATE,
+            Material.COBBLE_WALL,
+            Material.NETHER_FENCE,
+            Material.TRAP_DOOR);
 
 	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
@@ -91,6 +99,7 @@ public class EntityListener implements Listener
 	public void onPlayerInteract(PlayerInteractEvent e){
                 if(e.getMaterial() == Material.ENDER_PEARL && checkBlock(e.getPlayer()))
                 {
+                    e.getPlayer().sendMessage(ChatColor.RED+"Glitching is bad :(");
                     e.setCancelled(true);
                     return;
                 }
@@ -146,7 +155,7 @@ public class EntityListener implements Listener
 			if(chance == 0)
 				loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
 		}
-                if(ent.getType() == EntityType.ENDER_DRAGON)
+                if(ent != null && ent.getType() == EntityType.ENDER_DRAGON)
                 {
                     event.setCancelled(true);
                 }
@@ -241,9 +250,8 @@ public class EntityListener implements Listener
                 
 		//Door.isOpen is deprecated, using openable to supress the warning.
 		for(Block block:attacker.getLineOfSight(null, 2))
-			if(block.getType().isBlock() || flag)
+			if(block.getType().isSolid() || flag)
                         {
-                                attacker.sendMessage(ChatColor.RED+"Glitching is bad :(");
 				return true;
 			}
                 return false;
@@ -270,6 +278,15 @@ public class EntityListener implements Listener
                 else if(e.getMessage().startsWith("/?")){
                         e.setMessage(e.getMessage().replace("/?", "/help"));
                 }
+                /*else if(e.getMessage().contains("/home") || e.getMessage().contains("/esethome"))
+                {
+                    Player player = e.getPlayer();
+                    Block b = player.getLocation().getBlock();                
+                    if(hax.contains(b.getType()))
+                    {
+                        
+                    }
+                }*/
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

@@ -41,7 +41,7 @@ public class HomeFix implements Listener
 		if(this.ess == null) return;
 		final String[] msg = event.getMessage().substring(1).split(" ");
 		final String cmd = msg[0];
-		if(cmd.equalsIgnoreCase("home") || cmd.equalsIgnoreCase("ehome"))
+		if(cmd.equalsIgnoreCase("home") || cmd.equalsIgnoreCase("ehome") || cmd.equals("homes") || cmd.equals("ehomes"))
 			if(msg.length > 1)
 			{
 				final User user = this.ess.getUser(event.getPlayer());
