@@ -97,7 +97,7 @@ public class EntityListener implements Listener
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e){
-                if(e.getMaterial() == Material.ENDER_PEARL && checkBlock(e.getPlayer()))
+                if(e.getMaterial() == Material.ENDER_PEARL && checkBlock(e.getPlayer(), null))
                 {
                     e.getPlayer().sendMessage(ChatColor.RED+"Glitching is bad :(");
                     e.setCancelled(true);
@@ -216,7 +216,7 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 			return;
 		}
-                if(checkBlock(attacker))
+                if(checkBlock(attacker, attacked))
                 {
                     attacker.sendMessage(ChatColor.RED+"Glitching is bad :(");
                     e.setCancelled(true);
@@ -224,11 +224,16 @@ public class EntityListener implements Listener
                 
 	}
         
-        private boolean checkBlock(Player attacker)
+        private boolean checkBlock(Player attacker, Player attacked)
         {
             boolean flag = false;
             Block b;
-            for(Block block:attacker.getLineOfSight(null, 2))
+            int len = 2;
+            if(attacked != null)
+            {
+                len = (int) attacker.getLocation().distance(attacked.getLocation());
+            }
+            for(Block block:attacker.getLineOfSight(null, len))
                     if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
                     {
                         b = block;
@@ -249,7 +254,7 @@ public class EntityListener implements Listener
                     }
                 
 		//Door.isOpen is deprecated, using openable to supress the warning.
-		for(Block block:attacker.getLineOfSight(null, 2))
+		for(Block block:attacker.getLineOfSight(null, len))
 			if(block.getType().isSolid() || flag)
                         {
 				return true;
