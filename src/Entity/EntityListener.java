@@ -45,7 +45,6 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
-import java.util.EnumSet;
 import java.util.List;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
@@ -60,14 +59,14 @@ public class EntityListener implements Listener
 	private final SCGeneral plugin;
 	private final HelpRequest help;
 	private final Essentials ess;
-        private final EnumSet<Material> hax = EnumSet.of(
+        /*private final EnumSet<Material> hax = EnumSet.of(
             Material.THIN_GLASS, 
             Material.IRON_FENCE, 
             Material.FENCE,
             Material.FENCE_GATE,
             Material.COBBLE_WALL,
             Material.NETHER_FENCE,
-            Material.TRAP_DOOR);
+            Material.TRAP_DOOR);*///Unused
 
 	public EntityListener(final HelpRequest help, final SCGeneral plugin){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");

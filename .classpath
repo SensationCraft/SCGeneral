@@ -20,5 +20,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/SCPvP.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/mcMMO.jar"/>
+	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/ProtocolLib-2.4.7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
