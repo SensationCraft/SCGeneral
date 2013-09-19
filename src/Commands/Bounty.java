@@ -17,11 +17,11 @@ import com.earth2me.essentials.User;
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.utils.DateUtil;
 
-public class Assasinate implements CommandExecutor{
+public class Bounty implements CommandExecutor{
 	
 	private Essentials ess;
 	
-	public Assasinate(){
+	public Bounty(){
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
