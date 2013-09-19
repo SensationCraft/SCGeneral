@@ -23,11 +23,11 @@ public class GetBans implements CommandExecutor{
 		if(args.length == 0){
 			final User user = this.ess.getUser(sender.getName());
 			final Integer i = (Integer) user.getConfigMap().get("bans");
-                        String reason = (String) user.getConfigMap().get("ban-reason");
+			final String reason = (String) user.getConfigMap().get("ban-reason");
 			final int bans = i == null ? 0:i.intValue();
 			sender.sendMessage(ChatColor.GREEN+"You have "+ChatColor.RED+bans+ChatColor.GREEN+" bans.");
-                        if(reason != null && !reason.isEmpty())
-                            sender.sendMessage(ChatColor.GREEN+"Reason: "+ChatColor.RED+reason+ChatColor.GREEN+".");
+			if(reason != null && !reason.isEmpty())
+				sender.sendMessage(ChatColor.GREEN+"Reason: "+ChatColor.RED+reason+ChatColor.GREEN+".");
 			return true;
 		}
 		if(!sender.hasPermission("essentials.getbans")){
@@ -39,13 +39,13 @@ public class GetBans implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"Player not found, did you spell it right?");
 			return false;
 		}
-                
-                String reason = (String) user.getConfigMap().get("ban-reason");
-                if(reason == null || reason.isEmpty())
-                    reason = user.getBanReason();
-                sender.sendMessage(ChatColor.GREEN+"Bans: "+user.getConfigMap().get("bans"));
-                sender.sendMessage(ChatColor.GREEN+"Reason: "+ChatColor.RED+reason+ChatColor.GREEN+".");
-                return true;
+
+		String reason = (String) user.getConfigMap().get("ban-reason");
+		if(reason == null || reason.isEmpty())
+			reason = user.getBanReason();
+		sender.sendMessage(ChatColor.GREEN+"Bans: "+user.getConfigMap().get("bans"));
+		sender.sendMessage(ChatColor.GREEN+"Reason: "+ChatColor.RED+reason+ChatColor.GREEN+".");
+		return true;
 	}
 
 }

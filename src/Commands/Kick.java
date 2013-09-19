@@ -107,11 +107,11 @@ public class Kick implements CommandExecutor{
 			return false;
 		}else
 			player = players.get(0);
-                if((sender instanceof Player) && !((Player)sender).canSee(player))
-                {
-                    sender.sendMessage(ChatColor.RED+"Player not found.");
-                    return false;
-                }
+		if((sender instanceof Player) && !((Player)sender).canSee(player))
+		{
+			sender.sendMessage(ChatColor.RED+"Player not found.");
+			return false;
+		}
 		if(player.hasPermission("essentials.kick.exempt")){
 			sender.sendMessage(ChatColor.RED+"That player is exempt to kicks!");
 			return false;

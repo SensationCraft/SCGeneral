@@ -38,7 +38,7 @@ public class ItemLimiter implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onInventoryMove(final InventoryMoveItemEvent event)
 	{

@@ -1,5 +1,7 @@
 package org.sensationcraft.scgeneral;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
+import protocol.VanishFix;
 import Commands.ClearInvis;
 import Commands.Delhomes;
 import Commands.Expel;
@@ -47,12 +50,10 @@ import FactionFix.HomeFix;
 import Items.ItemLimiter;
 import Items.SuperItems;
 import Potion.PotionListener;
+
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.utils.LocationUtil;
 import com.earth2me.essentials.utils.LocationUtil.Vector3D;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import protocol.VanishFix;
 
 
 public class SCGeneral extends JavaPlugin
@@ -60,7 +61,7 @@ public class SCGeneral extends JavaPlugin
 	private Scoreboard scoreboard;
 	private Shout shout;
 	private HelpRequest help;
-	
+
 	@Override
 	public void onEnable()
 	{
@@ -81,13 +82,13 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Registering EntityListener");
-                this.help = new HelpRequest();
-                final EntityListener entity = new EntityListener(this.help, this);
-                this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
-                ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
+		this.help = new HelpRequest();
+		final EntityListener entity = new EntityListener(this.help, this);
+		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
+		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Fixing some Essentials 'safe' (actually glitching) teleporting");
-                fixEssentialsTp();
+		this.fixEssentialsTp();
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info(" - Overriding commands");
@@ -197,29 +198,29 @@ public class SCGeneral extends JavaPlugin
 		}
 		this.commandMap.clear();
 	}
-        private void fixEssentialsTp()
-        {
-            try
-            {
-                Field f = LocationUtil.class.getDeclaredField("VOLUME");
-                if(!f.isAccessible())
-                    f.setAccessible(true);
-                int mods = f.getModifiers();
-                if((mods & Modifier.FINAL) != 0)
-                {
-                    Field m = Field.class.getDeclaredField("modifiers");
-                    if(!m.isAccessible())
-                        m.setAccessible(true);
-                    m.setInt(f, mods & ~Modifier.FINAL);
-                }
-                f.set(null, new Vector3D[]{});
-            }
-            catch(Exception ex)
-            {
-                getLogger().warning("Failed to fix Essentials safe teleportation");
-                // We failed, too bad
-                ex.printStackTrace();
-            }
-            
-        }
+	private void fixEssentialsTp()
+	{
+		try
+		{
+			final Field f = LocationUtil.class.getDeclaredField("VOLUME");
+			if(!f.isAccessible())
+				f.setAccessible(true);
+			final int mods = f.getModifiers();
+			if((mods & Modifier.FINAL) != 0)
+			{
+				final Field m = Field.class.getDeclaredField("modifiers");
+				if(!m.isAccessible())
+					m.setAccessible(true);
+				m.setInt(f, mods & ~Modifier.FINAL);
+			}
+			f.set(null, new Vector3D[]{});
+		}
+		catch(final Exception ex)
+		{
+			this.getLogger().warning("Failed to fix Essentials safe teleportation");
+			// We failed, too bad
+			ex.printStackTrace();
+		}
+
+	}
 }

@@ -20,22 +20,22 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 
 public class BountiesListeners implements Listener{
 
-	private Essentials ess;
-	
+	private final Essentials ess;
+
 	public BountiesListeners(){
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerJoin(PlayerJoinEvent e){
-		User user = this.ess.getOfflineUser(e.getPlayer().getName());
+	public void onPlayerJoin(final PlayerJoinEvent e){
+		final User user = this.ess.getOfflineUser(e.getPlayer().getName());
 		if(user != null)
 			if(user.getConfigMap().containsKey("bounties")){
-				List<String> bounties = (List<String>)user.getConfigMap().get("bounties");
-				Iterator<String> it = bounties.iterator();
+				final List<String> bounties = (List<String>)user.getConfigMap().get("bounties");
+				final Iterator<String> it = bounties.iterator();
 				while(it.hasNext()){
-					String[] split = it.next().split("[:]");
+					final String[] split = it.next().split("[:]");
 					if(split.length == 2)
 						if(!this.checkBountyIsValid(Long.parseLong(split[1])))
 							it.remove();
@@ -43,25 +43,26 @@ public class BountiesListeners implements Listener{
 				user.setConfigProperty("bounties", bounties);
 			}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerDeath(PlayerDeathEvent e){
+	public void onPlayerDeath(final PlayerDeathEvent e){
 		if(e.getEntity().getKiller() == null)
 			return;
-		User user = this.ess.getUser(e.getEntity().getName());
-		if(user != null){
+		final User user = this.ess.getUser(e.getEntity().getName());
+		if(user != null)
 			if(user.getConfigMap().containsKey("bounties")){
 				@SuppressWarnings("unchecked")
+				final
 				List<String> bounties = (List<String>) user.getConfigMap().get("bounties");
 				if(!bounties.isEmpty()){
-					String name = e.getEntity().getKiller().getName();
-					for(String bounty:bounties)
+					final String name = e.getEntity().getKiller().getName();
+					for(final String bounty:bounties)
 						try {
-							String[] split = bounty.split("[:]");
+							final String[] split = bounty.split("[:]");
 							if(!this.checkBountyIsValid(Long.parseLong(split[1])))
 								continue;
 							//TODO too lazy to remove it
-							double money = Double.parseDouble(split[0]);
+							final double money = Double.parseDouble(split[0]);
 							Economy.add(name, new BigDecimal(money));
 							e.getEntity().getKiller().sendMessage(new StringBuilder().append(ChatColor.GREEN).append("You have been awarded $").append(money).append(" for killing ").append(e.getEntity().getName()).toString());
 						} catch (NumberFormatException | NoLoanPermittedException | ArithmeticException | UserDoesNotExistException error) {
@@ -69,13 +70,12 @@ public class BountiesListeners implements Listener{
 						}
 				}
 			}
-		}
 	}
-	
-	public boolean checkBountyIsValid(long timeout){
+
+	public boolean checkBountyIsValid(final long timeout){
 		if(timeout < System.currentTimeMillis())
 			return false;
 		return true;
 	}
-	
+
 }

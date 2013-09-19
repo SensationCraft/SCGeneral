@@ -15,37 +15,37 @@ import com.earth2me.essentials.utils.DateUtil;
 
 public class CheckBounties implements CommandExecutor{
 
-	private Essentials ess;
-	
+	private final Essentials ess;
+
 	public CheckBounties(){
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
-	
+
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2,
-			String[] arg3) {
+	public boolean onCommand(final CommandSender arg0, final Command arg1, final String arg2,
+			final String[] arg3) {
 		User user = null;
-		if(arg3.length == 0 && arg0 instanceof Player == false){
+		if(arg3.length == 0 && arg0 instanceof Player == false)
 			arg0.sendMessage(ChatColor.RED+"That command can only be executed ingame!");
-		}else if(arg3.length == 0)
+		else if(arg3.length == 0)
 			user = this.ess.getUser(arg0.getName());
 		else
 			user = this.ess.getOfflineUser(arg3[0]);
-		if(user == null){
+		if(user == null)
 			arg0.sendMessage(ChatColor.RED+"Player not found. Did you type the name right?");
-		}
 		if(user.getConfigMap().containsKey("bounties")){
 			@SuppressWarnings("unchecked")
+			final
 			List<String> bounties = (List<String>) user.getConfigMap().get("bounties");
 			if(bounties.isEmpty()){
 				arg0.sendMessage(ChatColor.GREEN+"You don't have any bounties!");
 				return false;
 			}
-			StringBuilder builder = new StringBuilder().append(ChatColor.BLUE).append("Bounties:\n");
-			for(String bounty:bounties){
-				String[] split = bounty.split("[:]");
-				String format = DateUtil.formatDateDiff(Long.parseLong(split[1]));
-				double money = Double.parseDouble(split[0]);
+			final StringBuilder builder = new StringBuilder().append(ChatColor.BLUE).append("Bounties:\n");
+			for(final String bounty:bounties){
+				final String[] split = bounty.split("[:]");
+				final String format = DateUtil.formatDateDiff(Long.parseLong(split[1]));
+				final double money = Double.parseDouble(split[0]);
 				builder.append(ChatColor.DARK_RED).append("$").append(money).append(ChatColor.GOLD).append("expires in ").append(format).append("\n");
 			}
 			arg0.sendMessage(builder.toString());

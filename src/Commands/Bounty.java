@@ -18,16 +18,16 @@ import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.utils.DateUtil;
 
 public class Bounty implements CommandExecutor{
-	
-	private Essentials ess;
-	
+
+	private final Essentials ess;
+
 	public Bounty(){
 		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String arg2,
-			String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command command, final String arg2,
+			final String[] args) {
 		if(sender instanceof Player == false){
 			sender.sendMessage(ChatColor.RED+"That command must be executed ingame!");
 			return false;
@@ -44,38 +44,38 @@ public class Bounty implements CommandExecutor{
 			return false;
 		}
 		final BigDecimal money = new BigDecimal(Double.parseDouble(args[1]));
-			try {
-				if(!Economy.hasEnough(sender.getName(), money)){
-					sender.sendMessage(ChatColor.RED+"You don't have that much money!");
-					return false;
-				}
-				User user = this.ess.getOfflineUser(args[0]);
-				if(this.addBounty(user, money.doubleValue())){
-					Economy.substract(sender.getName(), money);
-					sender.sendMessage(ChatColor.GREEN+"Your bounty has been placed.");
-					if(user.isOnline()){
-						user.sendMessage(ChatColor.DARK_RED+"A bounty has been placed on you for $"+money.doubleValue());
-						user.playSound(user.getLocation(), Sound.WITHER_SPAWN, 5, 1);
-					}
-					return true;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		try {
+			if(!Economy.hasEnough(sender.getName(), money)){
+				sender.sendMessage(ChatColor.RED+"You don't have that much money!");
+				return false;
 			}
+			final User user = this.ess.getOfflineUser(args[0]);
+			if(this.addBounty(user, money.doubleValue())){
+				Economy.substract(sender.getName(), money);
+				sender.sendMessage(ChatColor.GREEN+"Your bounty has been placed.");
+				if(user.isOnline()){
+					user.sendMessage(ChatColor.DARK_RED+"A bounty has been placed on you for $"+money.doubleValue());
+					user.playSound(user.getLocation(), Sound.WITHER_SPAWN, 5, 1);
+				}
+				return true;
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private boolean addBounty(User user, double money) throws Exception{
-		long timeStamp = DateUtil.parseDateDiff("1w", true);
+	private boolean addBounty(final User user, final double money) throws Exception{
+		final long timeStamp = DateUtil.parseDateDiff("1w", true);
 		List<String> bounties = null;
 		if(user.getConfigMap().containsKey("bounties"))
 			bounties = (List<String>) user.getConfigMap().get("bounties");
 		else
 			bounties = new ArrayList<>();
-		bounties.add(money+":"+timeStamp);
-		user.setConfigProperty("bounties", bounties);
-		return true;
+			bounties.add(money+":"+timeStamp);
+			user.setConfigProperty("bounties", bounties);
+			return true;
 	}
 
 }

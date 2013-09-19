@@ -1,5 +1,6 @@
 package Entity;
 
+import java.util.List;
 import java.util.Random;
 
 import me.superckl.combatlogger.CombatLogger;
@@ -11,9 +12,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
@@ -30,6 +34,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -45,11 +50,6 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
-import java.util.List;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class EntityListener implements Listener
 {
@@ -59,9 +59,9 @@ public class EntityListener implements Listener
 	private final SCGeneral plugin;
 	private final HelpRequest help;
 	private final Essentials ess;
-        /*private final EnumSet<Material> hax = EnumSet.of(
-            Material.THIN_GLASS, 
-            Material.IRON_FENCE, 
+	/*private final EnumSet<Material> hax = EnumSet.of(
+            Material.THIN_GLASS,
+            Material.IRON_FENCE,
             Material.FENCE,
             Material.FENCE_GATE,
             Material.COBBLE_WALL,
@@ -79,8 +79,8 @@ public class EntityListener implements Listener
 	public void onPlayerQuit(final PlayerQuitEvent e)
 	{
 		this.help.removeRequest(e.getPlayer().getName());
-		for(Player player:Bukkit.getOnlinePlayers()){
-			User user = this.ess.getUser(player.getName());
+		for(final Player player:Bukkit.getOnlinePlayers()){
+			final User user = this.ess.getUser(player.getName());
 			if(user == null)
 				continue;
 			if(!user.isInvSee())
@@ -93,20 +93,20 @@ public class EntityListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerInteract(PlayerInteractEvent e){
-                if(e.getMaterial() == Material.ENDER_PEARL && checkBlock(e.getPlayer(), null))
-                {
-                    e.getPlayer().sendMessage(ChatColor.RED+"Glitching is bad :(");
-                    e.setCancelled(true);
-                    return;
-                }
+	public void onPlayerInteract(final PlayerInteractEvent e){
+		if(e.getMaterial() == Material.ENDER_PEARL && this.checkBlock(e.getPlayer(), null))
+		{
+			e.getPlayer().sendMessage(ChatColor.RED+"Glitching is bad :(");
+			e.setCancelled(true);
+			return;
+		}
 		if(e.getAction() != Action.RIGHT_CLICK_BLOCK)
 			return;
 		if(e.getClickedBlock().getState() instanceof Chest == false)
 			return;
-		User user = this.ess.getUser(e.getPlayer().getName());
+		final User user = this.ess.getUser(e.getPlayer().getName());
 		if(user == null)
 			return;
 		if(user.isVanished()){
@@ -128,17 +128,13 @@ public class EntityListener implements Listener
 			loc.getWorld().dropItem(loc, new ItemStack(Material.GHAST_TEAR, 1));
 		else if (ent instanceof Spider && chance == 0)
 			loc.getWorld().dropItem(loc, new ItemStack(Material.MAGMA_CREAM, 1));
-                if(ent instanceof PigZombie)
-                {
-                    List<ItemStack> drops = event.getDrops();
-                    for(ItemStack i : drops)
-                    {
-                        if(i.getType() == Material.GOLD_NUGGET || i.getType() == Material.GOLD_INGOT)
-                        {
-                            i.setType(Material.DIRT);
-                        }
-                    }
-                }
+		if(ent instanceof PigZombie)
+		{
+			final List<ItemStack> drops = event.getDrops();
+			for(final ItemStack i : drops)
+				if(i.getType() == Material.GOLD_NUGGET || i.getType() == Material.GOLD_INGOT)
+					i.setType(Material.DIRT);
+		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -154,10 +150,8 @@ public class EntityListener implements Listener
 			if(chance == 0)
 				loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
 		}
-                if(ent != null && ent.getType() == EntityType.ENDER_DRAGON)
-                {
-                    event.setCancelled(true);
-                }
+		if(ent != null && ent.getType() == EntityType.ENDER_DRAGON)
+			event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -215,51 +209,45 @@ public class EntityListener implements Listener
 			System.out.println("Blocked aimbot for "+((Player)e.getDamager()).getName()+": "+angle);
 			return;
 		}
-                if(checkBlock(attacker, attacked))
-                {
-                    attacker.sendMessage(ChatColor.RED+"Glitching is bad :(");
-                    e.setCancelled(true);
-                }
-                
+		if(this.checkBlock(attacker, attacked))
+		{
+			attacker.sendMessage(ChatColor.RED+"Glitching is bad :(");
+			e.setCancelled(true);
+		}
+
 	}
-        
-        private boolean checkBlock(Player attacker, Player attacked)
-        {
-            boolean flag = false;
-            Block b;
-            int len = 2;
-            if(attacked != null)
-            {
-                len = (int) attacker.getLocation().distance(attacked.getLocation());
-            }
-            for(Block block:attacker.getLineOfSight(null, len))
-                    if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
-                    {
-                        b = block;
-                        if((block.getData() & 8) != 0)
-                        {
-                            b = b.getRelative(BlockFace.DOWN);
-                        }
-                        if((b.getData() & 4) == 0 && Lockette.isProtected(block))
-                        {
-                            flag = true;
-                            break;
-                        }
-                        else if((b.getData() & 4) == 0)
-                        {
-                            flag = true;
-                            break;
-                        }
-                    }
-                
-		//Door.isOpen is deprecated, using openable to supress the warning.
-		for(Block block:attacker.getLineOfSight(null, len))
-			if(block.getType().isSolid() || flag)
-                        {
-				return true;
+
+	private boolean checkBlock(final Player attacker, final Player attacked)
+	{
+		boolean flag = false;
+		Block b;
+		int len = 2;
+		if(attacked != null)
+			len = (int) attacker.getLocation().distance(attacked.getLocation());
+		for(final Block block:attacker.getLineOfSight(null, len))
+			if(block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
+			{
+				b = block;
+				if((block.getData() & 8) != 0)
+					b = b.getRelative(BlockFace.DOWN);
+				if((b.getData() & 4) == 0 && Lockette.isProtected(block))
+				{
+					flag = true;
+					break;
+				}
+				else if((b.getData() & 4) == 0)
+				{
+					flag = true;
+					break;
+				}
 			}
-                return false;
-        }
+
+		//Door.isOpen is deprecated, using openable to supress the warning.
+		for(final Block block:attacker.getLineOfSight(null, len))
+			if(block.getType().isSolid() || flag)
+				return true;
+		return false;
+	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(final AsyncPlayerChatEvent e) {
@@ -279,18 +267,8 @@ public class EntityListener implements Listener
 			e.setCancelled(true);
 			e.setMessage("/cockblocked");
 		}
-                else if(e.getMessage().startsWith("/?")){
-                        e.setMessage(e.getMessage().replace("/?", "/help"));
-                }
-                /*else if(e.getMessage().contains("/home") || e.getMessage().contains("/esethome"))
-                {
-                    Player player = e.getPlayer();
-                    Block b = player.getLocation().getBlock();                
-                    if(hax.contains(b.getType()))
-                    {
-                        
-                    }
-                }*/
+		else if(e.getMessage().startsWith("/?"))
+			e.setMessage(e.getMessage().replace("/?", "/help"));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -302,14 +280,12 @@ public class EntityListener implements Listener
 		if(this.combatLogger.getCombatListeners().isInCombat(event.getPlayer().getName()))
 			event.setCancelled(true);
 	}
-        
-        @EventHandler
-        public void onPickup(final PlayerPickupItemEvent event)
-        {
-            User user = this.ess.getUser(event.getPlayer());
-            if(user.isVanished())
-            {
-                event.setCancelled(true);
-            }
-        }
+
+	@EventHandler
+	public void onPickup(final PlayerPickupItemEvent event)
+	{
+		final User user = this.ess.getUser(event.getPlayer());
+		if(user.isVanished())
+			event.setCancelled(true);
+	}
 }

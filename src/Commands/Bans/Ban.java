@@ -1,7 +1,7 @@
 package Commands.Bans;
 
+import java.util.Arrays;
 import java.util.List;
-
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,7 +16,6 @@ import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.utils.DateUtil;
 import com.google.common.base.Joiner;
-import java.util.Arrays;
 
 public class Ban implements CommandExecutor{
 
@@ -85,7 +84,7 @@ public class Ban implements CommandExecutor{
 			user.setBanTimeout(timeout);
 			user.kickPlayer(message);
 			user.setConfigProperty("bans", bans+1);
-                        user.setConfigProperty("ban-reason", message);
+			user.setConfigProperty("ban-reason", message);
 			for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 				loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
 		} catch (final Exception e) {

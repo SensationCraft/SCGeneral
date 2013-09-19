@@ -107,8 +107,8 @@ public class FactionParty implements Listener
 	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onFacLeave(final FPlayerLeaveEvent event)
 	{
-                if(PartyAPI.inParty(event.getFPlayer().getPlayer()))
-                    PartyAPI.removeFromParty(event.getFPlayer().getPlayer());
+		if(PartyAPI.inParty(event.getFPlayer().getPlayer()))
+			PartyAPI.removeFromParty(event.getFPlayer().getPlayer());
 	}
 
 	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)

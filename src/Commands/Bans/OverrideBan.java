@@ -1,7 +1,7 @@
 package Commands.Bans;
 
+import java.util.Arrays;
 import java.util.List;
-
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +15,6 @@ import org.sensationcraft.scgeneral.SCGeneral;
 import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.google.common.base.Joiner;
-import java.util.Arrays;
 
 public class OverrideBan implements CommandExecutor{
 
@@ -81,7 +80,7 @@ public class OverrideBan implements CommandExecutor{
 		user.setBanTimeout(0);
 		user.kickPlayer(message);
 		user.setConfigProperty("bans", 4);
-                user.setConfigProperty("ban-reason", message);
+		user.setConfigProperty("ban-reason", message);
 		for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 			loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
 	}
