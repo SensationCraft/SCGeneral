@@ -55,19 +55,22 @@ public class BountiesListeners implements Listener{
 				final
 				List<String> bounties = (List<String>) user.getConfigMap().get("bounties");
 				if(!bounties.isEmpty()){
+					Iterator<String> it = bounties.iterator();
 					final String name = e.getEntity().getKiller().getName();
-					for(final String bounty:bounties)
+					while(it.hasNext())
 						try {
-							final String[] split = bounty.split("[:]");
-							if(!this.checkBountyIsValid(Long.parseLong(split[1])))
+							final String[] split = it.next().split("[:]");
+							if(!this.checkBountyIsValid(Long.parseLong(split[1]))){
+								it.remove();
 								continue;
-							//TODO too lazy to remove it
+							}
 							final double money = Double.parseDouble(split[0]);
 							Economy.add(name, new BigDecimal(money));
 							e.getEntity().getKiller().sendMessage(new StringBuilder().append(ChatColor.GREEN).append("You have been awarded $").append(money).append(" for killing ").append(e.getEntity().getName()).toString());
 						} catch (NumberFormatException | NoLoanPermittedException | ArithmeticException | UserDoesNotExistException error) {
 							error.printStackTrace();
 						}
+					user.setConfigProperty("bounties", bounties);
 				}
 			}
 	}

@@ -21,6 +21,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import protocol.VanishFix;
+import Bounties.BountiesListeners;
+import Commands.Bounty;
+import Commands.CheckBounties;
 import Commands.ClearInvis;
 import Commands.Delhomes;
 import Commands.Expel;
@@ -81,6 +84,8 @@ public class SCGeneral extends JavaPlugin
 		this.getServer().getPluginManager().registerEvents(new PotionListener(), this);
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
+		this.getLogger().info(" - Registering Bounty");
+		this.getServer().getPluginManager().registerEvents(new BountiesListeners(), this);
 		this.getLogger().info(" - Registering EntityListener");
 		this.help = new HelpRequest();
 		final EntityListener entity = new EntityListener(this.help, this);
@@ -182,6 +187,8 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("helpaccept", new HelpAccept(help));
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
+		this.commandMap.put("bounty", new Bounty());
+		this.commandMap.put("checkbounties", new CheckBounties());
 	}
 	private void overrideCommands(final HelpRequest help){
 		this.initializeCommandMap(help);
