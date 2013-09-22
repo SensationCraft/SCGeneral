@@ -12,7 +12,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class StopConvo extends BooleanPrompt
 {
-
 	final Plugin pl;
 	final CombatLogger combatLogger;
 
@@ -69,5 +68,4 @@ public class StopConvo extends BooleanPrompt
 	{
 		return true;
 	}
-
 }

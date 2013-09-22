@@ -47,3 +47,6 @@ commands:
     description: Get the head of a player.
   expel:
     description: Expel all players in a radius.
+  togglepickup:
+    description: Toggles whether you pickup items while vanished
+  

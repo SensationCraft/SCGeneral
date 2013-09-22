@@ -1,4 +1,4 @@
-package mcMMOFix;
+package patch;
 
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;

@@ -39,7 +39,7 @@ public class Delhomes implements CommandExecutor
 			sender.sendMessage(ChatColor.RED+"Only ingame players can use this command");
 			return true;
 		}
-		if(args.length < 1 || !args[0].matches("[0-9]*"))
+		if(args.length < 1 || !args[0].matches("[\\-]{0,1}[0-9]*"))
 		{
 			sender.sendMessage(ChatColor.RED+"Usage: /delhomes <radius>: -1 for all homes");
 			return true;

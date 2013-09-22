@@ -1,4 +1,4 @@
-package mcMMOFix;
+package mcMMO;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;

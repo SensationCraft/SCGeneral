@@ -54,7 +54,7 @@ public class Shout implements CommandExecutor
 
 		if(this.dead && !p.hasPermission("shout.bypass.kill")){
 			p.sendMessage(ChatColor.RED+"Shout is currently disabled! Try again later.");
-			return false;
+			return true;
 		}
 		final String playerName = p.getName();
 		if(this.disabled.contains(playerName)){

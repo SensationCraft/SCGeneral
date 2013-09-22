@@ -18,6 +18,7 @@ import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.ConversationPrefix;
+import org.bukkit.conversations.Prompt;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -26,6 +27,7 @@ public class StopCommand extends Command implements CommandExecutor
 
 	private final Plugin pl;
 	private final CombatLogger combatLogger;
+        private final Prompt stopPrompt;
 
 	public StopCommand(final Plugin pl)
 	{
@@ -38,7 +40,7 @@ public class StopCommand extends Command implements CommandExecutor
 		final PluginCommand stop = Bukkit.getPluginCommand("stop");
 		if(stop != null)
 			stop.setExecutor(this);
-
+                
 		CommandMap cm = null;
 		try
 		{
@@ -64,7 +66,7 @@ public class StopCommand extends Command implements CommandExecutor
 		}
 
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
-
+                this.stopPrompt = new StopConvo(this.pl, this.combatLogger);
 	}
 
 	@Override
@@ -105,13 +107,13 @@ public class StopCommand extends Command implements CommandExecutor
 		final Map<Object, Object> session = new HashMap<Object,Object>();
 		session.put("msg", message);
 
-		final Conversation c = new ConversationFactory(this.pl)
-		.thatExcludesNonPlayersWithMessage("How did you get here?")
-		.withLocalEcho(false)
-		.withFirstPrompt(new StopConvo(this.pl, this.combatLogger))
-		.withModality(true)
-		.withTimeout(30)
-		.withPrefix(new ConversationPrefix()
+		ConversationFactory cf = new ConversationFactory(this.pl);
+		cf.thatExcludesNonPlayersWithMessage("How did you get here?");
+		cf.withLocalEcho(false);
+		cf.withFirstPrompt(this.stopPrompt);
+		cf.withModality(true);
+		cf.withTimeout(30);
+		cf.withPrefix(new ConversationPrefix()
 		{
 
 			@Override
@@ -119,9 +121,9 @@ public class StopCommand extends Command implements CommandExecutor
 			{
 				return ChatColor.DARK_RED+"[STOP] "+ChatColor.RED;
 			}
-		})
-		.withInitialSessionData(session)
-		.buildConversation((Player)cs);
+		});
+		cf.withInitialSessionData(session);
+		final Conversation c = cf.buildConversation((Player)cs);
 		((Player)cs).beginConversation(c);
 		return true;
 	}

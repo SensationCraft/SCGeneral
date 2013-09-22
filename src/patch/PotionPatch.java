@@ -1,4 +1,4 @@
-package Potion;
+package patch;
 
 
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 import org.sensationcraft.scgeneral.SCGeneral;
 
-public class PotionListener implements Listener
+public class PotionPatch implements Listener
 {
 
 	private final PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 320, 2);

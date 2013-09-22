@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lockpicks.Listeners;
-import mcMMOFix.DisarmBlocker;
-import mcMMOFix.DupeFix;
-import mcMMOFix.ExpFarmFix;
-import mcMMOFix.FactionParty;
+import mcMMO.DisarmBlocker;
+import patch.DupeFix;
+import patch.ExpFarmFix;
+import mcMMO.FactionParty;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -41,17 +41,16 @@ import Commands.help.HelpDeny;
 import Commands.help.HelpList;
 import Commands.help.HelpRead;
 import Commands.help.HelpRequest;
+import Commands.tp.Home;
+import Commands.tp.Top;
 import Commands.tp.TpSuite;
 import Entity.EntityListener;
-import FactionFix.HomeFix;
+import Factions.HomeAlert;
 import Items.ItemLimiter;
 import Items.SuperItems;
-import Potion.PotionListener;
+import patch.PotionPatch;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.earth2me.essentials.utils.LocationUtil;
-import com.earth2me.essentials.utils.LocationUtil.Vector3D;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import patch.HacknGlitchPatch;
 import protocol.VanishFix;
 
 
@@ -66,7 +65,7 @@ public class SCGeneral extends JavaPlugin
 	{
 		this.getLogger().info("[SCGeneral] Startup.");
 		this.getLogger().info(" - Registering Faction fixes");
-		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
+		this.getServer().getPluginManager().registerEvents(new HomeAlert(), this);
 		this.getLogger().info(" - Registering mcMMO disarm protect");
 		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
 		this.getLogger().info(" - Registering mcMMO party control");
@@ -77,17 +76,17 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");
-		this.getServer().getPluginManager().registerEvents(new PotionListener(), this);
+		this.getServer().getPluginManager().registerEvents(new PotionPatch(), this);
 		this.getLogger().info(" - Registering LockPicks");
 		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
 		this.getLogger().info(" - Registering EntityListener");
                 this.help = new HelpRequest();
-                final EntityListener entity = new EntityListener(this.help, this);
+                final EntityListener entity = new EntityListener(this.help);
+                this.getLogger().info(" - Registering Hack & Glitch patches");
+                this.getServer().getPluginManager().registerEvents(new HacknGlitchPatch(this), this);
                 this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
                 ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
 		this.getServer().getPluginManager().registerEvents(entity, this);
-		this.getLogger().info(" - Fixing some Essentials 'safe' (actually glitching) teleporting");
-                fixEssentialsTp();
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
 		this.getLogger().info(" - Overriding commands");
@@ -181,6 +180,8 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("helpaccept", new HelpAccept(help));
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
+                this.commandMap.put("top", new Top());
+                this.commandMap.put("home", new Home());
 	}
 	private void overrideCommands(final HelpRequest help){
 		this.initializeCommandMap(help);
@@ -197,29 +198,4 @@ public class SCGeneral extends JavaPlugin
 		}
 		this.commandMap.clear();
 	}
-        private void fixEssentialsTp()
-        {
-            try
-            {
-                Field f = LocationUtil.class.getDeclaredField("VOLUME");
-                if(!f.isAccessible())
-                    f.setAccessible(true);
-                int mods = f.getModifiers();
-                if((mods & Modifier.FINAL) != 0)
-                {
-                    Field m = Field.class.getDeclaredField("modifiers");
-                    if(!m.isAccessible())
-                        m.setAccessible(true);
-                    m.setInt(f, mods & ~Modifier.FINAL);
-                }
-                f.set(null, new Vector3D[]{});
-            }
-            catch(Exception ex)
-            {
-                getLogger().warning("Failed to fix Essentials safe teleportation");
-                // We failed, too bad
-                ex.printStackTrace();
-            }
-            
-        }
 }

@@ -1,4 +1,4 @@
-package FactionFix;
+package Factions;
 
 import java.util.Arrays;
 
@@ -20,13 +20,13 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Relation;
 
-public class HomeFix implements Listener
+public class HomeAlert implements Listener
 {
 
 	private final Essentials ess;
 	private final String homeTeleportAlert = new StringBuilder().append(ChatColor.RED).append(ChatColor.BOLD).append("An enemy has teleported into your faction's land!").toString();
 
-	public HomeFix()
+	public HomeAlert()
 	{
 		final Plugin p = Bukkit.getPluginManager().getPlugin("Essentials");
 		if(p != null)
