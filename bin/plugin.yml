@@ -66,3 +66,4 @@ commands:
     description: Cancel your duel request.
   end:
     description: End the duel in the arena.
+	aliases: [forceend]
