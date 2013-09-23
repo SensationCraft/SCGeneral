@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +15,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.sensationcraft.login.PlayerManager;
 import org.sensationcraft.login.SCLogin;
 
-import com.earth2me.essentials.Essentials;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
@@ -25,22 +23,10 @@ import com.massivecraft.factions.Factions;
 public class FactionCheck implements CommandExecutor
 {
 
-	private final Essentials ess;
-
-	public FactionCheck()
-	{
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
-
 	@Override
 	public boolean onCommand(final CommandSender logTo, final Command arg1, final String arg2,
 			final String[] args)
 	{
-		if (this.ess == null)
-		{
-			logTo.sendMessage(ChatColor.RED + "Essentials not found!");
-			return true;
-		}
 		if (!logTo.hasPermission("check.faction"))
 		{
 			logTo.sendMessage(ChatColor.RED + "You don't have permission for that!");

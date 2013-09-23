@@ -1,24 +1,16 @@
 package Commands.tp;
 
-import me.superckl.combatlogger.CombatLogger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 import Commands.tp.TpSuite.TpRequest;
 
 public class TpAccept {
-
-	private final CombatLogger combatLogger;
-
-	public TpAccept()
-	{
-		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
-	}
 
 	public void execute(final Player player, final TpRequest req)
 	{
@@ -29,15 +21,16 @@ public class TpAccept {
 			return;
 		}
 
-		if(this.combatLogger.getCombatListeners().isInCombat(other.getName()))
+		if(SCGeneral.getUser(other.getName()).isInCombat())
 		{
 			player.sendMessage(ChatColor.RED+"You cannot teleport to people while they are in combat!");
 			return;
-		}
-		else if(this.combatLogger.getCombatListeners().isInCombat(player.getName()))
-		{
-			player.sendMessage(ChatColor.RED+"You cannot teleport to people while in combat!");
-			return;
+		} else {
+			if(SCGeneral.getUser(player.getName()).isInCombat())
+			{
+				player.sendMessage(ChatColor.RED+"You cannot teleport to people while in combat!");
+				return;
+			}
 		}
 
 		Location to;

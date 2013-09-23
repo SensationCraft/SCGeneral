@@ -1,27 +1,20 @@
 package Commands.Bans;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
 public class GetBans implements CommandExecutor{
-
-	private final Essentials ess;
-
-	public GetBans(){
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
 			final String[] args) {
 		if(args.length == 0){
-			final User user = this.ess.getUser(sender.getName());
+			final User user = SCGeneral.getEssentials().getUser(sender.getName());
 			final Integer i = (Integer) user.getConfigMap().get("bans");
 			final String reason = (String) user.getConfigMap().get("ban-reason");
 			final int bans = i == null ? 0:i.intValue();
@@ -34,7 +27,7 @@ public class GetBans implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You don't have permission to do that!");
 			return false;
 		}
-		final User user = this.ess.getOfflineUser(args[0]);
+		final User user = SCGeneral.getEssentials().getOfflineUser(args[0]);
 		if(user == null){
 			sender.sendMessage(ChatColor.RED+"Player not found, did you spell it right?");
 			return false;

@@ -4,26 +4,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.utils.DateUtil;
 
 public class Bounty implements CommandExecutor{
-
-	private final Essentials ess;
-
-	public Bounty(){
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String arg2,
@@ -49,7 +42,7 @@ public class Bounty implements CommandExecutor{
 				sender.sendMessage(ChatColor.RED+"You don't have that much money!");
 				return false;
 			}
-			final User user = this.ess.getOfflineUser(args[0]);
+			final User user = SCGeneral.getEssentials().getOfflineUser(args[0]);
 			if(this.addBounty(user, money.doubleValue())){
 				Economy.substract(sender.getName(), money);
 				sender.sendMessage(ChatColor.GREEN+"Your bounty has been placed.");

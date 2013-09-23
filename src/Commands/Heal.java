@@ -2,9 +2,6 @@ package Commands;
 
 import java.util.List;
 
-import me.superckl.combatlogger.CombatLogger;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,14 +11,6 @@ import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 public class Heal implements CommandExecutor{
-
-	private final CombatLogger combatLogger;
-	private final SCGeneral instance;
-
-	public Heal(final SCGeneral instance){
-		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
-		this.instance = instance;
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
@@ -44,8 +33,8 @@ public class Heal implements CommandExecutor{
 			}
 		}else if (args.length == 1){
 			if(sender.hasPermission("essentials.heal.other")){
-				player = this.instance.getServer().getPlayer(args[0]);
-				final List<Player> players = this.instance.getServer().matchPlayer(args[0]);
+				player = SCGeneral.getInstance().getServer().getPlayer(args[0]);
+				final List<Player> players = SCGeneral.getInstance().getServer().matchPlayer(args[0]);
 				if(player == null && players.size() < 1){
 					sender.sendMessage(ChatColor.RED+"Player not found.");
 					return false;
@@ -54,7 +43,7 @@ public class Heal implements CommandExecutor{
 					return false;
 				}else if(player == null)
 					player = players.get(0);
-				if(this.combatLogger.getCombatListeners().isInCombat(player.getName()) || this.combatLogger.getArena().isInArena(player)){
+				if(SCGeneral.getUser(player.getName()).isInCombat() || SCGeneral.getInstance().getArena().isInArena(player)){
 					sender.sendMessage(ChatColor.RED+"You can't heal players that are in combat!");
 					return false;
 				}
@@ -63,7 +52,7 @@ public class Heal implements CommandExecutor{
 				player.setFoodLevel(20);
 				sender.sendMessage(ChatColor.GOLD+"You have healed "+player.getName()+".");
 				player.sendMessage(ChatColor.GOLD+sender.getName()+" has healed you.");
-				this.instance.getLogger().info(sender.getName()+" has healed "+player.getName());
+				SCGeneral.getInstance().getLogger().info(sender.getName()+" has healed "+player.getName());
 				return true;
 			}else{
 				sender.sendMessage(ChatColor.RED+"You don't have permission for that!");

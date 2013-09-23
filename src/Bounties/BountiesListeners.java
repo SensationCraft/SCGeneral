@@ -4,15 +4,14 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
@@ -20,16 +19,10 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 
 public class BountiesListeners implements Listener{
 
-	private final Essentials ess;
-
-	public BountiesListeners(){
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
-
 	@SuppressWarnings("unchecked")
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent e){
-		final User user = this.ess.getOfflineUser(e.getPlayer().getName());
+		final User user = SCGeneral.getEssentials().getOfflineUser(e.getPlayer().getName());
 		if(user != null)
 			if(user.getConfigMap().containsKey("bounties")){
 				final List<String> bounties = (List<String>)user.getConfigMap().get("bounties");
@@ -48,14 +41,14 @@ public class BountiesListeners implements Listener{
 	public void onPlayerDeath(final PlayerDeathEvent e){
 		if(e.getEntity().getKiller() == null)
 			return;
-		final User user = this.ess.getUser(e.getEntity().getName());
+		final User user = SCGeneral.getEssentials().getUser(e.getEntity().getName());
 		if(user != null)
 			if(user.getConfigMap().containsKey("bounties")){
 				@SuppressWarnings("unchecked")
 				final
 				List<String> bounties = (List<String>) user.getConfigMap().get("bounties");
 				if(!bounties.isEmpty()){
-					Iterator<String> it = bounties.iterator();
+					final Iterator<String> it = bounties.iterator();
 					final String name = e.getEntity().getKiller().getName();
 					while(it.hasNext())
 						try {

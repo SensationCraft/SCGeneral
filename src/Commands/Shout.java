@@ -12,25 +12,16 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.github.DarkSeraphim.SCPvP.Titles;
 
 public class Shout implements CommandExecutor
 {
 
-	private final Essentials ess;
-	private final SCGeneral instance;
 	private final long SHOUT_DELAY = 15000;
 	private boolean dead = false;
 	private final String shoutFormat = "&c[S] &r%s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
 	private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
-
-	public Shout(final SCGeneral instance)
-	{
-		this.instance = instance;
-		this.ess = (Essentials)this.instance.getServer().getPluginManager().getPlugin("Essentials");
-	}
 
 	private final Map<String, Long> coolDowns = new HashMap<String, Long>();
 	private final Set<String> disabled = new HashSet<String>();
@@ -60,14 +51,11 @@ public class Shout implements CommandExecutor
 			p.sendMessage(ChatColor.RED+"You have turned shout off. '/shoutmute' to turn it back on.");
 			return false;
 		}
-		if(this.ess != null)
+		final User user = SCGeneral.getEssentials().getUser(playerName);
+		if(user != null && user.isMuted())
 		{
-			final User user = this.ess.getUser(playerName);
-			if(user != null && user.isMuted())
-			{
-				p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You are muted!").toString());
-				return false;
-			}
+			p.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You are muted!").toString());
+			return false;
 		}
 		final Long l = this.coolDowns.get(playerName);
 		if(l != null && l.longValue() > System.currentTimeMillis())
@@ -111,11 +99,11 @@ public class Shout implements CommandExecutor
 
 		final String shout = String.format(this.shoutFormat, title, prefix, message);
 
-		final Player players[] = this.instance.getServer().getOnlinePlayers();
+		final Player players[] = SCGeneral.getInstance().getServer().getOnlinePlayers();
 		for(final Player player:players)
 			if(!this.disabled.contains(player.getName()) && !(this.dead && !player.hasPermission("shout.bypass.kill")))
 				player.sendMessage(shout);
-		this.instance.getLogger().info(shout);
+		SCGeneral.getInstance().getLogger().info(shout);
 		if(!bypass)
 			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
 

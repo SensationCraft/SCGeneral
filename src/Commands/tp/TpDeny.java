@@ -9,10 +9,6 @@ import Commands.tp.TpSuite.TpRequest;
 public class TpDeny
 {
 
-	public TpDeny()
-	{
-	}
-
 	public void execute(final Player player, final TpRequest req)
 	{
 		final Player other = Bukkit.getPlayerExact(req.getRequester());

@@ -4,8 +4,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.superckl.combatlogger.CombatLogger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,21 +17,17 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.ConversationPrefix;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class StopCommand extends Command implements CommandExecutor
 {
 
-	private final Plugin pl;
-	private final CombatLogger combatLogger;
-
-	public StopCommand(final Plugin pl)
+	public StopCommand()
 	{
 		super("stop");
 		this.description = "Stops the server with optional reason";
 		this.usageMessage = "/stop [reason]";
 		this.setPermission("bukkit.command.stop");
-		this.pl = pl;
 		// Try manual override
 		final PluginCommand stop = Bukkit.getPluginCommand("stop");
 		if(stop != null)
@@ -59,12 +53,9 @@ public class StopCommand extends Command implements CommandExecutor
 		}
 		catch(final Exception ex)
 		{
-			pl.getLogger().severe("Failed to hook systematically");
+			SCGeneral.getInstance().getLogger().severe("Failed to hook systematically");
 			ex.printStackTrace();
 		}
-
-		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
-
 	}
 
 	@Override
@@ -94,7 +85,7 @@ public class StopCommand extends Command implements CommandExecutor
 			for(final Player p : Bukkit.getOnlinePlayers())
 			{
 				// Get them out of combat!
-				this.combatLogger.getCombatListeners().destroy(p.getName());
+				SCGeneral.getUser(p.getName()).setInCombat(false);
 				p.kickPlayer(message);
 			}
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
@@ -105,10 +96,10 @@ public class StopCommand extends Command implements CommandExecutor
 		final Map<Object, Object> session = new HashMap<Object,Object>();
 		session.put("msg", message);
 
-		final Conversation c = new ConversationFactory(this.pl)
+		final Conversation c = new ConversationFactory(SCGeneral.getInstance())
 		.thatExcludesNonPlayersWithMessage("How did you get here?")
 		.withLocalEcho(false)
-		.withFirstPrompt(new StopConvo(this.pl, this.combatLogger))
+		.withFirstPrompt(new StopConvo())
 		.withModality(true)
 		.withTimeout(30)
 		.withPrefix(new ConversationPrefix()

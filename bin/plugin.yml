@@ -53,3 +53,16 @@ commands:
   checkbounties:
     decription: Check a player's bounties.
 	aliases: [getbounties, bounties]
+  duel:
+    description: Duel a player!
+    aliases: [challenge]
+  spectate:
+    description: Spectate a duel!
+  deny:
+    description: Deny a duel request.
+  accept:
+    description: Accept a duel request.
+  cancel:
+    description: Cancel your duel request.
+  end:
+    description: End the duel in the arena.

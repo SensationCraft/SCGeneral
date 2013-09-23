@@ -7,7 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.plugin.Plugin;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.commands.party.PartySubcommandType;
@@ -26,14 +26,6 @@ import com.massivecraft.factions.struct.Relation;
 
 public class FactionParty implements Listener
 {
-
-	Plugin plugin;
-
-	public FactionParty(final Plugin plugin)
-	{
-		this.plugin = plugin;
-	}
-
 
 	@EventHandler
 	public void onPartyChange(final McMMOPartyChangeEvent event)
@@ -98,7 +90,7 @@ public class FactionParty implements Listener
 						return;
 					final Party p = mp.getParty();
 					if(p != null && p.getMembers().contains(split[2]))
-						new CheckPartyMembersTask(p, split[2]).runTaskLater(this.plugin, 1L);
+						new CheckPartyMembersTask(p, split[2]).runTaskLater(SCGeneral.getInstance(), 1L);
 				}
 			}
 		}

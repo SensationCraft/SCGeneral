@@ -3,33 +3,21 @@ package Commands;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
+import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.google.common.base.Joiner;
 
 public class Delhomes implements CommandExecutor
 {
 
-	public Essentials ess;
-
 	private final String msg = "&6Deleted homes:&c %s".replace('&', ChatColor.COLOR_CHAR);
-
-	public Delhomes()
-	{
-		final Plugin p = Bukkit.getPluginManager().getPlugin("Essentials");
-		if(p == null)
-			return;
-		this.ess = (Essentials) p;
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command cmnd, final String label, final String[] args)
@@ -50,7 +38,7 @@ public class Delhomes implements CommandExecutor
 		else
 			r = Integer.MAX_VALUE;
 
-		final User u = this.ess.getUser(sender);
+		final User u = SCGeneral.getEssentials().getUser(sender);
 
 		final Location loc = u.getLocation();
 

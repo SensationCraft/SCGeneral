@@ -2,41 +2,31 @@ package protocol;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.comphenix.protocol.Packets;
 import com.comphenix.protocol.events.ConnectionSide;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 public class VanishFix extends PacketAdapter
 {
 
-	private final IEssentials ess;
-
 	public VanishFix(final Plugin plugin)
 	{
 		super(plugin, ConnectionSide.SERVER_SIDE, Packets.Server.PLAY_NOTE_BLOCK);
-		final Plugin p = Bukkit.getPluginManager().getPlugin("Essentials");
-		if (p != null)
-			this.ess = (IEssentials) p;
-		else
-			this.ess = null;
 	}
 
 	@Override
 	public void onPacketSending(final PacketEvent event)
 	{
-		if (this.ess == null)
-			return;
 		if (event.getPacketID() == Packets.Server.PLAY_NOTE_BLOCK)
 		{
 			final PacketContainer pc = event.getPacket();
@@ -59,7 +49,7 @@ public class VanishFix extends PacketAdapter
 				final HumanEntity he = viewers.get(0);
 				if (he instanceof Player == false)
 					return;
-				final User u = this.ess.getUser(he);
+				final User u = SCGeneral.getEssentials().getUser(he);
 				if (u.isVanished())
 					event.setCancelled(true);
 			}

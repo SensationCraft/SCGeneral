@@ -13,15 +13,23 @@ import mcMMOFix.FactionParty;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import protocol.VanishFix;
 import Bounties.BountiesListeners;
+import CombatLogger.CombatListeners;
 import Commands.Bounty;
 import Commands.CheckBounties;
 import Commands.ClearInvis;
@@ -41,6 +49,12 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
+import Commands.Duel.AcceptCommand;
+import Commands.Duel.CancelCommand;
+import Commands.Duel.ChallengeCommand;
+import Commands.Duel.DenyCommand;
+import Commands.Duel.EndCommand;
+import Commands.Duel.SpectateCommand;
 import Commands.help.HelpAccept;
 import Commands.help.HelpCancel;
 import Commands.help.HelpDeny;
@@ -48,6 +62,8 @@ import Commands.help.HelpList;
 import Commands.help.HelpRead;
 import Commands.help.HelpRequest;
 import Commands.tp.TpSuite;
+import Duel.Arena;
+import Duel.DuelListeners;
 import Entity.EntityListener;
 import FactionFix.HomeFix;
 import Items.ItemLimiter;
@@ -55,40 +71,60 @@ import Items.SuperItems;
 import Potion.PotionListener;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.utils.LocationUtil;
 import com.earth2me.essentials.utils.LocationUtil.Vector3D;
 
 
-public class SCGeneral extends JavaPlugin
+public class SCGeneral extends JavaPlugin implements Listener
 {
 	private Scoreboard scoreboard;
 	private Shout shout;
 	private HelpRequest help;
+	private Arena arena;
+	private CombatListeners combatListeners;
+	private static SCGeneral instance;
+	private static Essentials essentials;
+	private Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
 
 	@Override
 	public void onEnable()
 	{
+		SCGeneral.instance = this;
+		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+		if(SCGeneral.essentials == null || !SCGeneral.essentials.isEnabled()){
+			this.getLogger().info("Essentials not found! Stopping server.");
+			this.getServer().shutdown();
+		}
 		this.getLogger().info("[SCGeneral] Startup.");
+		this.getLogger().info(" - Reading config and setting up arena");
+		this.saveDefaultConfig();
+		this.arena = this.makeArena();
+		this.getLogger().info(" - Registering combat listeners");
+		this.combatListeners = new CombatListeners();
+		this.getServer().getPluginManager().registerEvents(this.combatListeners, this);
+		this.getLogger().info(" - Registering duel listeners");
+		this.getServer().getPluginManager().registerEvents(new DuelListeners(this.arena), this);
 		this.getLogger().info(" - Registering Faction fixes");
 		this.getServer().getPluginManager().registerEvents(new HomeFix(), this);
 		this.getLogger().info(" - Registering mcMMO disarm protect");
 		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
 		this.getLogger().info(" - Registering mcMMO party control");
-		this.getServer().getPluginManager().registerEvents(new FactionParty(this), this);
+		this.getServer().getPluginManager().registerEvents(new FactionParty(), this);
 		this.getLogger().info(" - Registering mcMMO fixes");
 		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
-		this.getServer().getPluginManager().registerEvents(new ExpFarmFix(this), this);
+		this.getServer().getPluginManager().registerEvents(new ExpFarmFix(), this);
 		this.getLogger().info(" - Registering ItemLimiter");
 		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
 		this.getLogger().info(" - Registering PotionPatch");
 		this.getServer().getPluginManager().registerEvents(new PotionListener(), this);
 		this.getLogger().info(" - Registering LockPicks");
-		this.getServer().getPluginManager().registerEvents(new Listeners(this), this);
+		this.getServer().getPluginManager().registerEvents(new Listeners(), this);
 		this.getLogger().info(" - Registering Bounty");
 		this.getServer().getPluginManager().registerEvents(new BountiesListeners(), this);
 		this.getLogger().info(" - Registering EntityListener");
 		this.help = new HelpRequest();
-		final EntityListener entity = new EntityListener(this.help, this);
+		final EntityListener entity = new EntityListener(this.help);
 		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
 		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
 		this.getServer().getPluginManager().registerEvents(entity, this);
@@ -136,6 +172,10 @@ public class SCGeneral extends JavaPlugin
 		this.getLogger().info("[SCGeneral] SCGeneral enabled.");
 	}
 
+	@Override
+	public void onDisable(){
+		this.arena.forceEnd();
+	}
 	public Scoreboard getScoreboard() {
 		return this.scoreboard;
 	}
@@ -149,29 +189,55 @@ public class SCGeneral extends JavaPlugin
 		player.updateInventory();
 	}
 
+	private Arena makeArena(){
+		final String world = this.getConfig().getString("World", "");
+		final int x1 = this.getConfig().getInt("Point 1.x");
+		final int y1 = this.getConfig().getInt("Point 1.y");
+		final int z1 = this.getConfig().getInt("Point 1.z");
+		final int x2 = this.getConfig().getInt("Point 2.x");
+		final int y2 = this.getConfig().getInt("Point 2.y");
+		final int z2 = this.getConfig().getInt("Point 2.z");
+		final int cont1x = this.getConfig().getInt("Contestant 1.x");
+		final int cont1y = this.getConfig().getInt("Contestant 1.y");
+		final int cont1z = this.getConfig().getInt("Contestant 1.z");
+		final int cont2x = this.getConfig().getInt("Contestant 2.x");
+		final int cont2y = this.getConfig().getInt("Contestant 2.y");
+		final int cont2z = this.getConfig().getInt("Contestant 2.z");
+		final int specx = this.getConfig().getInt("Spectate.x");
+		final int specy = this.getConfig().getInt("Spectate.y");
+		final int specz = this.getConfig().getInt("Spectate.z");
+		final World bWorld = this.getServer().getWorld(world);
+		final Location point1loc = new Location(bWorld, x1, y1, z1);
+		final Location point2loc = new Location(bWorld, x2, y2, z2);
+		final Location specloc = new Location(bWorld, specx, specy, specz);
+		final Location cont1loc = new Location(bWorld, cont1x, cont1y, cont1z);
+		final Location cont2loc = new Location(bWorld, cont2x, cont2y, cont2z);
+		return new Arena(this, point1loc.toVector(), point2loc.toVector(), specloc, cont1loc, cont2loc);
+	}
+
 	private final Map<String, CommandExecutor> commandMap = new HashMap<>();
 
 	private void initializeCommandMap(final HelpRequest help){
 		this.commandMap.clear();
 		// No its not ignored, it just handles the shizzle in the constructor
-		new StopCommand(this);
-		this.shout = new Shout(this);
+		new StopCommand();
+		this.shout = new Shout();
 		this.commandMap.put("shout", this.shout);
-		this.commandMap.put("shoutmute", new ShoutMute(this));
+		this.commandMap.put("shoutmute", new ShoutMute());
 		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
 		if(repairCommand != null)
 			this.commandMap.put("repair", new Repair(repairCommand.getExecutor()));
 		this.commandMap.put("factioncheck", new FactionCheck());
 		this.commandMap.put("clearinvis", new ClearInvis());
 		this.commandMap.put("delhomes", new Delhomes());
-		this.commandMap.put("kick", new Kick(this));
-		final OverrideBan overBan = new OverrideBan(this);
+		this.commandMap.put("kick", new Kick());
+		final OverrideBan overBan = new OverrideBan();
 		this.commandMap.put("overrideban", overBan);
-		this.commandMap.put("ban", new Ban(this, overBan));
+		this.commandMap.put("ban", new Ban(overBan));
 		this.commandMap.put("resetBans", new ResetBans());
 		this.commandMap.put("getbans", new GetBans());
 		this.commandMap.put("unban", new Unban());
-		this.commandMap.put("heal", new Heal(this));
+		this.commandMap.put("heal", new Heal());
 		final TpSuite tpsuite = new TpSuite();
 		this.commandMap.put("tpa", tpsuite);
 		this.commandMap.put("tpahere", tpsuite);
@@ -189,6 +255,14 @@ public class SCGeneral extends JavaPlugin
 		this.commandMap.put("helpcancel", new HelpCancel(help));
 		this.commandMap.put("bounty", new Bounty());
 		this.commandMap.put("checkbounties", new CheckBounties());
+		this.commandMap.put("accept", new AcceptCommand());
+		this.commandMap.put("cancel", new CancelCommand());
+		this.commandMap.put("deny", new DenyCommand());
+		final ChallengeCommand chal = new ChallengeCommand();
+		this.commandMap.put("duel", chal);
+		this.commandMap.put("challenge", chal);
+		this.commandMap.put("end", new EndCommand());
+		this.commandMap.put("spectate", new SpectateCommand());
 	}
 	private void overrideCommands(final HelpRequest help){
 		this.initializeCommandMap(help);
@@ -229,5 +303,32 @@ public class SCGeneral extends JavaPlugin
 			ex.printStackTrace();
 		}
 
+	}
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerJoin(PlayerJoinEvent e){
+		this.scUsers.put(e.getPlayer().getName(), new SCUser(e.getPlayer()));
+	}
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerQuit(PlayerQuitEvent e){
+		this.scUsers.remove(e.getPlayer().getName());
+	}
+	
+	public Arena getArena(){
+		return this.arena;
+	}
+	public CombatListeners getCombatListeners() {
+		return this.combatListeners;
+	}
+	public static SCUser getUser(String name){
+		return instance.scUsers.get(name);
+	}
+	public static Map<String, SCUser> getSCUsers(){
+		return instance.scUsers;
+	}
+	public static SCGeneral getInstance(){
+		return SCGeneral.instance;
+	}
+	public static Essentials getEssentials(){
+		return SCGeneral.essentials;
 	}
 }

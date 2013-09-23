@@ -3,14 +3,12 @@ package Commands.tp;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.superckl.combatlogger.CombatLogger;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class TpSuite implements CommandExecutor
 {
@@ -25,11 +23,9 @@ public class TpSuite implements CommandExecutor
 
 	private final String check = "&6Your current request is from &b%s &6and he requested to teleport &b%s".replace('&', ChatColor.COLOR_CHAR);
 
-	private final CombatLogger combatLogger;
 
 	public TpSuite()
 	{
-		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 		this.accept = new TpAccept();
 		this.deny = new TpDeny();
 		this.tpa = new Tpa();
@@ -45,7 +41,7 @@ public class TpSuite implements CommandExecutor
 			return true;
 		}
 
-		if (this.combatLogger.getCombatListeners().isInCombat(sender.getName()))
+		if (SCGeneral.getUser(sender.getName()).isInCombat())
 		{
 			sender.sendMessage(ChatColor.DARK_RED+"You cannot send tp requests while in combat!");
 			return true;

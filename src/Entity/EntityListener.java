@@ -3,8 +3,6 @@ package Entity;
 import java.util.List;
 import java.util.Random;
 
-import me.superckl.combatlogger.CombatLogger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -45,7 +43,6 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 
 import Commands.help.HelpRequest;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
@@ -55,10 +52,7 @@ public class EntityListener implements Listener
 {
 
 	private final Random random = new Random();
-	final CombatLogger combatLogger;
-	private final SCGeneral plugin;
 	private final HelpRequest help;
-	private final Essentials ess;
 	/*private final EnumSet<Material> hax = EnumSet.of(
             Material.THIN_GLASS,
             Material.IRON_FENCE,
@@ -68,11 +62,8 @@ public class EntityListener implements Listener
             Material.NETHER_FENCE,
             Material.TRAP_DOOR);*///Unused
 
-	public EntityListener(final HelpRequest help, final SCGeneral plugin){
-		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
-		this.plugin = plugin;
+	public EntityListener(final HelpRequest help){
 		this.help = help;
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -80,7 +71,7 @@ public class EntityListener implements Listener
 	{
 		this.help.removeRequest(e.getPlayer().getName());
 		for(final Player player:Bukkit.getOnlinePlayers()){
-			final User user = this.ess.getUser(player.getName());
+			final User user = SCGeneral.getEssentials().getUser(player.getName());
 			if(user == null)
 				continue;
 			if(!user.isInvSee())
@@ -106,7 +97,7 @@ public class EntityListener implements Listener
 			return;
 		if(e.getClickedBlock().getState() instanceof Chest == false)
 			return;
-		final User user = this.ess.getUser(e.getPlayer().getName());
+		final User user = SCGeneral.getEssentials().getUser(e.getPlayer().getName());
 		if(user == null)
 			return;
 		if(user.isVanished()){
@@ -262,7 +253,7 @@ public class EntityListener implements Listener
 		if(e.getMessage().toLowerCase().startsWith("/op ") || e.getMessage().equalsIgnoreCase("/op")){
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Op can only be given from the console!");
-		}else if(this.plugin.getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme "))){
+		}else if(SCGeneral.getInstance().getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme "))){
 			e.getPlayer().sendMessage(ChatColor.RED+"Shout is currently disabled! Try again later.");
 			e.setCancelled(true);
 			e.setMessage("/cockblocked");
@@ -277,14 +268,14 @@ public class EntityListener implements Listener
 		if(event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
 			return;
 
-		if(this.combatLogger.getCombatListeners().isInCombat(event.getPlayer().getName()))
+		if(SCGeneral.getUser(event.getPlayer().getName()).isInCombat())
 			event.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onPickup(final PlayerPickupItemEvent event)
 	{
-		final User user = this.ess.getUser(event.getPlayer());
+		final User user = SCGeneral.getEssentials().getUser(event.getPlayer());
 		if(user.isVanished())
 			event.setCancelled(true);
 	}

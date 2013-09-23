@@ -12,19 +12,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.google.common.base.Joiner;
 
 public class OverrideBan implements CommandExecutor{
-
-	private final SCGeneral instance;
-	private final Essentials ess;
-
-	public OverrideBan(final SCGeneral instance){
-		this.instance = instance;
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
@@ -40,8 +31,8 @@ public class OverrideBan implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You need to enter a reason!");
 			return false;
 		}
-		Player player = this.instance.getServer().getPlayer(args[0]);
-		final List<Player> players = this.instance.getServer().matchPlayer(args[0]);
+		Player player = SCGeneral.getInstance().getServer().getPlayer(args[0]);
+		final List<Player> players = SCGeneral.getInstance().getServer().matchPlayer(args[0]);
 		if(player == null && players.size() < 1){
 			sender.sendMessage(ChatColor.RED+"Player not found. Performing offline ban...");
 			final OfflinePlayer offPlayer = Bukkit.getOfflinePlayer(args[0]);
@@ -54,7 +45,7 @@ public class OverrideBan implements CommandExecutor{
 			player = players.get(0);
 		if(player.isBanned()){
 			sender.sendMessage(ChatColor.RED+"That user is already banned! Making ban permanent...");
-			final User user = this.ess.getUser(player.getName());
+			final User user = SCGeneral.getEssentials().getUser(player.getName());
 			user.setBanTimeout(0);
 			user.setBanned(true);
 			user.setConfigProperty("bans", 4);
@@ -74,14 +65,14 @@ public class OverrideBan implements CommandExecutor{
 	}
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		final String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
-		final User user = this.ess.getOfflineUser(player.getName());
+		final User user = SCGeneral.getEssentials().getOfflineUser(player.getName());
 		user.setBanReason(message);
 		user.setBanned(true);
 		user.setBanTimeout(0);
 		user.kickPlayer(message);
 		user.setConfigProperty("bans", 4);
 		user.setConfigProperty("ban-reason", message);
-		for(final Player loopPlayer:this.instance.getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
+		for(final Player loopPlayer:SCGeneral.getInstance().getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 			loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
 	}
 }
