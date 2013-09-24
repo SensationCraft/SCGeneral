@@ -1,12 +1,11 @@
 package org.sensationcraft.scgeneral;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import lockpicks.Listeners;
 import mcMMO.DisarmBlocker;
-import patch.DupeFix;
-import patch.ExpFarmFix;
 import mcMMO.FactionParty;
 
 import org.bukkit.Bukkit;
@@ -18,13 +17,19 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
+import patch.DupeFix;
+import patch.ExpFarmFix;
+import patch.HacknGlitchPatch;
+import patch.PotionPatch;
 import protocol.VanishFix;
 import Bounties.BountiesListeners;
 import CombatLogger.CombatListeners;
@@ -69,10 +74,8 @@ import Factions.HomeAlert;
 import Items.ItemLimiter;
 import Items.SuperItems;
 import SilverfishBomb.SilverfishBombListener;
-import patch.PotionPatch;
-import com.comphenix.protocol.ProtocolLibrary;
-import patch.HacknGlitchPatch;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
 
 
@@ -85,7 +88,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private CombatListeners combatListeners;
 	private static SCGeneral instance;
 	private static Essentials essentials;
-	private Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
+	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
 
 	@Override
 	public void onEnable()
@@ -124,13 +127,13 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.getServer().getPluginManager().registerEvents(new Listeners(), this);
 		this.getLogger().info(" - Registering Bounty");
 		this.getServer().getPluginManager().registerEvents(new BountiesListeners(), this);
-                this.getLogger().info(" - Registering Hack & Glitch patches");
-                this.getServer().getPluginManager().registerEvents(new HacknGlitchPatch(this), this);
-                this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
-                ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
-                this.getLogger().info(" - Registering EntityListener");
-                this.help = new HelpRequest();
-                final EntityListener entity = new EntityListener(this.help);
+		this.getLogger().info(" - Registering Hack & Glitch patches");
+		this.getServer().getPluginManager().registerEvents(new HacknGlitchPatch(this), this);
+		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
+		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
+		this.getLogger().info(" - Registering EntityListener");
+		this.help = new HelpRequest();
+		final EntityListener entity = new EntityListener(this.help);
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Registering Super items");
 		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
@@ -255,8 +258,8 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.put("helpaccept", new HelpAccept(help));
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
-                this.commandMap.put("top", new Top());
-                this.commandMap.put("home", new Home());
+		this.commandMap.put("top", new Top());
+		this.commandMap.put("home", new Home());
 		this.commandMap.put("bounty", new Bounty());
 		this.commandMap.put("checkbounties", new CheckBounties());
 		this.commandMap.put("accept", new AcceptCommand());
@@ -285,30 +288,48 @@ public class SCGeneral extends JavaPlugin implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerJoin(PlayerJoinEvent e){
+	public void onPlayerJoin(final PlayerJoinEvent e){
 		this.scUsers.put(e.getPlayer().getName(), new SCUser(e.getPlayer()));
 	}
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerQuit(PlayerQuitEvent e){
+	public void onPlayerQuit(final PlayerQuitEvent e){
 		this.scUsers.remove(e.getPlayer().getName());
 	}
-	
+
 	public Arena getArena(){
 		return this.arena;
 	}
 	public CombatListeners getCombatListeners() {
 		return this.combatListeners;
 	}
-	public static SCUser getUser(String name){
-		return instance.scUsers.get(name);
+	public static SCUser getUser(final String name){
+		return SCGeneral.instance.scUsers.get(name);
 	}
 	public static Map<String, SCUser> getSCUsers(){
-		return instance.scUsers;
+		return SCGeneral.instance.scUsers;
 	}
 	public static SCGeneral getInstance(){
 		return SCGeneral.instance;
 	}
 	public static Essentials getEssentials(){
 		return SCGeneral.essentials;
+	}
+	public void reloadListener(ReloadableListener listener){
+		listener.prepareForReload();
+		HandlerList.unregisterAll(listener);
+		String name = listener.getClass().getName();
+		try {
+			JavaPluginLoader.class.getDeclaredMethod("removeClass0", String.class).invoke(this.getPluginLoader(), name);
+		} catch (IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			e.printStackTrace();
+		}
+		try {
+			Thread.currentThread().getContextClassLoader().loadClass(name);
+			ReloadableListener.finishReload();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 }
