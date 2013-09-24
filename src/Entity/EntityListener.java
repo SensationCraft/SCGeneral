@@ -1,8 +1,7 @@
 package Entity;
 
+import java.util.List;
 import java.util.Random;
-
-import me.superckl.combatlogger.CombatLogger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -10,10 +9,10 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.PigZombie;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Spider;
@@ -21,67 +20,53 @@ import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 import org.sensationcraft.scgeneral.SCGeneral;
-import org.yi.acru.bukkit.Lockette.Lockette;
 
 import Commands.help.HelpRequest;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.PigZombie;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 
 public class EntityListener implements Listener
 {
 
 	private final Random random = new Random();
-	final CombatLogger combatLogger;
 	private final HelpRequest help;
-	private final Essentials ess;
-        private final EnumSet<Material> hax = EnumSet.of(
-            Material.THIN_GLASS, 
-            Material.IRON_FENCE, 
+	/*private final EnumSet<Material> hax = EnumSet.of(
+            Material.THIN_GLASS,
+            Material.IRON_FENCE,
             Material.FENCE,
             Material.FENCE_GATE,
             Material.COBBLE_WALL,
             Material.NETHER_FENCE,
+<<<<<<< HEAD
             Material.TRAP_DOOR);
         
 	public EntityListener(final HelpRequest help){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
+=======
+            Material.TRAP_DOOR);*///Unused
+
+	public EntityListener(final HelpRequest help)
+        {
 		this.help = help;
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent e)
 	{
 		this.help.removeRequest(e.getPlayer().getName());
-		for(Player player:Bukkit.getOnlinePlayers()){
-			User user = this.ess.getUser(player.getName());
+		for(final Player player:Bukkit.getOnlinePlayers()){
+			final User user = SCGeneral.getEssentials().getUser(player.getName());
 			if(user == null)
 				continue;
 			if(!user.isInvSee())
@@ -107,17 +92,13 @@ public class EntityListener implements Listener
 			loc.getWorld().dropItem(loc, new ItemStack(Material.GHAST_TEAR, 1));
 		else if (ent instanceof Spider && chance == 0)
 			loc.getWorld().dropItem(loc, new ItemStack(Material.MAGMA_CREAM, 1));
-                if(ent instanceof PigZombie)
-                {
-                    List<ItemStack> drops = event.getDrops();
-                    for(ItemStack i : drops)
-                    {
-                        if(i.getType() == Material.GOLD_NUGGET || i.getType() == Material.GOLD_INGOT)
-                        {
-                            i.setType(Material.DIRT);
-                        }
-                    }
-                }
+		if(ent instanceof PigZombie)
+		{
+			final List<ItemStack> drops = event.getDrops();
+			for(final ItemStack i : drops)
+				if(i.getType() == Material.GOLD_NUGGET || i.getType() == Material.GOLD_INGOT)
+					i.setType(Material.DIRT);
+		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -133,10 +114,8 @@ public class EntityListener implements Listener
 			if(chance == 0)
 				loc.getWorld().dropItem(loc, new ItemStack(Material.BLAZE_ROD, 1));
 		}
-                if(ent != null && ent.getType() == EntityType.ENDER_DRAGON)
-                {
-                    event.setCancelled(true);
-                }
+		if(ent != null && ent.getType() == EntityType.ENDER_DRAGON)
+			event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)

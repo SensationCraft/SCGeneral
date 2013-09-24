@@ -2,6 +2,7 @@ package Commands.tp;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -33,7 +34,17 @@ public class Top implements CommandExecutor
         
         Player player = (Player) sender;
         Location loc = player.getLocation().clone();
-        loc.setY(loc.getWorld().getHighestBlockYAt(loc));
+        loc.setY(loc.getWorld().getMaxHeight());
+        World w = loc.getWorld();
+        int x = loc.getBlockX(), z = loc.getBlockZ();
+        int y = w.getMaxHeight();
+        while(y > 0)
+        {
+            if(w.getBlockTypeIdAt(x, y - 1, z) > 0)
+                break;
+            y--;
+        }
+        loc.setY(y);
         player.teleport(loc);
         player.sendMessage(this.msg);
         return true;

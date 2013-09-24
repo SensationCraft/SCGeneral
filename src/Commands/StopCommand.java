@@ -1,10 +1,9 @@
 package Commands;
 
+import CombatLogger.CombatListeners;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-
-import me.superckl.combatlogger.CombatLogger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -21,21 +20,21 @@ import org.bukkit.conversations.ConversationPrefix;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class StopCommand extends Command implements CommandExecutor
 {
 
 	private final Plugin pl;
-	private final CombatLogger combatLogger;
         private final Prompt stopPrompt;
 
 	public StopCommand(final Plugin pl)
 	{
 		super("stop");
+                this.pl = pl;
 		this.description = "Stops the server with optional reason";
 		this.usageMessage = "/stop [reason]";
 		this.setPermission("bukkit.command.stop");
-		this.pl = pl;
 		// Try manual override
 		final PluginCommand stop = Bukkit.getPluginCommand("stop");
 		if(stop != null)
@@ -61,12 +60,10 @@ public class StopCommand extends Command implements CommandExecutor
 		}
 		catch(final Exception ex)
 		{
-			pl.getLogger().severe("Failed to hook systematically");
+			SCGeneral.getInstance().getLogger().severe("Failed to hook systematically");
 			ex.printStackTrace();
 		}
-
-		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
-                this.stopPrompt = new StopConvo(this.pl, this.combatLogger);
+                this.stopPrompt = new StopConvo(this.pl);
 	}
 
 	@Override
@@ -96,7 +93,7 @@ public class StopCommand extends Command implements CommandExecutor
 			for(final Player p : Bukkit.getOnlinePlayers())
 			{
 				// Get them out of combat!
-				this.combatLogger.getCombatListeners().destroy(p.getName());
+				SCGeneral.getUser(p.getName()).setInCombat(false);
 				p.kickPlayer(message);
 			}
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
@@ -106,7 +103,6 @@ public class StopCommand extends Command implements CommandExecutor
 
 		final Map<Object, Object> session = new HashMap<Object,Object>();
 		session.put("msg", message);
-
 		ConversationFactory cf = new ConversationFactory(this.pl);
 		cf.thatExcludesNonPlayersWithMessage("How did you get here?");
 		cf.withLocalEcho(false);

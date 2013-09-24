@@ -3,7 +3,6 @@ package lockpicks;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,13 +30,6 @@ import com.massivecraft.factions.Faction;
 
 public class Listeners implements Listener
 {
-
-	private final SCGeneral main;
-
-	public Listeners(final SCGeneral main)
-	{
-		this.main = main;
-	}
 
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDamageEvent(final EntityDamageEvent e)
@@ -90,7 +82,7 @@ public class Listeners implements Listener
 								Listeners.this.picking.remove(e.getPlayer().getName());
 							}
 
-						}.runTaskLater(this.main, 100L));
+						}.runTaskLater(SCGeneral.getInstance(), 100L));
 					} else
 						e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("You can only pick locks in the Wilderness!").toString());
 				}

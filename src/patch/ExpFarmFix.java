@@ -17,8 +17,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.gmail.nossr50.mcMMO;
 import com.gmail.nossr50.datatypes.skills.SkillType;
@@ -33,13 +33,6 @@ public class ExpFarmFix implements Listener
 {
 
 	private final Set<String> sameIp = new HashSet<String>();
-
-	private final Plugin plugin;
-
-	public ExpFarmFix(final Plugin plugin)
-	{
-		this.plugin = plugin;
-	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDamage(final EntityDamageByEntityEvent event)
@@ -85,7 +78,7 @@ public class ExpFarmFix implements Listener
 						ExpFarmFix.this.sameIp.remove(p.getName());
 						ExpFarmFix.this.sameIp.remove(a.getName());
 					}
-				}.runTaskLater(this.plugin, 1L);
+				}.runTaskLater(SCGeneral.getInstance(), 1L);
 			}
 	}
 
@@ -106,16 +99,16 @@ public class ExpFarmFix implements Listener
 
 		final LivingEntity target = (LivingEntity) defender;
 
-                try
-                {
-                    CombatUtils.class.getDeclaredMethod("isInvincible", LivingEntity.class, double.class);
-                    if (CombatUtils.isInvincible(target, damage))
-                    	return false;
-                }
-                catch(Exception ex)
-                {
-                    // Swallow
-                }
+		try
+		{
+			CombatUtils.class.getDeclaredMethod("isInvincible", LivingEntity.class, double.class);
+			if (CombatUtils.isInvincible(target, damage))
+				return false;
+		}
+		catch(final Exception ex)
+		{
+			// Swallow
+		}
 
 		Entity attacker = event.getDamager();
 

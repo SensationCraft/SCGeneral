@@ -3,20 +3,12 @@ package Commands.tp;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 import Commands.tp.TpSuite.TpRequest;
 
-import com.earth2me.essentials.Essentials;
-
 public class TpaHere
 {
-
-	private final Essentials ess;
-
-	public TpaHere()
-	{
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
 
 	public void execute(final Player player, final TpSuite suite, final TpRequest req, final String[] args)
 	{
@@ -33,7 +25,7 @@ public class TpaHere
 			return;
 		}
 
-		if (!this.ess.getUser(player.getName()).isTeleportEnabled())
+		if (!SCGeneral.getEssentials().getUser(player.getName()).isTeleportEnabled())
 		{
 			player.sendMessage(ChatColor.RED + "That player has teleportation disabled!");
 			return;

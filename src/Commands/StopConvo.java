@@ -1,7 +1,6 @@
 package Commands;
 
-import me.superckl.combatlogger.CombatLogger;
-
+import CombatLogger.CombatListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
@@ -9,16 +8,15 @@ import org.bukkit.conversations.Prompt;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class StopConvo extends BooleanPrompt
 {
 	final Plugin pl;
-	final CombatLogger combatLogger;
 
-	public StopConvo(final Plugin pl, final CombatLogger cl)
+	public StopConvo(final Plugin pl)
 	{
 		this.pl = pl;
-		this.combatLogger = cl;
 	}
 
 	@Override
@@ -30,7 +28,6 @@ public class StopConvo extends BooleanPrompt
 	@Override
 	protected Prompt acceptValidatedInput(final ConversationContext cc, final boolean bln)
 	{
-		System.out.println("Bln: "+bln);
 		if(bln)
 		{
 			String mes = (String) cc.getSessionData("msg");
@@ -44,13 +41,13 @@ public class StopConvo extends BooleanPrompt
 				{
 					for(final Player player : Bukkit.getOnlinePlayers())
 					{
-						StopConvo.this.combatLogger.getCombatListeners().destroy(player.getName());
+						SCGeneral.getUser(player.getName()).setInCombat(false);
 						player.kickPlayer(message);
 					}
 					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "save-all");
 					Bukkit.shutdown();
 				}
-			}.runTask(this.pl);
+			}.runTask(SCGeneral.getInstance());
 			return Prompt.END_OF_CONVERSATION;
 		} else
 			cc.getForWhom().sendRawMessage("Stopping server cancelled.");

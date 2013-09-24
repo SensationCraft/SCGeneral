@@ -6,17 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.Essentials;
 import com.earth2me.essentials.User;
 
 public class ResetBans implements CommandExecutor{
-
-	private final Essentials ess;
-
-	public ResetBans(){
-		this.ess = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command arg1, final String arg2,
@@ -29,7 +23,7 @@ public class ResetBans implements CommandExecutor{
 			sender.sendMessage(ChatColor.RED+"You need to enter a player's name!");
 			return false;
 		}
-		final User user = this.ess.getOfflineUser(args[0]);
+		final User user = SCGeneral.getEssentials().getOfflineUser(args[0]);
 		if(user == null){
 			sender.sendMessage(ChatColor.RED+"Player not found, did you spell it right?");
 			return false;
@@ -39,7 +33,7 @@ public class ResetBans implements CommandExecutor{
 			return false;
 		}
 		user.setConfigProperty("bans", 0);
-                user.setConfigProperty("ban-reason", "");
+		user.setConfigProperty("ban-reason", "");
 		user.setBanned(false);
 		user.setBanTimeout(0);
 		if(sender instanceof Player)

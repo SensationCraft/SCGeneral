@@ -17,9 +17,6 @@ import org.yi.acru.bukkit.Lockette.Lockette;
 
 public class ItemLimiter implements Listener
 {
-	public ItemLimiter()
-	{
-	}
 
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onBlockPlace(final BlockPlaceEvent event)
@@ -38,7 +35,7 @@ public class ItemLimiter implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onInventoryMove(final InventoryMoveItemEvent event)
 	{

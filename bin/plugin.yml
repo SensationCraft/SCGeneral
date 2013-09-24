@@ -47,3 +47,23 @@ commands:
     description: Get the head of a player.
   expel:
     description: Expel all players in a radius.
+  bounty:
+    descrition: Place a bounty on a player.
+	aliases: [assasinate, placebounty]
+  checkbounties:
+    decription: Check a player's bounties.
+	aliases: [getbounties, bounties]
+  duel:
+    description: Duel a player!
+    aliases: [challenge]
+  spectate:
+    description: Spectate a duel!
+  deny:
+    description: Deny a duel request.
+  accept:
+    description: Accept a duel request.
+  cancel:
+    description: Cancel your duel request.
+  end:
+    description: End the duel in the arena.
+	aliases: [forceend]
