@@ -1,6 +1,5 @@
 package Commands;
 
-import CombatLogger.CombatListeners;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,12 +25,12 @@ public class StopCommand extends Command implements CommandExecutor
 {
 
 	private final Plugin pl;
-        private final Prompt stopPrompt;
+	private final Prompt stopPrompt;
 
 	public StopCommand(final Plugin pl)
 	{
 		super("stop");
-                this.pl = pl;
+		this.pl = pl;
 		this.description = "Stops the server with optional reason";
 		this.usageMessage = "/stop [reason]";
 		this.setPermission("bukkit.command.stop");
@@ -39,7 +38,7 @@ public class StopCommand extends Command implements CommandExecutor
 		final PluginCommand stop = Bukkit.getPluginCommand("stop");
 		if(stop != null)
 			stop.setExecutor(this);
-                
+
 		CommandMap cm = null;
 		try
 		{
@@ -63,7 +62,7 @@ public class StopCommand extends Command implements CommandExecutor
 			SCGeneral.getInstance().getLogger().severe("Failed to hook systematically");
 			ex.printStackTrace();
 		}
-                this.stopPrompt = new StopConvo(this.pl);
+		this.stopPrompt = new StopConvo(this.pl);
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class StopCommand extends Command implements CommandExecutor
 
 		final Map<Object, Object> session = new HashMap<Object,Object>();
 		session.put("msg", message);
-		ConversationFactory cf = new ConversationFactory(this.pl);
+		final ConversationFactory cf = new ConversationFactory(this.pl);
 		cf.thatExcludesNonPlayersWithMessage("How did you get here?");
 		cf.withLocalEcho(false);
 		cf.withFirstPrompt(this.stopPrompt);

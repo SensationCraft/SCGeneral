@@ -50,14 +50,14 @@ public class EntityListener implements Listener
             Material.NETHER_FENCE,
 <<<<<<< HEAD
             Material.TRAP_DOOR);
-        
+
 	public EntityListener(final HelpRequest help){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 =======
             Material.TRAP_DOOR);*///Unused
 
 	public EntityListener(final HelpRequest help)
-        {
+	{
 		this.help = help;
 	}
 
@@ -130,7 +130,7 @@ public class EntityListener implements Listener
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Creative cock-blocked.");
 		}
 	}
-        
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(final PlayerDeathEvent e){
 		e.setDeathMessage("");

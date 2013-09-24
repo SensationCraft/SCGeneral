@@ -1,7 +1,5 @@
 package Factions;
 
-import java.util.Arrays;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -17,17 +15,11 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Relation;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 public class HomeAlert implements Listener
 {
 
 	private final String homeTeleportAlert = new StringBuilder().append(ChatColor.RED).append(ChatColor.BOLD).append("An enemy has teleported into your faction's land!").toString();
-
-	public HomeAlert()
-	{
-	}
 
 	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onCommand(final PlayerCommandPreprocessEvent event)
@@ -54,8 +46,8 @@ public class HomeAlert implements Listener
 				final FLocation loc = new FLocation(home);
 				final Faction faction = Board.getFactionAt(loc);
 				if(faction.getRelationTo(fme) == Relation.ENEMY)
-                                    for(final Player player:faction.getOnlinePlayers())
-                                        player.sendMessage(this.homeTeleportAlert);
+					for(final Player player:faction.getOnlinePlayers())
+						player.sendMessage(this.homeTeleportAlert);
 			}
 
 	}

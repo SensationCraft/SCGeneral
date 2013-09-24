@@ -47,6 +47,11 @@ commands:
     description: Get the head of a player.
   expel:
     description: Expel all players in a radius.
+<<<<<<< HEAD
+  togglepickup:
+    description: Toggles whether you pickup items while vanished
+  
+=======
   bounty:
     descrition: Place a bounty on a player.
 	aliases: [assasinate, placebounty]
@@ -67,3 +72,4 @@ commands:
   end:
     description: End the duel in the arena.
 	aliases: [forceend]
+>>>>>>> 2421e4f7cd76e148171d266771b51c6eff5d648a

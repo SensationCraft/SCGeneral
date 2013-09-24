@@ -1,7 +1,5 @@
 package org.sensationcraft.scgeneral;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -70,13 +68,11 @@ import Entity.EntityListener;
 import Factions.HomeAlert;
 import Items.ItemLimiter;
 import Items.SuperItems;
+import SilverfishBomb.SilverfishBombListener;
 import patch.PotionPatch;
 import com.comphenix.protocol.ProtocolLibrary;
 import patch.HacknGlitchPatch;
-import protocol.VanishFix;
 
-
-import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
 
 
@@ -107,6 +103,8 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.getLogger().info(" - Registering combat listeners");
 		this.combatListeners = new CombatListeners();
 		this.getServer().getPluginManager().registerEvents(this.combatListeners, this);
+		this.getLogger().info("Registering Silverfish Bombs");
+		this.getServer().getPluginManager().registerEvents(new SilverfishBombListener(), this);
 		this.getLogger().info(" - Registering duel listeners");
 		this.getServer().getPluginManager().registerEvents(new DuelListeners(this.arena), this);
 		this.getLogger().info(" - Registering Faction fixes");
