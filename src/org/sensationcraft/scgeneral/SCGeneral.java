@@ -366,7 +366,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 			@SuppressWarnings("unchecked")
 			Class<? extends ReloadableListener> clazz = (Class<? extends ReloadableListener>) Class.forName(name);
 			ReloadableListener newListener = clazz.newInstance();
-			this.getServer().getPluginManager().registerEvents(listener, this);
+			this.getServer().getPluginManager().registerEvents(newListener, this);
 			newListener.finishReload();
 			this.listeners.put(newListener.getClass().getSimpleName(), newListener);
 		} catch (IllegalAccessException | IllegalArgumentException
