@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -12,13 +11,15 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.sensationcraft.scgeneral.ReloadableListener;
+import org.sensationcraft.scgeneral.SCGeneral;
 
-public class DuelListeners implements Listener{
+public class DuelListeners extends ReloadableListener{
 
 	private final Arena arena;
 
-	public DuelListeners(final Arena arena){
-		this.arena = arena;
+	public DuelListeners(){
+		this.arena = SCGeneral.getInstance().getArena();
 	}
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerTeleport(final PlayerTeleportEvent e)
@@ -65,5 +66,12 @@ public class DuelListeners implements Listener{
 	public void onItemPickup(final PlayerPickupItemEvent e){
 		if(this.arena.isEnding())
 			this.arena.pickedUp(e.getItem());
+	}
+	@Override
+	public void prepareForReload() {
+		this.arena.forceEnd();
+	}
+	@Override
+	public void finishReload() {
 	}
 }

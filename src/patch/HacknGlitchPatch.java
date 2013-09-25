@@ -7,7 +7,6 @@ package patch;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +16,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -27,30 +25,22 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
-import com.earth2me.essentials.IEssentials;
 import com.earth2me.essentials.User;
 
 /**
  *
  * @author S129977
  */
-public class HacknGlitchPatch implements Listener
+public class HacknGlitchPatch extends ReloadableListener
 {
 
-	private final IEssentials ess;
-	private final SCGeneral plugin;
-	private final Set<String> pickup = new HashSet<String>();
+	private Set<String> pickup = new HashSet<String>();
 	private final String pickupMsg = ChatColor.GOLD + "Picking up items has been %s" + ChatColor.GOLD + ".";
 	private final String ena = ChatColor.GREEN + "enabled";
 	private final String dis = ChatColor.RED + "disabled";
-
-	public HacknGlitchPatch(final SCGeneral plugin)
-	{
-		this.ess = (IEssentials) Bukkit.getPluginManager().getPlugin("Essentials");
-		this.plugin = plugin;
-	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerInteract(final PlayerInteractEvent e)
@@ -65,7 +55,7 @@ public class HacknGlitchPatch implements Listener
 			return;
 		if (e.getClickedBlock().getState() instanceof Chest == false)
 			return;
-		final User user = this.ess.getUser(e.getPlayer().getName());
+		final User user = SCGeneral.getEssentials().getUser(e.getPlayer().getName());
 		if (user == null)
 			return;
 		if (user.isVanished())
@@ -97,7 +87,7 @@ public class HacknGlitchPatch implements Listener
 				{
 					player.teleport(loc, PlayerTeleportEvent.TeleportCause.UNKNOWN);
 				}
-			}.runTaskLater(this.plugin, 2L);
+			}.runTaskLater(SCGeneral.getInstance(), 2L);
 		}
 	}
 
@@ -225,7 +215,7 @@ public class HacknGlitchPatch implements Listener
 		{
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.DARK_RED + "Op can only be given from the console!");
-		} else if (this.plugin.getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme ")))
+		} else if (SCGeneral.getInstance().getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme ")))
 		{
 			e.getPlayer().sendMessage(ChatColor.RED + "Shout is currently disabled! Try again later.");
 			e.setCancelled(true);
@@ -235,7 +225,7 @@ public class HacknGlitchPatch implements Listener
 		else if (e.getMessage().startsWith("/togglepickup"))
 		{
 			final Player player = e.getPlayer();
-			final User u = this.ess.getUser(player);
+			final User u = SCGeneral.getEssentials().getUser(player);
 			if (u.isVanished())
 			{
 				String val;
@@ -258,8 +248,20 @@ public class HacknGlitchPatch implements Listener
 	@EventHandler
 	public void onPickup(final PlayerPickupItemEvent event)
 	{
-		final User user = this.ess.getUser(event.getPlayer());
+		final User user = SCGeneral.getEssentials().getUser(event.getPlayer());
 		if (user.isVanished() && this.pickup.contains(event.getPlayer().getName()))
 			event.setCancelled(true);
+	}
+
+	@Override
+	public void prepareForReload() {
+		ReloadableListener.setDataStore(new HashSet<String>(this.pickup));
+		this.pickup.clear();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void finishReload() {
+		this.pickup = (Set<String>) ReloadableListener.getDataStore()[0];
 	}
 }

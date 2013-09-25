@@ -6,15 +6,15 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
-public class PotionPatch implements Listener
+public class PotionPatch extends ReloadableListener
 {
 
 	private final PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 320, 2);
@@ -68,5 +68,13 @@ public class PotionPatch implements Listener
 			for(final LivingEntity le : event.getAffectedEntities())
 				le.addPotionEffect(this.regenSplash);
 		}
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 }

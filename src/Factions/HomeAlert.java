@@ -5,8 +5,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.User;
@@ -16,7 +16,7 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Relation;
 
-public class HomeAlert implements Listener
+public class HomeAlert extends ReloadableListener
 {
 
 	private final String homeTeleportAlert = new StringBuilder().append(ChatColor.RED).append(ChatColor.BOLD).append("An enemy has teleported into your faction's land!").toString();
@@ -50,6 +50,14 @@ public class HomeAlert implements Listener
 						player.sendMessage(this.homeTeleportAlert);
 			}
 
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 
 }

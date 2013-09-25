@@ -5,8 +5,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.gmail.nossr50.api.PartyAPI;
@@ -24,7 +24,7 @@ import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.event.FactionRelationEvent;
 import com.massivecraft.factions.struct.Relation;
 
-public class FactionParty implements Listener
+public class FactionParty extends ReloadableListener
 {
 
 	@EventHandler
@@ -133,5 +133,13 @@ public class FactionParty implements Listener
 			if(pleader.getRelationTo(fplayer).isAtMost(Relation.NEUTRAL))
 				PartyManager.removeFromParty(Bukkit.getOfflinePlayer(fplayer.getName()), p);
 		}
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 }

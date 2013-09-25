@@ -9,13 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
-public class ItemLimiter implements Listener
+public class ItemLimiter extends ReloadableListener
 {
 
 	@EventHandler(priority=EventPriority.HIGHEST)
@@ -48,5 +48,13 @@ public class ItemLimiter implements Listener
 			if(Lockette.isProtected(b))
 				event.setCancelled(true);
 		}
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 }

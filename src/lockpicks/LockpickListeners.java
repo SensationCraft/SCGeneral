@@ -13,7 +13,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -21,6 +20,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 import org.yi.acru.bukkit.PluginCore;
 
@@ -28,9 +28,11 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 
-public class Listeners implements Listener
+public class LockpickListeners extends ReloadableListener
 {
 
+	private Map<String, BukkitTask> picking = new HashMap<String, BukkitTask>();
+	
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDamageEvent(final EntityDamageEvent e)
 	{
@@ -79,7 +81,7 @@ public class Listeners implements Listener
 									e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("Lock Pick successful!").toString());
 								} else
 									e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("Lock Pick failed!").toString());
-								Listeners.this.picking.remove(e.getPlayer().getName());
+								LockpickListeners.this.picking.remove(e.getPlayer().getName());
 							}
 
 						}.runTaskLater(SCGeneral.getInstance(), 100L));
@@ -101,6 +103,16 @@ public class Listeners implements Listener
 		}
 	}
 
-	private final Map<String, BukkitTask> picking = new HashMap<String, BukkitTask>();
+	@Override
+	public void prepareForReload() {
+		ReloadableListener.setDataStore(new HashMap<String, BukkitTask>(this.picking));
+		this.picking.clear();
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void finishReload() {
+		this.picking = (Map<String, BukkitTask>) ReloadableListener.getDataStore()[0];
+	}
 
 }

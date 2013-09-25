@@ -12,12 +12,12 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.sensationcraft.scgeneral.ReloadableListener;
 
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
@@ -28,7 +28,7 @@ import com.gmail.nossr50.events.skills.unarmed.McMMOPlayerDisarmEvent;
  *
  * @author DarkSeraphim
  */
-public class DisarmBlocker implements Listener
+public class DisarmBlocker extends ReloadableListener
 {
 
 	public static final String tag = "&r&5Disarm protect".replace('&', ChatColor.COLOR_CHAR);
@@ -174,6 +174,14 @@ public class DisarmBlocker implements Listener
 		lore.add(DisarmBlocker.tag);
 		meta.setLore(lore);
 		i.setItemMeta(meta);
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 
 }

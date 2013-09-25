@@ -15,12 +15,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.api.Economy;
@@ -28,7 +28,7 @@ import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 
-public class SuperItems implements Listener
+public class SuperItems extends ReloadableListener
 {
 
 	public static final String tag = "&r&5Super item".replace('&', ChatColor.COLOR_CHAR);
@@ -362,5 +362,13 @@ public class SuperItems implements Listener
 		SHOVEL,
 		HOE,
 		BOW
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 }

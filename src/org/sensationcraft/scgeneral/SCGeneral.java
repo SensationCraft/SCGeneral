@@ -1,10 +1,11 @@
 package org.sensationcraft.scgeneral;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lockpicks.Listeners;
+import lockpicks.LockpickListeners;
 import mcMMO.DisarmBlocker;
 import mcMMO.FactionParty;
 
@@ -44,6 +45,7 @@ import Commands.Heal;
 import Commands.Kick;
 import Commands.KillShout;
 import Commands.Repair;
+import Commands.SeamlessReload;
 import Commands.Shout;
 import Commands.ShoutMute;
 import Commands.StopCommand;
@@ -89,11 +91,13 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private static SCGeneral instance;
 	private static Essentials essentials;
 	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
+	private final Map<String, ReloadableListener> listeners = new HashMap<>();
 
 	@Override
 	public void onEnable()
 	{
 		SCGeneral.instance = this;
+		this.getServer().getPluginManager().registerEvents(this, this);
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
 		if(SCGeneral.essentials == null || !SCGeneral.essentials.isEnabled()){
 			this.getLogger().info("Essentials not found! Stopping server.");
@@ -105,38 +109,66 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.arena = this.makeArena();
 		this.getLogger().info(" - Registering combat listeners");
 		this.combatListeners = new CombatListeners();
+		this.listeners.put(this.combatListeners.getClass().getSimpleName(), this.combatListeners);
 		this.getServer().getPluginManager().registerEvents(this.combatListeners, this);
 		this.getLogger().info("Registering Silverfish Bombs");
-		this.getServer().getPluginManager().registerEvents(new SilverfishBombListener(), this);
+		SilverfishBombListener bombList = new SilverfishBombListener();
+		this.listeners.put(bombList.getClass().getSimpleName(), bombList);
+		this.getServer().getPluginManager().registerEvents(bombList, this);
 		this.getLogger().info(" - Registering duel listeners");
-		this.getServer().getPluginManager().registerEvents(new DuelListeners(this.arena), this);
+		DuelListeners duelList = new DuelListeners();
+		this.listeners.put(duelList.getClass().getSimpleName(), duelList);
+		this.getServer().getPluginManager().registerEvents(duelList, this);
 		this.getLogger().info(" - Registering Faction fixes");
-		this.getServer().getPluginManager().registerEvents(new HomeAlert(), this);
+		HomeAlert homealert = new HomeAlert();
+		this.listeners.put(homealert.getClass().getSimpleName(), homealert);
+		this.getServer().getPluginManager().registerEvents(homealert, this);
 		this.getLogger().info(" - Registering mcMMO disarm protect");
-		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
+		DisarmBlocker disarm = new DisarmBlocker();
+		this.listeners.put(disarm.getClass().getSimpleName(), disarm);
+		this.getServer().getPluginManager().registerEvents(disarm, this);
 		this.getLogger().info(" - Registering mcMMO party control");
-		this.getServer().getPluginManager().registerEvents(new FactionParty(), this);
+		FactionParty factionParty = new FactionParty();
+		this.listeners.put(factionParty.getClass().getSimpleName(), factionParty);
+		this.getServer().getPluginManager().registerEvents(factionParty, this);
 		this.getLogger().info(" - Registering mcMMO fixes");
-		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
-		this.getServer().getPluginManager().registerEvents(new ExpFarmFix(), this);
+		DupeFix dupe = new DupeFix();
+		this.listeners.put(dupe.getClass().getSimpleName(), dupe);
+		this.getServer().getPluginManager().registerEvents(dupe, this);
+		ExpFarmFix expfix = new ExpFarmFix();
+		this.listeners.put(expfix.getClass().getSimpleName(), expfix);
+		this.getServer().getPluginManager().registerEvents(expfix, this);
 		this.getLogger().info(" - Registering ItemLimiter");
-		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
+		ItemLimiter limiter = new ItemLimiter();
+		this.listeners.put(limiter.getClass().getSimpleName(), limiter);
+		this.getServer().getPluginManager().registerEvents(limiter, this);
 		this.getLogger().info(" - Registering PotionPatch");
-		this.getServer().getPluginManager().registerEvents(new PotionPatch(), this);
+		PotionPatch potion = new PotionPatch();
+		this.listeners.put(potion.getClass().getSimpleName(), potion);
+		this.getServer().getPluginManager().registerEvents(potion, this);
 		this.getLogger().info(" - Registering LockPicks");
-		this.getServer().getPluginManager().registerEvents(new Listeners(), this);
+		LockpickListeners lock = new LockpickListeners();
+		this.listeners.put(lock.getClass().getSimpleName(), lock);
+		this.getServer().getPluginManager().registerEvents(lock, this);
 		this.getLogger().info(" - Registering Bounty");
-		this.getServer().getPluginManager().registerEvents(new BountiesListeners(), this);
+		BountiesListeners bounty = new BountiesListeners();
+		this.listeners.put(bounty.getClass().getSimpleName(), bounty);
+		this.getServer().getPluginManager().registerEvents(bounty, this);
 		this.getLogger().info(" - Registering Hack & Glitch patches");
-		this.getServer().getPluginManager().registerEvents(new HacknGlitchPatch(this), this);
+		HacknGlitchPatch hacks = new HacknGlitchPatch();
+		this.listeners.put(hacks.getClass().getSimpleName(), hacks);
+		this.getServer().getPluginManager().registerEvents(hacks, this);
 		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
 		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
 		this.getLogger().info(" - Registering EntityListener");
 		this.help = new HelpRequest();
-		final EntityListener entity = new EntityListener(this.help);
+		final EntityListener entity = new EntityListener();
+		this.listeners.put(entity.getClass().getSimpleName(), entity);
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Registering Super items");
-		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
+		SuperItems superi = new SuperItems();
+		this.listeners.put(superi.getClass().getSimpleName(), superi);
+		this.getServer().getPluginManager().registerEvents(superi, this);
 		this.getLogger().info(" - Overriding commands");
 		this.overrideCommands(this.help);
 		this.getLogger().info(" - Starting save-all loop");
@@ -270,6 +302,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.put("challenge", chal);
 		this.commandMap.put("end", new EndCommand(this));
 		this.commandMap.put("spectate", new SpectateCommand());
+		this.commandMap.put("seamlessreload", new SeamlessReload());
 	}
 	private void overrideCommands(final HelpRequest help){
 		this.initializeCommandMap(help);
@@ -287,11 +320,11 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.clear();
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent e){
 		this.scUsers.put(e.getPlayer().getName(), new SCUser(e.getPlayer()));
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent e){
 		this.scUsers.remove(e.getPlayer().getName());
 	}
@@ -301,6 +334,12 @@ public class SCGeneral extends JavaPlugin implements Listener
 	}
 	public CombatListeners getCombatListeners() {
 		return this.combatListeners;
+	}
+	public HelpRequest getHelp(){
+		return this.help;
+	}
+	public Map<String, ReloadableListener> getListeners(){
+		return this.listeners;
 	}
 	public static SCUser getUser(final String name){
 		return SCGeneral.instance.scUsers.get(name);
@@ -315,21 +354,30 @@ public class SCGeneral extends JavaPlugin implements Listener
 		return SCGeneral.essentials;
 	}
 	public void reloadListener(ReloadableListener listener){
+		//TODO DOESN'T ACTUALLY RELOAD FROM FILE FIX DAT SHIT MARK
 		listener.prepareForReload();
 		HandlerList.unregisterAll(listener);
+		this.listeners.remove(listener.getClass().getSimpleName());
 		String name = listener.getClass().getName();
 		try {
-			JavaPluginLoader.class.getDeclaredMethod("removeClass0", String.class).invoke(this.getPluginLoader(), name);
+			Method method = JavaPluginLoader.class.getDeclaredMethod("removeClass0", String.class);
+			method.setAccessible(true);
+			method.invoke(this.getPluginLoader(), name);
+			@SuppressWarnings("unchecked")
+			Class<? extends ReloadableListener> clazz = (Class<? extends ReloadableListener>) Class.forName(name);
+			ReloadableListener newListener = clazz.newInstance();
+			this.getServer().getPluginManager().registerEvents(listener, this);
+			newListener.finishReload();
+			this.listeners.put(newListener.getClass().getSimpleName(), newListener);
 		} catch (IllegalAccessException | IllegalArgumentException
 				| InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
+				| SecurityException | InstantiationException | ClassNotFoundException e) {
 			e.printStackTrace();
+			this.getLogger().severe("Failed to reload "+name);
 		}
-		try {
-			Thread.currentThread().getContextClassLoader().loadClass(name);
-			ReloadableListener.finishReload();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+	}
+
+	public void setCombatListeners(CombatListeners combatListeners) {
+		this.combatListeners = combatListeners;
 	}
 }

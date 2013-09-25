@@ -14,10 +14,10 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.gmail.nossr50.mcMMO;
@@ -29,10 +29,10 @@ import com.gmail.nossr50.util.Misc;
 import com.gmail.nossr50.util.Permissions;
 import com.gmail.nossr50.util.skills.CombatUtils;
 
-public class ExpFarmFix implements Listener
+public class ExpFarmFix extends ReloadableListener
 {
 
-	private final Set<String> sameIp = new HashSet<String>();
+	private Set<String> sameIp = new HashSet<String>();
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDamage(final EntityDamageByEntityEvent event)
@@ -167,6 +167,17 @@ public class ExpFarmFix implements Listener
 		for(final Entity e: event.getChunk().getEntities())
 			if(e.hasMetadata(mcMMO.entityMetadataKey) && e instanceof Monster)
 				e.remove();
+	}
+
+	@Override
+	public void prepareForReload() {
+		ReloadableListener.setDataStore(new HashSet<String>(this.sameIp));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void finishReload() {
+		this.sameIp = (Set<String>) ReloadableListener.getDataStore()[0];
 	}
 
 }

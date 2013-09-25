@@ -19,7 +19,6 @@ import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -27,6 +26,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import Commands.help.HelpRequest;
@@ -36,7 +36,7 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
 
-public class EntityListener implements Listener
+public class EntityListener extends ReloadableListener
 {
 
 	private final Random random = new Random();
@@ -56,9 +56,9 @@ public class EntityListener implements Listener
 =======
             Material.TRAP_DOOR);*///Unused
 
-	public EntityListener(final HelpRequest help)
+	public EntityListener()
 	{
-		this.help = help;
+		this.help = SCGeneral.getInstance().getHelp();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -149,5 +149,13 @@ public class EntityListener implements Listener
 			e.setMessage("I'm a herp");
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"I will eat your soul if you chat like that. -superckl");
 		}
+	}
+
+	@Override
+	public void prepareForReload() {
+	}
+
+	@Override
+	public void finishReload() {
 	}
 }

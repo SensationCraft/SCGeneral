@@ -17,7 +17,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -27,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.sensationcraft.scgeneral.ReloadableListener;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.api.Economy;
@@ -36,7 +36,7 @@ import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 
-public class SilverfishBombListener implements Listener{
+public class SilverfishBombListener extends ReloadableListener{
 
 	private final Set<Snowball> snowballs = new HashSet<Snowball>();
 
@@ -143,5 +143,16 @@ public class SilverfishBombListener implements Listener{
 		it.setData(data);
 		it.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
 		return it;
+	}
+
+	@Override
+	public void prepareForReload() {
+		for(Snowball snowball:this.snowballs)
+			snowball.remove();
+		this.snowballs.clear();
+	}
+
+	@Override
+	public void finishReload() {
 	}
 }
