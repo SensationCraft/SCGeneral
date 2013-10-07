@@ -1,6 +1,7 @@
-package Vote;
+package vote;
 
 import org.bukkit.Bukkit;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -8,11 +9,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
+import org.sensationcraft.scgeneral.SCGeneral;
+
+import addon.Addon;
+import addon.AddonDescriptionFile;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
 
-public class VoteListener implements Listener
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
+public class VoteListener extends Addon implements Listener
 {
+
+	public VoteListener(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
 
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onVote(final VotifierEvent e)

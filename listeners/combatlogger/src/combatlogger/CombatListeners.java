@@ -1,4 +1,4 @@
-package CombatLogger;
+package combatlogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,13 +27,28 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+import addon.Addon;
+import addon.AddonDescriptionFile;
+
 import com.massivecraft.factions.FPlayers;
 import org.bukkit.event.Listener;
 
-public class CombatListeners implements Listener
+public class CombatListeners extends Addon implements Listener
 {
 
+	public CombatListeners(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
+
 	private Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEnable(){
+		if(!this.hasData("flyexempts"))
+			this.setData("flyexempts", new HashMap<String, Integer>());
+		this.fakeFlyExempts = (Map<String, Integer>) this.getData("flyexmepts");
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerAttack(final EntityDamageByEntityEvent e)

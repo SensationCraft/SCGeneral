@@ -30,6 +30,10 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 import org.bukkit.event.Listener;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class LockpickListeners extends Addon implements Listener
 {
     
@@ -46,7 +50,7 @@ public class LockpickListeners extends Addon implements Listener
             this.setData("picking", new HashMap<String, BukkitTask>());
         this.picking = (Map<String, BukkitTask>) this.getData("picking");
     }
-
+    
 	private Map<String, BukkitTask> picking;
 	
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)

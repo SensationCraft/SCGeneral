@@ -17,6 +17,10 @@ import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import org.bukkit.event.Listener;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class BountiesListeners implements Listener{
 
 	@SuppressWarnings("unchecked")

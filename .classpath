@@ -2,6 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="SCGeneral/src"/>
 	<classpathentry kind="src" path="listeners/lockpicks/src"/>
+	<classpathentry kind="src" path="listeners/fishing/src"/>
+	<classpathentry kind="src" path="listeners/silverfishbomb/src"/>
+	<classpathentry kind="src" path="listeners/vote/src"/>
+	<classpathentry kind="src" path="listeners/entity/src"/>
+	<classpathentry kind="src" path="listeners/factions/src"/>
+	<classpathentry kind="src" path="listeners/goldenapples/src"/>
+	<classpathentry kind="src" path="listeners/combatlogger/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Essentials.jar"/>
 	<classpathentry kind="lib" path="C:/Users/superckl/Dropbox/Code/reflib/Factions.jar"/>

@@ -19,6 +19,10 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Arena {
 
 	private Player player1;

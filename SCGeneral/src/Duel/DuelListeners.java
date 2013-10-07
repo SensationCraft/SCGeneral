@@ -14,6 +14,10 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class DuelListeners implements Listener{
 
 	private final Arena arena;

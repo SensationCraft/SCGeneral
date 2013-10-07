@@ -15,6 +15,10 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class ItemLimiter implements Listener
 {
 

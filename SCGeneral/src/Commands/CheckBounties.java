@@ -12,6 +12,10 @@ import org.sensationcraft.scgeneral.SCGeneral;
 import com.earth2me.essentials.User;
 import com.earth2me.essentials.utils.DateUtil;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class CheckBounties implements CommandExecutor{
 
 	@Override

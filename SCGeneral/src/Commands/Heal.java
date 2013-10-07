@@ -10,6 +10,10 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Heal implements CommandExecutor{
 
 	@Override

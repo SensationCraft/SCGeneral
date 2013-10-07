@@ -1,4 +1,4 @@
-package Entity;
+package entity;
 
 import java.util.List;
 import java.util.Random;
@@ -28,7 +28,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.sensationcraft.scgeneral.SCGeneral;
 
-import Commands.help.HelpRequest;
+import addon.Addon;
+import addon.AddonDescriptionFile;
 
 import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
@@ -36,11 +37,17 @@ import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
 import org.bukkit.event.Listener;
 
-public class EntityListener implements Listener
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
+public class EntityListener extends Addon implements Listener
 {
 
+	public EntityListener(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
 	private final Random random = new Random();
-	private final HelpRequest help;
 	/*private final EnumSet<Material> hax = EnumSet.of(
             Material.THIN_GLASS,
             Material.IRON_FENCE,
@@ -56,15 +63,10 @@ public class EntityListener implements Listener
 =======
             Material.TRAP_DOOR);*///Unused
 
-	public EntityListener()
-	{
-		this.help = SCGeneral.getInstance().getHelp();
-	}
-
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(final PlayerQuitEvent e)
 	{
-		this.help.removeRequest(e.getPlayer().getName());
+		SCGeneral.getInstance().getHelp().removeRequest(e.getPlayer().getName());
 		for(final Player player:Bukkit.getOnlinePlayers()){
 			final User user = SCGeneral.getEssentials().getUser(player.getName());
 			if(user == null)

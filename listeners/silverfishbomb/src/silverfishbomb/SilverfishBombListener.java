@@ -1,4 +1,4 @@
-package SilverfishBomb;
+package silverfishbomb;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -28,6 +28,9 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+import addon.Addon;
+import addon.AddonDescriptionFile;
+
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
@@ -36,10 +39,26 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
 import org.bukkit.event.Listener;
 
-public class SilverfishBombListener implements Listener{
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
+public class SilverfishBombListener extends Addon implements Listener{
 
-	private final Set<Snowball> snowballs = new HashSet<Snowball>();
+	public SilverfishBombListener(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
+	private Set<Snowball> snowballs;
 
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEnable(){
+		if(!this.hasData("snowballs"))
+			this.setData("snowballs", new HashSet<String>());
+		this.snowballs = (Set<Snowball>) this.getData("snowballs");
+	}
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEggCollide(final ProjectileHitEvent e){
 		if(e.getEntityType() != EntityType.SNOWBALL)

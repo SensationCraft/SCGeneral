@@ -11,10 +11,6 @@ public class Storage
 {
     Map<String, Map<String, Object>> stor = new HashMap<String, Map<String, Object>>();
     
-    public Storage()
-    {
-    }
-    
     public void register(Addon a)
     {
         this.stor.put(a.getName(), new HashMap<String, Object>());

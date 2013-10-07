@@ -25,6 +25,10 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.sensationcraft.scgeneral.SCGeneral;
+
+import addon.Addon;
+import addon.AddonDescriptionFile;
 
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
@@ -34,21 +38,29 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
  *
  * @author DarkSeraphim - because I am 1337 enough to set the author :3
  */
-public class GoldenAppleListener implements Listener
+public class GoldenAppleListener extends Addon implements Listener
 {
 
-	private final ItemStack godapple;
-
-	private final Map<String, Integer> appleOwners = new HashMap<String, Integer>();
-
-	public GoldenAppleListener()
-	{
+	public GoldenAppleListener(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
 		this.godapple = new ItemStack(Material.GOLDEN_APPLE, 1, (short)2);
 		final ItemMeta meta = this.godapple.getItemMeta();
 		meta.setDisplayName(ChatColor.LIGHT_PURPLE+"God Apple");
 		meta.setLore(Arrays.asList(ChatColor.GOLD+"An apple blessed by the ancient gods"));
 		this.godapple.setItemMeta(meta);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEnable(){
+		if(!this.hasData("appleowners"))
+			this.setData("appleowners", new HashMap<String, Integer>());
+		this.appleOwners = (Map<String, Integer>) this.getData("appleowners");
+	}
+
+	private final ItemStack godapple;
+
+	private Map<String, Integer> appleOwners;
 
 	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void onPrepareCraft(final PrepareItemCraftEvent event)

@@ -4,6 +4,11 @@ import java.util.Random;
 
 import org.bukkit.permissions.Permissible;
 
+
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public enum LockPickRank {
 
 	DEFAULT,

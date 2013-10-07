@@ -16,6 +16,10 @@ import com.earth2me.essentials.User;
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.utils.DateUtil;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Bounty implements CommandExecutor{
 
 	@Override

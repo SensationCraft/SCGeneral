@@ -10,6 +10,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class HelpRequest implements CommandExecutor{
 
 	private final Map<Integer, String> requests = new TreeMap<Integer, String>();

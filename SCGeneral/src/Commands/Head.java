@@ -9,6 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+/**
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Head implements CommandExecutor{
 
 	@Override
