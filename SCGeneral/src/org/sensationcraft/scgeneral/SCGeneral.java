@@ -81,7 +81,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private Shout shout;
 	private HelpRequest help;
 	private Arena arena;
-	private CombatListeners combatListeners;
+	private CombatListeners combatListeners; //TODO Addon reference
 	private static SCGeneral instance;
 	private static Essentials essentials;
 	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
