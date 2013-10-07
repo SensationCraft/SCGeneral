@@ -1,5 +1,6 @@
 package addon;
 
+import addon.Addon;
 import addon.exceptions.InvalidAddonException;
 import addon.exceptions.UnknownAddonException;
 import org.bukkit.plugin.Plugin;

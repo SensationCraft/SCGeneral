@@ -38,7 +38,8 @@ public class LockpickListeners extends Addon implements Listener
         super(scg, desc);
     }
     
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void onEnable()
     {
         if(!this.hasData("picking"))

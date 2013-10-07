@@ -4,6 +4,7 @@ package addon.exceptions;
  *
  * @author DarkSeraphim
  */
+@SuppressWarnings("serial")
 public class UnknownAddonException extends Exception
 {
 

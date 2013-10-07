@@ -49,19 +49,11 @@ public class ReloadableListener extends AbstractReloadable
         String mainClass = desc.getMainClass();
         try
         {
-            Class c = Class.forName(mainClass, true, cloader);
+            Class<?> c = Class.forName(mainClass, true, cloader);
             Class<? extends Addon> addonClass = c.asSubclass(Addon.class);
             Addon a = addonClass.getConstructor(SCGeneral.class, AddonDescriptionFile.class).newInstance(plugin, desc);
             if(a instanceof Listener == false)
                 throw new InvalidAddonException(String.format("Addon is not a listener"));
-            
-            // Possibly define some tests
-            
-            if(false)
-            {
-                System.out.println("Failed to load the addon");
-                a = null;
-            }
             
             this.addon = a;
         }

@@ -3,10 +3,12 @@ package addon;
 
 import addon.exceptions.InvalidAddonException;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
  *
@@ -25,9 +27,10 @@ public class AddonDescriptionFile
             throw new IllegalArgumentException("Addon file is nonexistant");
         if(!file.getName().endsWith(".jar"))
             throw new IllegalArgumentException("Addon file is not a jar");
+        JarFile jf = null;
         try
         {
-            JarFile jf = new JarFile(file);
+        	jf = new JarFile(file);
             JarEntry je = jf.getJarEntry("addon.yml");
             if(je == null)
                 throw new InvalidAddonException("Invalid addon: missing addon.yml");
@@ -39,6 +42,14 @@ public class AddonDescriptionFile
         catch(Exception ex)
         {
             ex.printStackTrace();
+        }
+        finally{
+        	try{
+        		if(jf != null)
+        			jf.close();
+        	}catch(IOException e){
+        		SCGeneral.getInstance().getLogger().warning("Failed to close a JarFile resource!");
+        	}
         }
         if(y != null)
         {
