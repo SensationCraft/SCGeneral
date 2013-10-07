@@ -1,14 +1,12 @@
 package org.sensationcraft.scgeneral;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lockpicks.Listeners;
+import lockpicks.LockpickListeners;
 import mcMMO.DisarmBlocker;
-import patch.DupeFix;
-import patch.ExpFarmFix;
 import mcMMO.FactionParty;
 
 import org.bukkit.Bukkit;
@@ -20,13 +18,19 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
+import patch.DupeFix;
+import patch.ExpFarmFix;
+import patch.HacknGlitchPatch;
+import patch.PotionPatch;
 import protocol.VanishFix;
 import Bounties.BountiesListeners;
 import CombatLogger.CombatListeners;
@@ -76,6 +80,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import patch.HacknGlitchPatch;
 import protocol.VanishFix;
 
+import SilverfishBomb.SilverfishBombListener;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
@@ -90,12 +95,13 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private CombatListeners combatListeners;
 	private static SCGeneral instance;
 	private static Essentials essentials;
-	private Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
+	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
 
 	@Override
 	public void onEnable()
 	{
 		SCGeneral.instance = this;
+		this.getServer().getPluginManager().registerEvents(this, this);
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
         this.getServer().getPluginManager().registerEvents(this, this);
 		if(SCGeneral.essentials == null || !SCGeneral.essentials.isEnabled()){
@@ -109,35 +115,50 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.getLogger().info(" - Registering combat listeners");
 		this.combatListeners = new CombatListeners();
 		this.getServer().getPluginManager().registerEvents(this.combatListeners, this);
+		this.getLogger().info("Registering Silverfish Bombs");
+		SilverfishBombListener bombList = new SilverfishBombListener();
+		this.getServer().getPluginManager().registerEvents(bombList, this);
 		this.getLogger().info(" - Registering duel listeners");
-		this.getServer().getPluginManager().registerEvents(new DuelListeners(this.arena), this);
+		DuelListeners duelList = new DuelListeners();
+		this.getServer().getPluginManager().registerEvents(duelList, this);
 		this.getLogger().info(" - Registering Faction fixes");
-		this.getServer().getPluginManager().registerEvents(new HomeAlert(), this);
+		HomeAlert homealert = new HomeAlert();
+		this.getServer().getPluginManager().registerEvents(homealert, this);
 		this.getLogger().info(" - Registering mcMMO disarm protect");
-		this.getServer().getPluginManager().registerEvents(new DisarmBlocker(), this);
+		DisarmBlocker disarm = new DisarmBlocker();
+		this.getServer().getPluginManager().registerEvents(disarm, this);
 		this.getLogger().info(" - Registering mcMMO party control");
-		this.getServer().getPluginManager().registerEvents(new FactionParty(), this);
+		FactionParty factionParty = new FactionParty();
+		this.getServer().getPluginManager().registerEvents(factionParty, this);
 		this.getLogger().info(" - Registering mcMMO fixes");
-		this.getServer().getPluginManager().registerEvents(new DupeFix(), this);
-		this.getServer().getPluginManager().registerEvents(new ExpFarmFix(), this);
+		DupeFix dupe = new DupeFix();
+		this.getServer().getPluginManager().registerEvents(dupe, this);
+		ExpFarmFix expfix = new ExpFarmFix();
+		this.getServer().getPluginManager().registerEvents(expfix, this);
 		this.getLogger().info(" - Registering ItemLimiter");
-		this.getServer().getPluginManager().registerEvents(new ItemLimiter(), this);
+		ItemLimiter limiter = new ItemLimiter();
+		this.getServer().getPluginManager().registerEvents(limiter, this);
 		this.getLogger().info(" - Registering PotionPatch");
-		this.getServer().getPluginManager().registerEvents(new PotionPatch(), this);
+		PotionPatch potion = new PotionPatch();
+		this.getServer().getPluginManager().registerEvents(potion, this);
 		this.getLogger().info(" - Registering LockPicks");
-		this.getServer().getPluginManager().registerEvents(new Listeners(), this);
+		LockpickListeners lock = new LockpickListeners();
+		this.getServer().getPluginManager().registerEvents(lock, this);
 		this.getLogger().info(" - Registering Bounty");
-		this.getServer().getPluginManager().registerEvents(new BountiesListeners(), this);
-                this.getLogger().info(" - Registering Hack & Glitch patches");
-                this.getServer().getPluginManager().registerEvents(new HacknGlitchPatch(this), this);
-                this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
-                ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
-                this.getLogger().info(" - Registering EntityListener");
-                this.help = new HelpRequest();
-                final EntityListener entity = new EntityListener(this.help);
+		BountiesListeners bounty = new BountiesListeners();
+		this.getServer().getPluginManager().registerEvents(bounty, this);
+		this.getLogger().info(" - Registering Hack & Glitch patches");
+		HacknGlitchPatch hacks = new HacknGlitchPatch();
+		this.getServer().getPluginManager().registerEvents(hacks, this);
+		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
+		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
+		this.getLogger().info(" - Registering EntityListener");
+		this.help = new HelpRequest();
+		final EntityListener entity = new EntityListener();
 		this.getServer().getPluginManager().registerEvents(entity, this);
 		this.getLogger().info(" - Registering Super items");
-		this.getServer().getPluginManager().registerEvents(new SuperItems(), this);
+		SuperItems superi = new SuperItems();
+		this.getServer().getPluginManager().registerEvents(superi, this);
 		this.getLogger().info(" - Overriding commands");
 		this.overrideCommands(this.help);
 		this.getLogger().info(" - Starting save-all loop");
@@ -259,8 +280,8 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.put("helpaccept", new HelpAccept(help));
 		this.commandMap.put("helpdeny", new HelpDeny(help));
 		this.commandMap.put("helpcancel", new HelpCancel(help));
-                this.commandMap.put("top", new Top());
-                this.commandMap.put("home", new Home());
+		this.commandMap.put("top", new Top());
+		this.commandMap.put("home", new Home());
 		this.commandMap.put("bounty", new Bounty());
 		this.commandMap.put("checkbounties", new CheckBounties());
 		this.commandMap.put("accept", new AcceptCommand());
@@ -289,31 +310,38 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.clear();
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerJoin(PlayerJoinEvent e){
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerJoin(final PlayerJoinEvent e){
 		this.scUsers.put(e.getPlayer().getName(), new SCUser(e.getPlayer()));
 	}
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(PlayerQuitEvent e){
+	public void onPlayerQuit(final PlayerQuitEvent e){
 		this.scUsers.remove(e.getPlayer().getName());
 	}
-	
+
 	public Arena getArena(){
 		return this.arena;
 	}
 	public CombatListeners getCombatListeners() {
 		return this.combatListeners;
 	}
-	public static SCUser getUser(String name){
-		return instance.scUsers.get(name);
+	public HelpRequest getHelp(){
+		return this.help;
+	}
+	public static SCUser getUser(final String name){
+		return SCGeneral.instance.scUsers.get(name);
 	}
 	public static Map<String, SCUser> getSCUsers(){
-		return instance.scUsers;
+		return SCGeneral.instance.scUsers;
 	}
 	public static SCGeneral getInstance(){
 		return SCGeneral.instance;
 	}
 	public static Essentials getEssentials(){
 		return SCGeneral.essentials;
+	}
+
+	public void setCombatListeners(CombatListeners combatListeners) {
+		this.combatListeners = combatListeners;
 	}
 }

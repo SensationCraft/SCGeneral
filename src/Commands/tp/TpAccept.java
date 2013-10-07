@@ -25,12 +25,10 @@ public class TpAccept {
 		{
 			player.sendMessage(ChatColor.RED+"You cannot teleport to people while they are in combat!");
 			return;
-		} else {
-			if(SCGeneral.getUser(player.getName()).isInCombat())
-			{
-				player.sendMessage(ChatColor.RED+"You cannot teleport to people while in combat!");
-				return;
-			}
+		} else if(SCGeneral.getUser(player.getName()).isInCombat())
+		{
+			player.sendMessage(ChatColor.RED+"You cannot teleport to people while in combat!");
+			return;
 		}
 
 		Location to;

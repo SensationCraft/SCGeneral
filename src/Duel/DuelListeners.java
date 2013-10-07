@@ -12,13 +12,14 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 public class DuelListeners implements Listener{
 
 	private final Arena arena;
 
-	public DuelListeners(final Arena arena){
-		this.arena = arena;
+	public DuelListeners(){
+		this.arena = SCGeneral.getInstance().getArena();
 	}
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerTeleport(final PlayerTeleportEvent e)

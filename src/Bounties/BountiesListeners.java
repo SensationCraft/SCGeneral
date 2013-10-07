@@ -7,7 +7,6 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.sensationcraft.scgeneral.SCGeneral;
@@ -16,6 +15,7 @@ import com.earth2me.essentials.User;
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
+import org.bukkit.event.Listener;
 
 public class BountiesListeners implements Listener{
 
@@ -73,5 +73,4 @@ public class BountiesListeners implements Listener{
 			return false;
 		return true;
 	}
-
 }

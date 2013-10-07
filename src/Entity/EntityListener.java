@@ -19,7 +19,6 @@ import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -35,6 +34,7 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import org.bukkit.event.Listener;
 
 public class EntityListener implements Listener
 {
@@ -50,15 +50,15 @@ public class EntityListener implements Listener
             Material.NETHER_FENCE,
 <<<<<<< HEAD
             Material.TRAP_DOOR);
-        
+
 	public EntityListener(final HelpRequest help){
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 =======
             Material.TRAP_DOOR);*///Unused
 
-	public EntityListener(final HelpRequest help)
-        {
-		this.help = help;
+	public EntityListener()
+	{
+		this.help = SCGeneral.getInstance().getHelp();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -130,7 +130,7 @@ public class EntityListener implements Listener
 			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Creative cock-blocked.");
 		}
 	}
-        
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(final PlayerDeathEvent e){
 		e.setDeathMessage("");

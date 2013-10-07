@@ -71,3 +71,5 @@ commands:
     aliases: [forceend]
   addons:
     description: Command for the Addon Manager :3.
+  seamlessreload:
+    description: Attempt to reload just a listener.

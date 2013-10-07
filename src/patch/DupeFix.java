@@ -3,13 +3,14 @@ package patch;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 
 import com.gmail.nossr50.mcMMO;
+import org.bukkit.event.Listener;
 
-public class DupeFix implements Listener{
+public class DupeFix implements Listener
+{
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPistonExtend(final BlockPistonExtendEvent e){

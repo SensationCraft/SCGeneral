@@ -12,14 +12,14 @@ public class SCUser extends PlayerExtension{
 	private boolean inCombat;
 	private long combatTime;
 	private BukkitTask combatTask;
-	
+
 	private final long COMBAT_TIME = 8000;
-	
-	public SCUser(Player base) {
+
+	public SCUser(final Player base) {
 		super(base);
 	}
-	
-	public void setInCombat(boolean inCombat){
+
+	public void setInCombat(final boolean inCombat){
 		if(inCombat){
 			this.combatTime = System.currentTimeMillis()+this.COMBAT_TIME;
 			this.combatTask = new BukkitRunnable()

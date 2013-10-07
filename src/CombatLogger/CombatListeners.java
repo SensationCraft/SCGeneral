@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -29,11 +28,12 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.massivecraft.factions.FPlayers;
+import org.bukkit.event.Listener;
 
 public class CombatListeners implements Listener
 {
 
-	private final Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
+	private Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerAttack(final EntityDamageByEntityEvent e)

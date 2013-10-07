@@ -1,6 +1,5 @@
 package Commands;
 
-import CombatLogger.CombatListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.conversations.BooleanPrompt;
 import org.bukkit.conversations.ConversationContext;
