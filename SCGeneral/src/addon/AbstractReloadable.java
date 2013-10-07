@@ -1,7 +1,7 @@
-package beta;
+package addon;
 
-import beta.exceptions.InvalidAddonException;
-import beta.exceptions.UnknownAddonException;
+import addon.exceptions.InvalidAddonException;
+import addon.exceptions.UnknownAddonException;
 import org.bukkit.plugin.Plugin;
 import org.sensationcraft.scgeneral.SCGeneral;
 
@@ -11,6 +11,14 @@ import org.sensationcraft.scgeneral.SCGeneral;
  */
 public abstract class AbstractReloadable 
 {
+    
+    protected Addon addon;
+    
+    protected Addon getAddon()
+    {
+        return this.addon;
+    }
+    
     public abstract Addon load(SCGeneral plugin) throws UnknownAddonException, InvalidAddonException;
     public abstract void load(Addon addon);
     

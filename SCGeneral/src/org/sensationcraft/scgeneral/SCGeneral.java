@@ -1,11 +1,8 @@
 package org.sensationcraft.scgeneral;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import lockpicks.LockpickListeners;
 import mcMMO.DisarmBlocker;
 import mcMMO.FactionParty;
 
@@ -18,20 +15,15 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 
 import patch.DupeFix;
 import patch.ExpFarmFix;
-import patch.HacknGlitchPatch;
-import patch.PotionPatch;
-import protocol.VanishFix;
 import Bounties.BountiesListeners;
 import CombatLogger.CombatListeners;
 import Commands.Bounty;
@@ -74,13 +66,13 @@ import Entity.EntityListener;
 import Factions.HomeAlert;
 import Items.ItemLimiter;
 import Items.SuperItems;
-import beta.AddonManager;
+import addon.AddonManager;
 import patch.PotionPatch;
-import com.comphenix.protocol.ProtocolLibrary;
 import patch.HacknGlitchPatch;
 import protocol.VanishFix;
 
 import SilverfishBomb.SilverfishBombListener;
+import addon.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
@@ -96,6 +88,8 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private static SCGeneral instance;
 	private static Essentials essentials;
 	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
+    
+    private final Storage data = new Storage();
 
 	@Override
 	public void onEnable()
@@ -141,9 +135,6 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.getLogger().info(" - Registering PotionPatch");
 		PotionPatch potion = new PotionPatch();
 		this.getServer().getPluginManager().registerEvents(potion, this);
-		this.getLogger().info(" - Registering LockPicks");
-		LockpickListeners lock = new LockpickListeners();
-		this.getServer().getPluginManager().registerEvents(lock, this);
 		this.getLogger().info(" - Registering Bounty");
 		BountiesListeners bounty = new BountiesListeners();
 		this.getServer().getPluginManager().registerEvents(bounty, this);
@@ -340,8 +331,14 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public static Essentials getEssentials(){
 		return SCGeneral.essentials;
 	}
+    
+    public Storage getData()
+    {
+        return this.data;
+    }
 
-	public void setCombatListeners(CombatListeners combatListeners) {
+	public void setCombatListeners(CombatListeners combatListeners) 
+    {
 		this.combatListeners = combatListeners;
 	}
 }

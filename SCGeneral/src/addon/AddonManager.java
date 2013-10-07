@@ -1,15 +1,23 @@
-package beta;
+package addon;
 
-import beta.exceptions.InvalidAddonException;
-import beta.exceptions.UnknownAddonException;
+import addon.exceptions.InvalidAddonException;
+import addon.exceptions.UnknownAddonException;
 import java.io.File;
+import java.io.FileFilter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.sensationcraft.scgeneral.SCGeneral;
@@ -23,9 +31,16 @@ public class AddonManager implements CommandExecutor
     
     private final SCGeneral plugin;
     
+    private final static Logger log;
+    
     Map<String, AbstractReloadable> addons = new HashMap<String, AbstractReloadable>();
     
     protected static ClassLoader parentLoader;
+    
+    static
+    {
+        log = Logger.getLogger("AddonManager");
+    }
     
     public AddonManager(SCGeneral plugin)
     {
@@ -36,7 +51,6 @@ public class AddonManager implements CommandExecutor
         File lFolder = new File(pluginFolder, "listeners");
         if(!lFolder.exists() || !lFolder.isDirectory())
             lFolder.mkdirs();
-        ReloadableListener.rootFolder = lFolder;
         ClassLoader cl = null;
         try
         {
@@ -47,15 +61,26 @@ public class AddonManager implements CommandExecutor
         }
         catch(Exception ex)
         {
-            
+            log.log(Level.SEVERE, "Failed to obtain the parent ClassLoader");
+            ex.printStackTrace();
+            Bukkit.shutdown();
+            // Break it off, likely it wouldn't work
         }
-        
         AddonManager.parentLoader = cl;
+        
+        Set<String> ex = new HashSet<String>(this.plugin.getConfig().getStringList("excludes"));
+        
+        loadAll(ex);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmnd, String label, String[] args) 
     {
+        if(sender instanceof Player)
+        {
+            sender.sendMessage(ChatColor.RED+"Cockblocked. Stay away from the addons!");
+            return true;
+        }
         if(args.length < 1)
         {
             sender.sendMessage("Addon Manager v0.1");
@@ -74,6 +99,9 @@ public class AddonManager implements CommandExecutor
                 {
                     rl.load(this.plugin);
                     // Maybe call an onEnable or smth
+                    
+                    this.plugin.getData().register(rl.getAddon());
+                    
                     this.addons.put(args[1], rl);
                     
                     sender.sendMessage(ChatColor.GREEN+"Loaded the addon.");
@@ -193,9 +221,53 @@ public class AddonManager implements CommandExecutor
         return true;
     }
     
+    public final void loadAll(Set<String> excludes)
+    {
+        File lisDir = new File(this.plugin.getDataFolder(), "listeners");
+        File[] files = lisDir.listFiles(new FileFilter()
+        {
+            @Override
+            public boolean accept(File file)
+            {
+                return file.getName().endsWith(".jar");
+            }
+        });
+        for(File file : files)
+        {
+            String name = file.getName();
+            name = name.substring(0, name.length() - 4);
+            if(excludes.contains(name))
+            {
+                continue;
+            }
+            ReloadableListener rl = new ReloadableListener(name);
+            try
+            {
+                rl.load(this.plugin);
+                // Maybe call an onEnable or smth
+
+                this.plugin.getData().register(rl.getAddon());
+
+                this.addons.put(name, rl);
+                
+                rl.enable(plugin);
+
+                log.log(Level.INFO, ChatColor.GREEN+"Loaded addon {0}.", name);
+            }
+            catch(UnknownAddonException ex)
+            {
+                log.log(Level.WARNING, "{0}Unknown addon.", ChatColor.RED);
+            }
+            catch(InvalidAddonException ex)
+            {
+                log.log(Level.SEVERE, "{0}Failed to load the addon: ", ChatColor.RED);
+                ex.printStackTrace();
+            }
+        }
+    }
+    
     public void destroy()
     {
-        ReloadableListener.rootFolder = null;
     }
     
 }

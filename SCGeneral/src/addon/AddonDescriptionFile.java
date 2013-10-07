@@ -1,7 +1,7 @@
 
-package beta;
+package addon;
 
-import beta.exceptions.InvalidAddonException;
+import addon.exceptions.InvalidAddonException;
 import java.io.File;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
@@ -53,5 +53,10 @@ public class AddonDescriptionFile
     public String getMainClass()
     {
         return this.yml.getString("main", "");
+    }
+    
+    public String getName()
+    {
+        return this.yml.getString("name", "");
     }
 }

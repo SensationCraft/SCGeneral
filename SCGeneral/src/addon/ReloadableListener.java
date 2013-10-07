@@ -1,14 +1,12 @@
-package beta;
+package addon;
 
-import beta.exceptions.InvalidAddonException;
-import beta.exceptions.UnknownAddonException;
+import addon.exceptions.InvalidAddonException;
+import addon.exceptions.UnknownAddonException;
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -19,16 +17,10 @@ import org.sensationcraft.scgeneral.SCGeneral;
  * @author DarkSeraphim
  */
 public class ReloadableListener extends AbstractReloadable
-{
-    
-    protected static File rootFolder;
-    
-    private static final String nameFormat = "%s.jar";
+{    
     
     private final String name;
-    
-    private Addon addon;
-    
+        
     private boolean isEnabled = false;
     
     ReloadableListener(String name)
@@ -39,7 +31,7 @@ public class ReloadableListener extends AbstractReloadable
     @Override
     public Addon load(SCGeneral plugin) throws UnknownAddonException, InvalidAddonException
     {
-        File file = new File(rootFolder, String.format(nameFormat, name));
+        File file = new File(plugin.getDataFolder(), String.format("listeners/%s.jar", name));
         if(!file.exists())
             throw new UnknownAddonException(name);
         URL[] urls = new URL[0];
@@ -59,8 +51,7 @@ public class ReloadableListener extends AbstractReloadable
         {
             Class c = Class.forName(mainClass, true, cloader);
             Class<? extends Addon> addonClass = c.asSubclass(Addon.class);
-            System.out.println(addonClass);
-            Addon a = addonClass.getConstructor(SCGeneral.class).newInstance(plugin);
+            Addon a = addonClass.getConstructor(SCGeneral.class, AddonDescriptionFile.class).newInstance(plugin, desc);
             if(a instanceof Listener == false)
                 throw new InvalidAddonException(String.format("Addon is not a listener"));
             
@@ -95,6 +86,7 @@ public class ReloadableListener extends AbstractReloadable
     @Override
     public void load(Addon addon)
     {
+        if(this.addon != null)
         this.addon = addon;
     }
     

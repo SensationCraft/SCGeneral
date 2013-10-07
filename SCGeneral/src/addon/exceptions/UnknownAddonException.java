@@ -1,4 +1,4 @@
-package beta.exceptions;
+package addon.exceptions;
 
 /**
  *
