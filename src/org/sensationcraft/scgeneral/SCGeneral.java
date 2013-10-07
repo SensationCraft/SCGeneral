@@ -70,6 +70,7 @@ import Entity.EntityListener;
 import Factions.HomeAlert;
 import Items.ItemLimiter;
 import Items.SuperItems;
+import beta.AddonManager;
 import patch.PotionPatch;
 import com.comphenix.protocol.ProtocolLibrary;
 import patch.HacknGlitchPatch;
@@ -96,6 +97,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	{
 		SCGeneral.instance = this;
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
+        this.getServer().getPluginManager().registerEvents(this, this);
 		if(SCGeneral.essentials == null || !SCGeneral.essentials.isEnabled()){
 			this.getLogger().info("Essentials not found! Stopping server.");
 			this.getServer().shutdown();
@@ -269,6 +271,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.put("challenge", chal);
 		this.commandMap.put("end", new EndCommand(this));
 		this.commandMap.put("spectate", new SpectateCommand());
+		this.commandMap.put("addons", new AddonManager(this));
 	}
 	private void overrideCommands(final HelpRequest help){
 		this.initializeCommandMap(help);
@@ -290,7 +293,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public void onPlayerJoin(PlayerJoinEvent e){
 		this.scUsers.put(e.getPlayer().getName(), new SCUser(e.getPlayer()));
 	}
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerQuit(PlayerQuitEvent e){
 		this.scUsers.remove(e.getPlayer().getName());
 	}
