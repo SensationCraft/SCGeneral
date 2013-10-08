@@ -21,6 +21,9 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import patch.DupeFix;
 import patch.ExpFarmFix;
+import patch.HacknGlitchPatch;
+import patch.PotionPatch;
+import protocol.VanishFix;
 import Bounties.BountiesListeners;
 import Commands.Bounty;
 import Commands.CheckBounties;
@@ -59,10 +62,6 @@ import Commands.tp.TpSuite;
 import Duel.Arena;
 import Duel.DuelListeners;
 import addon.AddonManager;
-import patch.PotionPatch;
-import patch.HacknGlitchPatch;
-import protocol.VanishFix;
-
 import addon.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -78,8 +77,8 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private static SCGeneral instance;
 	private static Essentials essentials;
 	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
-    
-    private final Storage data = new Storage();
+
+	private final Storage data = new Storage();
 
 	@Override
 	public void onEnable()
@@ -88,7 +87,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		SCGeneral.instance = this;
 		this.getServer().getPluginManager().registerEvents(this, this);
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-        this.getServer().getPluginManager().registerEvents(this, this);
+		this.getServer().getPluginManager().registerEvents(this, this);
 		if(SCGeneral.essentials == null || !SCGeneral.essentials.isEnabled()){
 			this.getLogger().info("Essentials not found! Stopping server.");
 			this.getServer().shutdown();
@@ -104,7 +103,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		SilverfishBombListener bombList = new SilverfishBombListener();
 		this.getServer().getPluginManager().registerEvents(bombList, this); ADDON*/
 		this.getLogger().info(" - Registering duel listeners");
-		DuelListeners duelList = new DuelListeners();
+		final DuelListeners duelList = new DuelListeners();
 		this.getServer().getPluginManager().registerEvents(duelList, this);
 		/*this.getLogger().info(" - Registering Faction fixes");
 		HomeAlert homealert = new HomeAlert();
@@ -116,21 +115,21 @@ public class SCGeneral extends JavaPlugin implements Listener
 		FactionParty factionParty = new FactionParty();
 		this.getServer().getPluginManager().registerEvents(factionParty, this);*/
 		this.getLogger().info(" - Registering mcMMO fixes");
-		DupeFix dupe = new DupeFix();
+		final DupeFix dupe = new DupeFix();
 		this.getServer().getPluginManager().registerEvents(dupe, this);
-		ExpFarmFix expfix = new ExpFarmFix();
+		final ExpFarmFix expfix = new ExpFarmFix();
 		this.getServer().getPluginManager().registerEvents(expfix, this);
 		/*this.getLogger().info(" - Registering ItemLimiter");
 		ItemLimiter limiter = new ItemLimiter();
 		this.getServer().getPluginManager().registerEvents(limiter, this);*/
 		this.getLogger().info(" - Registering PotionPatch");
-		PotionPatch potion = new PotionPatch();
+		final PotionPatch potion = new PotionPatch();
 		this.getServer().getPluginManager().registerEvents(potion, this);
 		this.getLogger().info(" - Registering Bounty");
-		BountiesListeners bounty = new BountiesListeners();
+		final BountiesListeners bounty = new BountiesListeners();
 		this.getServer().getPluginManager().registerEvents(bounty, this);
 		this.getLogger().info(" - Registering Hack & Glitch patches");
-		HacknGlitchPatch hacks = new HacknGlitchPatch();
+		final HacknGlitchPatch hacks = new HacknGlitchPatch();
 		this.getServer().getPluginManager().registerEvents(hacks, this);
 		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
 		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
@@ -320,9 +319,9 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public static Essentials getEssentials(){
 		return SCGeneral.essentials;
 	}
-    
-    public Storage getData()
-    {
-        return this.data;
-    }
+
+	public Storage getData()
+	{
+		return this.data;
+	}
 }

@@ -16,9 +16,9 @@ import com.earth2me.essentials.User;
 import com.google.common.base.Joiner;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class OverrideBan implements CommandExecutor{
 
 	@Override

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -31,17 +32,16 @@ import addon.Addon;
 import addon.AddonDescriptionFile;
 
 import com.massivecraft.factions.FPlayers;
-import org.bukkit.event.Listener;
 
 public class CombatListeners extends Addon implements Listener
 {
 
-	public CombatListeners(SCGeneral scg, AddonDescriptionFile desc) {
+	public CombatListeners(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 
 	private Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){

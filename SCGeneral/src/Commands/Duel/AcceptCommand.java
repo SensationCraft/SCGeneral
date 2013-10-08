@@ -12,9 +12,9 @@ import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Relation;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class AcceptCommand implements CommandExecutor{
 
 	@Override

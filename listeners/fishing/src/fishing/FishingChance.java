@@ -3,9 +3,9 @@ package fishing;
 import org.bukkit.permissions.Permissible;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public enum FishingChance {
 
 	DEFAULT(1.0),

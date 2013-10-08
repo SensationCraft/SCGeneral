@@ -8,9 +8,9 @@ import org.bukkit.scheduler.BukkitTask;
 import com.earth2me.essentials.PlayerExtension;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class SCUser extends PlayerExtension{
 
 	private boolean inCombat;

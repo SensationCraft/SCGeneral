@@ -20,13 +20,13 @@ import addon.Addon;
 import addon.AddonDescriptionFile;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class ItemLimiter extends Addon implements Listener
 {
 
-	public ItemLimiter(SCGeneral scg, AddonDescriptionFile desc) {
+	public ItemLimiter(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 

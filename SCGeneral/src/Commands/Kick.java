@@ -12,9 +12,9 @@ import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class Kick implements CommandExecutor{
 
 	private final Map<String, Long> cooldowns = new HashMap<String, Long>();

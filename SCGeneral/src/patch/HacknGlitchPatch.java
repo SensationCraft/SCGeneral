@@ -12,6 +12,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -24,7 +25,6 @@ import org.bukkit.util.Vector;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.User;
-import org.bukkit.event.Listener;
 
 /**
  *
@@ -33,7 +33,7 @@ import org.bukkit.event.Listener;
 public class HacknGlitchPatch implements Listener
 {
 
-	private Set<String> pickup = new HashSet<String>();
+	private final Set<String> pickup = new HashSet<String>();
 	private final String pickupMsg = ChatColor.GOLD + "Picking up items has been %s" + ChatColor.GOLD + ".";
 	private final String ena = ChatColor.GREEN + "enabled";
 	private final String dis = ChatColor.RED + "disabled";
@@ -145,18 +145,18 @@ public class HacknGlitchPatch implements Listener
 				if ((b.getData() & 4) == 0)
 				{
 					// 1 == BlockFace.NORTH
-							if (attacked != null)
-							{
-								if (attacked.getLocation().getBlock().equals(b))
-								{
-									final BlockFace facing = this.getDoorFace(b.getData());
-									final Vector face = new Vector(facing.getModX(), facing.getModY(), facing.getModZ());
-									flag = face.angle(attacked.getLocation().toVector().subtract(attacker.getLocation().toVector()).normalize()) > 75.5;
-								}
-							} else
-								flag = true;
-							if (flag)
-								break;
+					if (attacked != null)
+					{
+						if (attacked.getLocation().getBlock().equals(b))
+						{
+							final BlockFace facing = this.getDoorFace(b.getData());
+							final Vector face = new Vector(facing.getModX(), facing.getModY(), facing.getModZ());
+							flag = face.angle(attacked.getLocation().toVector().subtract(attacker.getLocation().toVector()).normalize()) > 75.5;
+						}
+					} else
+						flag = true;
+					if (flag)
+						break;
 				}
 			}
 

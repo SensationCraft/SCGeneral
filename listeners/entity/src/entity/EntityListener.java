@@ -19,6 +19,7 @@ import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -35,16 +36,15 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
-import org.bukkit.event.Listener;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class EntityListener extends Addon implements Listener
 {
 
-	public EntityListener(SCGeneral scg, AddonDescriptionFile desc) {
+	public EntityListener(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 	private final Random random = new Random();

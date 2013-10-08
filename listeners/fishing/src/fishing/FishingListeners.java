@@ -10,12 +10,12 @@ import addon.Addon;
 import addon.AddonDescriptionFile;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class FishingListeners extends Addon implements Listener{
 
-	public FishingListeners(SCGeneral scg, AddonDescriptionFile desc) {
+	public FishingListeners(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 

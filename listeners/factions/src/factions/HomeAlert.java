@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.sensationcraft.scgeneral.SCGeneral;
 
@@ -17,16 +18,15 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.struct.Relation;
-import org.bukkit.event.Listener;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class HomeAlert extends Addon implements Listener
 {
 
-	public HomeAlert(SCGeneral scg, AddonDescriptionFile desc) {
+	public HomeAlert(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 

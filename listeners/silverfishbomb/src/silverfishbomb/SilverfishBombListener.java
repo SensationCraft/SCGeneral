@@ -17,6 +17,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -37,20 +38,19 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
-import org.bukkit.event.Listener;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class SilverfishBombListener extends Addon implements Listener{
 
-	public SilverfishBombListener(SCGeneral scg, AddonDescriptionFile desc) {
+	public SilverfishBombListener(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 	private Set<Snowball> snowballs;
 
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
@@ -58,7 +58,7 @@ public class SilverfishBombListener extends Addon implements Listener{
 			this.setData("snowballs", new HashSet<String>());
 		this.snowballs = (Set<Snowball>) this.getData("snowballs");
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEggCollide(final ProjectileHitEvent e){
 		if(e.getEntityType() != EntityType.SNOWBALL)

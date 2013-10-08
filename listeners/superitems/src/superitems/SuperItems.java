@@ -15,6 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,7 +30,6 @@ import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
-import org.bukkit.event.Listener;
 
 public class SuperItems extends Addon implements Listener
 {
@@ -55,7 +55,7 @@ public class SuperItems extends Addon implements Listener
 	Map<Enchantment, Integer> stick = new HashMap<Enchantment, Integer>();
 	Map<Enchantment, Integer> tool = new HashMap<Enchantment, Integer>();
 
-	public SuperItems(SCGeneral scg, AddonDescriptionFile desc) {
+	public SuperItems(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 		this.armor.put(Enchantment.PROTECTION_FIRE, 6);
 		this.armor.put(Enchantment.PROTECTION_ENVIRONMENTAL, 6);

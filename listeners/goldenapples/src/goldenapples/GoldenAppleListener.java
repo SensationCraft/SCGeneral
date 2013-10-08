@@ -41,7 +41,7 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 public class GoldenAppleListener extends Addon implements Listener
 {
 
-	public GoldenAppleListener(SCGeneral scg, AddonDescriptionFile desc) {
+	public GoldenAppleListener(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 		this.godapple = new ItemStack(Material.GOLDEN_APPLE, 1, (short)2);
 		final ItemMeta meta = this.godapple.getItemMeta();
@@ -49,7 +49,7 @@ public class GoldenAppleListener extends Addon implements Listener
 		meta.setLore(Arrays.asList(ChatColor.GOLD+"An apple blessed by the ancient gods"));
 		this.godapple.setItemMeta(meta);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
