@@ -1,4 +1,4 @@
-package mcMMO;
+package mcmmoparty;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,6 +7,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.sensationcraft.scgeneral.SCGeneral;
+
+import addon.Addon;
+import addon.AddonDescriptionFile;
 
 import com.gmail.nossr50.api.PartyAPI;
 import com.gmail.nossr50.commands.party.PartySubcommandType;
@@ -24,8 +27,12 @@ import com.massivecraft.factions.event.FactionRelationEvent;
 import com.massivecraft.factions.struct.Relation;
 import org.bukkit.event.Listener;
 
-public class FactionParty implements Listener
+public class FactionParty extends Addon implements Listener
 {
+
+	public FactionParty(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
 
 	@EventHandler
 	public void onPartyChange(final McMMOPartyChangeEvent event)

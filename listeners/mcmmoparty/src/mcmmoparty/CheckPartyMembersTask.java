@@ -1,4 +1,4 @@
-package mcMMO;
+package mcmmoparty;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;

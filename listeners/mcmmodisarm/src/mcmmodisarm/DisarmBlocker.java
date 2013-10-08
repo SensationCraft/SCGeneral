@@ -1,4 +1,4 @@
-package mcMMO;
+package mcmmodisarm;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,18 +18,26 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import addon.Addon;
+import addon.AddonDescriptionFile;
+
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.gmail.nossr50.events.skills.unarmed.McMMOPlayerDisarmEvent;
 import org.bukkit.event.Listener;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
  *
  * @author DarkSeraphim
  */
-public class DisarmBlocker implements Listener
+public class DisarmBlocker extends Addon implements Listener
 {
+
+	public DisarmBlocker(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
 
 	public static final String tag = "&r&5Disarm protect".replace('&', ChatColor.COLOR_CHAR);
 

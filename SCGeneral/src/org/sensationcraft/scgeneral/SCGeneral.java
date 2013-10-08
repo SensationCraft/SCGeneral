@@ -3,9 +3,6 @@ package org.sensationcraft.scgeneral;
 import java.util.HashMap;
 import java.util.Map;
 
-import mcMMO.DisarmBlocker;
-import mcMMO.FactionParty;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -87,7 +84,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	@Override
 	public void onEnable()
 	{
-		//ADDONS: lockpicks, fishing, silverfishbomb, vote, entity, factions, combatlogger, itemlimiter, superitems
+		//ADDONS: lockpicks, fishing, silverfishbomb, vote, entity, factions, combatlogger, itemlimiter, superitems, factionparty, disarmblocker
 		SCGeneral.instance = this;
 		this.getServer().getPluginManager().registerEvents(this, this);
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
@@ -112,12 +109,12 @@ public class SCGeneral extends JavaPlugin implements Listener
 		/*this.getLogger().info(" - Registering Faction fixes");
 		HomeAlert homealert = new HomeAlert();
 		this.getServer().getPluginManager().registerEvents(homealert, this);*/
-		this.getLogger().info(" - Registering mcMMO disarm protect");
+		/*this.getLogger().info(" - Registering mcMMO disarm protect");
 		DisarmBlocker disarm = new DisarmBlocker();
-		this.getServer().getPluginManager().registerEvents(disarm, this);
-		this.getLogger().info(" - Registering mcMMO party control");
+		this.getServer().getPluginManager().registerEvents(disarm, this);*/
+		/*this.getLogger().info(" - Registering mcMMO party control");
 		FactionParty factionParty = new FactionParty();
-		this.getServer().getPluginManager().registerEvents(factionParty, this);
+		this.getServer().getPluginManager().registerEvents(factionParty, this);*/
 		this.getLogger().info(" - Registering mcMMO fixes");
 		DupeFix dupe = new DupeFix();
 		this.getServer().getPluginManager().registerEvents(dupe, this);
