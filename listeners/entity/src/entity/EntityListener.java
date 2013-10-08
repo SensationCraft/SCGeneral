@@ -19,7 +19,6 @@ import org.bukkit.entity.Spider;
 import org.bukkit.entity.Zombie;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -36,14 +35,18 @@ import com.earth2me.essentials.User;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.struct.ChatMode;
+import org.bukkit.event.Listener;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class EntityListener extends Addon implements Listener
 {
 
+	public EntityListener(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
 	private final Random random = new Random();
 	/*private final EnumSet<Material> hax = EnumSet.of(
             Material.THIN_GLASS,
@@ -59,8 +62,24 @@ public class EntityListener extends Addon implements Listener
 		this.combatLogger = (CombatLogger) Bukkit.getPluginManager().getPlugin("CombatLogger");
 =======
             Material.TRAP_DOOR);*///Unused
-	public EntityListener(SCGeneral scg, AddonDescriptionFile desc) {
-		super(scg, desc);
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerQuit(final PlayerQuitEvent e)
+	{
+		SCGeneral.getInstance().getHelp().removeRequest(e.getPlayer().getName());
+		for(final Player player:Bukkit.getOnlinePlayers()){
+			final User user = SCGeneral.getEssentials().getUser(player.getName());
+			if(user == null)
+				continue;
+			if(!user.isInvSee())
+				return;
+			if(user.getOpenInventory() == null)
+				return;
+			if(user.getOpenInventory().getTopInventory() == e.getPlayer().getInventory()){
+				user.closeInventory();
+				user.sendMessage(ChatColor.RED+e.getPlayer().getName()+" has logged off!");
+			}
+		}
 	}
 
 	@EventHandler(ignoreCancelled=true, priority=EventPriority.HIGHEST)
@@ -101,12 +120,16 @@ public class EntityListener extends Addon implements Listener
 			event.setCancelled(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(final AsyncPlayerChatEvent e) {
-		if(e.getMessage().startsWith("!")){
-			e.setCancelled(true);
-			e.setMessage("I'm a herp");
-			e.getPlayer().sendMessage(ChatColor.DARK_RED+"I will eat your soul if you chat like that. -superckl");
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerJoin(final PlayerJoinEvent e){
+		final FPlayer fPlayer = FPlayers.i.get(e.getPlayer());
+		if(fPlayer.getChatMode() == ChatMode.FACTION || fPlayer.getChatMode() == ChatMode.ALLIANCE){
+			fPlayer.setChatMode(ChatMode.PUBLIC);
+			fPlayer.sendMessage(ChatColor.DARK_GREEN+"You have been automagically taken out of faction chat.");
+		}
+		if(e.getPlayer().getGameMode() == GameMode.CREATIVE && !e.getPlayer().hasPermission("creativeblock.bypass")){
+			e.getPlayer().setGameMode(GameMode.SURVIVAL);
+			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Creative cock-blocked.");
 		}
 	}
 
@@ -121,35 +144,12 @@ public class EntityListener extends Addon implements Listener
 		player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerJoin(final PlayerJoinEvent e){
-		final FPlayer fPlayer = FPlayers.i.get(e.getPlayer());
-		if(fPlayer.getChatMode() == ChatMode.FACTION || fPlayer.getChatMode() == ChatMode.ALLIANCE){
-			fPlayer.setChatMode(ChatMode.PUBLIC);
-			fPlayer.sendMessage(ChatColor.DARK_GREEN+"You have been automagically taken out of faction chat.");
-		}
-		if(e.getPlayer().getGameMode() == GameMode.CREATIVE && !e.getPlayer().hasPermission("creativeblock.bypass")){
-			e.getPlayer().setGameMode(GameMode.SURVIVAL);
-			e.getPlayer().sendMessage(ChatColor.DARK_RED+"Creative cock-blocked.");
-		}
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerQuit(final PlayerQuitEvent e)
-	{
-		SCGeneral.getInstance().getHelp().removeRequest(e.getPlayer().getName());
-		for(final Player player:Bukkit.getOnlinePlayers()){
-			final User user = SCGeneral.getEssentials().getUser(player.getName());
-			if(user == null)
-				continue;
-			if(!user.isInvSee())
-				return;
-			if(user.getOpenInventory() == null)
-				return;
-			if(user.getOpenInventory().getTopInventory() == e.getPlayer().getInventory()){
-				user.closeInventory();
-				user.sendMessage(ChatColor.RED+e.getPlayer().getName()+" has logged off!");
-			}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerChat(final AsyncPlayerChatEvent e) {
+		if(e.getMessage().startsWith("!")){
+			e.setCancelled(true);
+			e.setMessage("I'm a herp");
+			e.getPlayer().sendMessage(ChatColor.DARK_RED+"I will eat your soul if you chat like that. -superckl");
 		}
 	}
 }

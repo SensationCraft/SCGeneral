@@ -6,9 +6,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class HelpList implements CommandExecutor{
 
 	private final HelpRequest help;

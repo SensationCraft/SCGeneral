@@ -19,6 +19,12 @@ public class StopConvo extends BooleanPrompt
 	}
 
 	@Override
+	protected Prompt acceptValidatedInput(final ConversationContext cc, final String in)
+	{
+		return this.acceptValidatedInput(cc, in.equalsIgnoreCase("yes") || in.equalsIgnoreCase("y"));
+	}
+
+	@Override
 	protected Prompt acceptValidatedInput(final ConversationContext cc, final boolean bln)
 	{
 		if(bln)
@@ -45,12 +51,6 @@ public class StopConvo extends BooleanPrompt
 		} else
 			cc.getForWhom().sendRawMessage("Stopping server cancelled.");
 		return Prompt.END_OF_CONVERSATION;
-	}
-
-	@Override
-	protected Prompt acceptValidatedInput(final ConversationContext cc, final String in)
-	{
-		return this.acceptValidatedInput(cc, in.equalsIgnoreCase("yes") || in.equalsIgnoreCase("y"));
 	}
 
 	@Override

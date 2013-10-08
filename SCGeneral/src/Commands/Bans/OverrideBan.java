@@ -16,9 +16,9 @@ import com.earth2me.essentials.User;
 import com.google.common.base.Joiner;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class OverrideBan implements CommandExecutor{
 
 	@Override
@@ -62,6 +62,11 @@ public class OverrideBan implements CommandExecutor{
 		this.performBan(player, sender, args);
 		return true;
 	}
+	private String translate(final String[] args) {
+		String message = Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length));
+		message = ChatColor.stripColor(message);
+		return message;
+	}
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		final String message = new StringBuilder(this.translate(args)).append(ChatColor.DARK_RED).append(" - ").append(sender.getName()).toString();
 		final User user = SCGeneral.getEssentials().getOfflineUser(player.getName());
@@ -73,10 +78,5 @@ public class OverrideBan implements CommandExecutor{
 		user.setConfigProperty("ban-reason", message);
 		for(final Player loopPlayer:SCGeneral.getInstance().getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.ban.broadcast"))
 			loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" banned "+player.getName()+" for "+ChatColor.BLUE+message);
-	}
-	private String translate(final String[] args) {
-		String message = Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length));
-		message = ChatColor.stripColor(message);
-		return message;
 	}
 }

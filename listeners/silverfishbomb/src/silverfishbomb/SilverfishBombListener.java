@@ -17,7 +17,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
@@ -38,39 +37,28 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
+import org.bukkit.event.Listener;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class SilverfishBombListener extends Addon implements Listener{
 
-	private Set<Snowball> snowballs;
 	public SilverfishBombListener(SCGeneral scg, AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
+	private Set<Snowball> snowballs;
 
-
-	private ItemStack makeEgg(){
-		final ItemStack it = new ItemStack(383);
-		final ItemMeta meta = it.getItemMeta();
-		meta.setDisplayName(ChatColor.BLUE+"Silverfish Bomb");
-		List<String> lore = meta.getLore();
-		if(lore == null)
-			lore = new ArrayList<String>();
-		lore.add(" ");
-		lore.add("Do not throw this in spawn!");
-		lore.add(" ");
-		lore.add(ChatColor.YELLOW+""+ChatColor.ITALIC+"\"A silverfish a day keeps the enemies at bay!\"");
-		meta.setLore(lore);
-		it.setItemMeta(meta);
-		final MaterialData data = it.getData();
-		data.setData((byte) 60);
-		it.setData(data);
-		it.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
-		return it;
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEnable(){
+		if(!this.hasData("snowballs"))
+			this.setData("snowballs", new HashSet<String>());
+		this.snowballs = (Set<Snowball>) this.getData("snowballs");
 	}
-
+	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEggCollide(final ProjectileHitEvent e){
 		if(e.getEntityType() != EntityType.SNOWBALL)
@@ -99,12 +87,26 @@ public class SilverfishBombListener extends Addon implements Listener{
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onEnable(){
-		if(!this.hasData("snowballs"))
-			this.setData("snowballs", new HashSet<String>());
-		this.snowballs = (Set<Snowball>) this.getData("snowballs");
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onSignChange(final SignChangeEvent e){
+		if(!e.getPlayer().isOp())
+			return;
+		final String line = e.getLine(0);
+		if(line != null && line.equalsIgnoreCase("[Buy Bomb]")){
+			e.setLine(0, ChatColor.BLUE+"[Buy Bomb]");
+			e.setLine(1, "$8");
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onSilverfishBurrow(final EntityChangeBlockEvent e){
+		if(e.getEntityType() != EntityType.SILVERFISH)
+			return;
+		final Faction fac = Board.getFactionAt(new FLocation(e.getBlock().getLocation()));
+		if(fac.isSafeZone() || fac.isWarZone()){
+			e.setCancelled(true);
+			e.getEntity().remove();
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -142,25 +144,23 @@ public class SilverfishBombListener extends Addon implements Listener{
 			this.snowballs.add(e.getPlayer().launchProjectile(Snowball.class));
 		}
 	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onSignChange(final SignChangeEvent e){
-		if(!e.getPlayer().isOp())
-			return;
-		final String line = e.getLine(0);
-		if(line != null && line.equalsIgnoreCase("[Buy Bomb]")){
-			e.setLine(0, ChatColor.BLUE+"[Buy Bomb]");
-			e.setLine(1, "$8");
-		}
-	}
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onSilverfishBurrow(final EntityChangeBlockEvent e){
-		if(e.getEntityType() != EntityType.SILVERFISH)
-			return;
-		final Faction fac = Board.getFactionAt(new FLocation(e.getBlock().getLocation()));
-		if(fac.isSafeZone() || fac.isWarZone()){
-			e.setCancelled(true);
-			e.getEntity().remove();
-		}
+	private ItemStack makeEgg(){
+		final ItemStack it = new ItemStack(383);
+		final ItemMeta meta = it.getItemMeta();
+		meta.setDisplayName(ChatColor.BLUE+"Silverfish Bomb");
+		List<String> lore = meta.getLore();
+		if(lore == null)
+			lore = new ArrayList<String>();
+		lore.add(" ");
+		lore.add("Do not throw this in spawn!");
+		lore.add(" ");
+		lore.add(ChatColor.YELLOW+""+ChatColor.ITALIC+"\"A silverfish a day keeps the enemies at bay!\"");
+		meta.setLore(lore);
+		it.setItemMeta(meta);
+		final MaterialData data = it.getData();
+		data.setData((byte) 60);
+		it.setData(data);
+		it.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
+		return it;
 	}
 }

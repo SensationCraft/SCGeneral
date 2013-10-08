@@ -12,7 +12,6 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -25,6 +24,7 @@ import org.bukkit.util.Vector;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.User;
+import org.bukkit.event.Listener;
 
 /**
  *
@@ -33,84 +33,33 @@ import com.earth2me.essentials.User;
 public class HacknGlitchPatch implements Listener
 {
 
-	private final String dis = ChatColor.RED + "disabled";
-	private final String ena = ChatColor.GREEN + "enabled";
 	private Set<String> pickup = new HashSet<String>();
 	private final String pickupMsg = ChatColor.GOLD + "Picking up items has been %s" + ChatColor.GOLD + ".";
+	private final String ena = ChatColor.GREEN + "enabled";
+	private final String dis = ChatColor.RED + "disabled";
 
-	private boolean checkBlock(final Player attacker, final Player attacked)
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerInteract(final PlayerInteractEvent e)
 	{
-		boolean flag = false;
-		Block b;
-		int len = 2;
-		if (attacked != null)
-			len = (int) Math.floor(attacker.getLocation().distance(attacked.getLocation()));
-		for (final Block block : attacker.getLineOfSight(null, len))
-			if (block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
-			{
-				b = block;
-				if ((block.getData() & 8) != 0)
-					b = b.getRelative(BlockFace.DOWN);
-				if ((b.getData() & 4) == 0)
-				{
-					// 1 == BlockFace.NORTH
-					if (attacked != null)
-					{
-						if (attacked.getLocation().getBlock().equals(b))
-						{
-							final BlockFace facing = this.getDoorFace(b.getData());
-							final Vector face = new Vector(facing.getModX(), facing.getModY(), facing.getModZ());
-							flag = face.angle(attacked.getLocation().toVector().subtract(attacker.getLocation().toVector()).normalize()) > 75.5;
-						}
-					} else
-						flag = true;
-					if (flag)
-						break;
-				}
-			}
-
-		//Door.isOpen is deprecated, using openable to supress the warning.
-		if(flag)
-			return true;
-		else if(len > 0)
-			for (final Block block : attacker.getLineOfSight(null, len))
-				if (block.getType().isSolid())
-					return true;
-		return false;
-	}
-
-	private BlockFace getDoorFace(final byte data)
-	{
-		switch (data)
+		if ((e.getMaterial() == Material.ENDER_PEARL && this.checkBlock(e.getPlayer(), null)))
 		{
-		case 0:
-			return BlockFace.WEST;
-		case 1:
-			return BlockFace.NORTH;
-		case 2:
-			return BlockFace.EAST;
-		case 3:
-			return BlockFace.SOUTH;
-		default:
-			return BlockFace.SELF;
+			e.getPlayer().sendMessage(ChatColor.RED + "Glitching is bad :(");
+			e.setCancelled(true);
+			return;
 		}
-	}
-
-	public boolean isDoorGlitchAttempt(final Location from, final Location to)
-	{
-		final Block bf = from.getBlock();
-		if (bf.getType() != Material.WOODEN_DOOR && bf.getType() != Material.IRON_DOOR_BLOCK)
-			return false;
-		final Block bt = bf.getRelative(this.getDoorFace(bf.getData()));
-		if (!to.getBlock().equals(bt))
-			return false;
-
-		Block door = bf;
-		if ((door.getData() & 8) != 0)
-			door = door.getRelative(BlockFace.DOWN);
-		if ((door.getData() & 4) == 0)
-			return true;
-		return false;
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.isCancelled())
+			return;
+		if (e.getClickedBlock().getState() instanceof Chest == false)
+			return;
+		final User user = SCGeneral.getEssentials().getUser(e.getPlayer().getName());
+		if (user == null)
+			return;
+		if (user.isVanished())
+		{
+			e.setCancelled(true);
+			e.getPlayer().openInventory(((Chest) e.getClickedBlock().getState()).getInventory());
+			e.getPlayer().sendMessage(ChatColor.AQUA + "Silent chest editting brought to you by the wonderful developers of SC. ;D");
+		}
 	}
 
 	/*
@@ -180,12 +129,79 @@ public class HacknGlitchPatch implements Listener
 
 	}
 
-	@EventHandler
-	public void onPickup(final PlayerPickupItemEvent event)
+	private boolean checkBlock(final Player attacker, final Player attacked)
 	{
-		final User user = SCGeneral.getEssentials().getUser(event.getPlayer());
-		if (user.isVanished() && this.pickup.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
+		boolean flag = false;
+		Block b;
+		int len = 2;
+		if (attacked != null)
+			len = (int) Math.floor(attacker.getLocation().distance(attacked.getLocation()));
+		for (final Block block : attacker.getLineOfSight(null, len))
+			if (block.getType() == Material.WOODEN_DOOR || block.getType() == Material.IRON_DOOR_BLOCK)
+			{
+				b = block;
+				if ((block.getData() & 8) != 0)
+					b = b.getRelative(BlockFace.DOWN);
+				if ((b.getData() & 4) == 0)
+				{
+					// 1 == BlockFace.NORTH
+							if (attacked != null)
+							{
+								if (attacked.getLocation().getBlock().equals(b))
+								{
+									final BlockFace facing = this.getDoorFace(b.getData());
+									final Vector face = new Vector(facing.getModX(), facing.getModY(), facing.getModZ());
+									flag = face.angle(attacked.getLocation().toVector().subtract(attacker.getLocation().toVector()).normalize()) > 75.5;
+								}
+							} else
+								flag = true;
+							if (flag)
+								break;
+				}
+			}
+
+		//Door.isOpen is deprecated, using openable to supress the warning.
+		if(flag)
+			return true;
+		else if(len > 0)
+			for (final Block block : attacker.getLineOfSight(null, len))
+				if (block.getType().isSolid())
+					return true;
+		return false;
+	}
+
+	private BlockFace getDoorFace(final byte data)
+	{
+		switch (data)
+		{
+		case 0:
+			return BlockFace.WEST;
+		case 1:
+			return BlockFace.NORTH;
+		case 2:
+			return BlockFace.EAST;
+		case 3:
+			return BlockFace.SOUTH;
+		default:
+			return BlockFace.SELF;
+		}
+	}
+
+	public boolean isDoorGlitchAttempt(final Location from, final Location to)
+	{
+		final Block bf = from.getBlock();
+		if (bf.getType() != Material.WOODEN_DOOR && bf.getType() != Material.IRON_DOOR_BLOCK)
+			return false;
+		final Block bt = bf.getRelative(this.getDoorFace(bf.getData()));
+		if (!to.getBlock().equals(bt))
+			return false;
+
+		Block door = bf;
+		if ((door.getData() & 8) != 0)
+			door = door.getRelative(BlockFace.DOWN);
+		if ((door.getData() & 4) == 0)
+			return true;
+		return false;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST)
@@ -225,27 +241,11 @@ public class HacknGlitchPatch implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerInteract(final PlayerInteractEvent e)
+	@EventHandler
+	public void onPickup(final PlayerPickupItemEvent event)
 	{
-		if ((e.getMaterial() == Material.ENDER_PEARL && this.checkBlock(e.getPlayer(), null)))
-		{
-			e.getPlayer().sendMessage(ChatColor.RED + "Glitching is bad :(");
-			e.setCancelled(true);
-			return;
-		}
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK || e.isCancelled())
-			return;
-		if (e.getClickedBlock().getState() instanceof Chest == false)
-			return;
-		final User user = SCGeneral.getEssentials().getUser(e.getPlayer().getName());
-		if (user == null)
-			return;
-		if (user.isVanished())
-		{
-			e.setCancelled(true);
-			e.getPlayer().openInventory(((Chest) e.getClickedBlock().getState()).getInventory());
-			e.getPlayer().sendMessage(ChatColor.AQUA + "Silent chest editting brought to you by the wonderful developers of SC. ;D");
-		}
+		final User user = SCGeneral.getEssentials().getUser(event.getPlayer());
+		if (user.isVanished() && this.pickup.contains(event.getPlayer().getName()))
+			event.setCancelled(true);
 	}
 }

@@ -20,31 +20,31 @@ import org.bukkit.util.Vector;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Arena {
 
-	private final Location cont1;
-	private final Location cont2;
-	private final Vector corner1;
-	private final Vector corner2;
-	private final int depth;
-	private final List<Item> drops = new ArrayList<Item>();
-	private final Map<String, String> duelRequests = new HashMap<String, String>();
-	private final int height;
-	private boolean isEnding;
-	private boolean isForceEnding;
-	private boolean isRunning;
-	private final int length;
-	private final Vector midpoint;
 	private Player player1;
 	private Location player1Loc;
 	private Player player2;
 	private Location player2Loc;
-	private final SCGeneral plugin;
+	private final Vector corner1;
+	private final Vector corner2;
+	private final Vector midpoint;
+	private final int length;
+	private final int depth;
+	private final int height;
 	private final Location spectate;
+	private final Location cont1;
+	private final Location cont2;
+	private boolean isRunning;
+	private boolean isForceEnding;
+	private boolean isEnding;
+	private final List<Item> drops = new ArrayList<Item>();
 	private BukkitTask timer;
+	private final SCGeneral plugin;
+	private final Map<String, String> duelRequests = new HashMap<String, String>();
 
 	public Arena(final SCGeneral plugin, final Vector corner1, final Vector corner2, final Location spectate, final Location cont1, final Location cont2){
 		this.corner1 = Vector.getMinimum(corner1, corner2);
@@ -60,8 +60,38 @@ public class Arena {
 		this.isForceEnding = false;
 		this.isEnding = false;
 	}
-	public boolean containsEntry(final Entry<String, String> entry){
-		return this.duelRequests.entrySet().contains(entry);
+	protected boolean isInArena(final Location location){
+		return location.toVector().isInAABB(this.corner1, this.corner2);
+	}
+	public boolean isInArena(final Player player){
+		return this.player1 == player || this.player2 == player;
+	}
+	public void spectate(final Player player){
+		player.teleport(this.spectate);
+		player.sendMessage(ChatColor.YELLOW+"Enjoy the show!");
+	}
+
+	public void startMatch(final Player player1, final Player player2){
+		this.isRunning = true;
+		this.player1 = player1;
+		this.player2 = player2;
+		this.player1Loc = player1.getLocation();
+		this.player2Loc = player2.getLocation();
+		if(!player1.teleport(this.cont1, TeleportCause.PLUGIN)){
+			this.forceEnd();
+			return;
+		}
+		if(!player2.teleport(this.cont2, TeleportCause.PLUGIN)){
+			this.forceEnd();
+			return;
+		}
+		this.plugin.getServer().broadcastMessage(ChatColor.AQUA+player1.getName()+ChatColor.GOLD+" and "+ChatColor.AQUA+player2.getName()+ChatColor.GOLD+" are now dueling in the arena! '/spectate' to watch them!");
+		this.timer = new BukkitRunnable(){
+			@Override
+			public void run() {
+				Arena.this.forceEnd();
+			}
+		}.runTaskLater(this.plugin, 6000L);
 	}
 	protected void endMatch(final Player victor){
 		this.isEnding = true;
@@ -136,15 +166,25 @@ public class Arena {
 		this.isForceEnding = false;
 		this.isEnding = false;
 	}
-
 	private List<Entity> getArenaEntities(){
 		final Entity arrow = this.spectate.getWorld().spawnArrow(this.midpoint.toLocation(this.spectate.getWorld()), this.midpoint, 0, 0);
 		final List<Entity> ents = arrow.getNearbyEntities(Arena.this.length/2, Arena.this.height/2, Arena.this.depth/2);
 		arrow.remove();
 		return ents;
 	}
-	public Map<String, String> getDuelRequests(){
-		return this.duelRequests;
+	public boolean isRunning(){
+		return this.isRunning;
+	}
+	public Player getOther(final Player player){
+		if(player.getName().equals(this.player1.getName())) return this.player2;
+		else if(player.getName().equals(this.player2.getName())) return this.player1;
+		return null;
+	}
+	public boolean isForceEnding(){
+		return this.isForceEnding;
+	}
+	public boolean isEnding(){
+		return this.isEnding || this.isForceEnding;
 	}
 	public Set<String> getKeysByValue(final String value){
 		final Set<String> keys = new HashSet<String>();
@@ -154,54 +194,14 @@ public class Arena {
 		}
 		return keys;
 	}
-	public Player getOther(final Player player){
-		if(player.getName().equals(this.player1.getName())) return this.player2;
-		else if(player.getName().equals(this.player2.getName())) return this.player1;
-		return null;
+	public Map<String, String> getDuelRequests(){
+		return this.duelRequests;
 	}
-	public boolean isEnding(){
-		return this.isEnding || this.isForceEnding;
-	}
-	public boolean isForceEnding(){
-		return this.isForceEnding;
-	}
-	protected boolean isInArena(final Location location){
-		return location.toVector().isInAABB(this.corner1, this.corner2);
-	}
-	public boolean isInArena(final Player player){
-		return this.player1 == player || this.player2 == player;
-	}
-	public boolean isRunning(){
-		return this.isRunning;
+	public boolean containsEntry(final Entry<String, String> entry){
+		return this.duelRequests.entrySet().contains(entry);
 	}
 	public void pickedUp(final Item item){
 		if(this.isEnding)
 			this.drops.remove(item);
-	}
-	public void spectate(final Player player){
-		player.teleport(this.spectate);
-		player.sendMessage(ChatColor.YELLOW+"Enjoy the show!");
-	}
-	public void startMatch(final Player player1, final Player player2){
-		this.isRunning = true;
-		this.player1 = player1;
-		this.player2 = player2;
-		this.player1Loc = player1.getLocation();
-		this.player2Loc = player2.getLocation();
-		if(!player1.teleport(this.cont1, TeleportCause.PLUGIN)){
-			this.forceEnd();
-			return;
-		}
-		if(!player2.teleport(this.cont2, TeleportCause.PLUGIN)){
-			this.forceEnd();
-			return;
-		}
-		this.plugin.getServer().broadcastMessage(ChatColor.AQUA+player1.getName()+ChatColor.GOLD+" and "+ChatColor.AQUA+player2.getName()+ChatColor.GOLD+" are now dueling in the arena! '/spectate' to watch them!");
-		this.timer = new BukkitRunnable(){
-			@Override
-			public void run() {
-				Arena.this.forceEnd();
-			}
-		}.runTaskLater(this.plugin, 6000L);
 	}
 }

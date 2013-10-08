@@ -12,12 +12,21 @@ import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Kick implements CommandExecutor{
 
 	private final Map<String, Long> cooldowns = new HashMap<String, Long>();
+
+	private String translate(final String[] args) {
+		String message = "";
+		for (int i=1;i<args.length;i++)
+			message += args[i].concat(" ");
+		message = message.trim();
+		message = ChatColor.stripColor(message);
+		return message;
+	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String arg2,
@@ -70,14 +79,5 @@ public class Kick implements CommandExecutor{
 		for(final Player loopPlayer:SCGeneral.getInstance().getServer().getOnlinePlayers()) if(loopPlayer.hasPermission("essentials.kick.broadcast"))
 			loopPlayer.sendRawMessage(ChatColor.RED+sender.getName()+" kicked "+player.getName()+" for "+ChatColor.BLUE+reason);
 		return true;
-	}
-
-	private String translate(final String[] args) {
-		String message = "";
-		for (int i=1;i<args.length;i++)
-			message += args[i].concat(" ");
-		message = message.trim();
-		message = ChatColor.stripColor(message);
-		return message;
 	}
 }

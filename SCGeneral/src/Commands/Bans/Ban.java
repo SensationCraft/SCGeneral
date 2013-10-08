@@ -17,9 +17,9 @@ import com.earth2me.essentials.utils.DateUtil;
 import com.google.common.base.Joiner;
 
 /**
- *
- * @author superckl - Have a taste of your own medicine
- */
+*
+* @author superckl - Have a taste of your own medicine
+*/
 public class Ban implements CommandExecutor{
 
 	private final OverrideBan overBan;
@@ -61,6 +61,12 @@ public class Ban implements CommandExecutor{
 		this.performBan(player, sender, args);
 		return true;
 	}
+	private String translate(final String[] args) {
+		String message = Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length));
+		message = ChatColor.stripColor(message);
+		return message;
+	}
+
 	public void performBan(final OfflinePlayer player, final CommandSender sender, final String[] args){
 		try {
 			final User user = SCGeneral.getEssentials().getOfflineUser(player.getName());
@@ -83,12 +89,6 @@ public class Ban implements CommandExecutor{
 		} catch (final Exception e) {
 			SCGeneral.getInstance().getLogger().info("Essentials is annoying.");
 		}
-	}
-
-	private String translate(final String[] args) {
-		String message = Joiner.on(" ").join(Arrays.copyOfRange(args, 1, args.length));
-		message = ChatColor.stripColor(message);
-		return message;
 	}
 
 
