@@ -61,8 +61,6 @@ import Commands.tp.Top;
 import Commands.tp.TpSuite;
 import Duel.Arena;
 import Duel.DuelListeners;
-import Items.ItemLimiter;
-import Items.SuperItems;
 import addon.AddonManager;
 import patch.PotionPatch;
 import patch.HacknGlitchPatch;
@@ -72,7 +70,6 @@ import addon.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
-import combatlogger.CombatListeners;
 
 
 public class SCGeneral extends JavaPlugin implements Listener
@@ -81,7 +78,6 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private Shout shout;
 	private HelpRequest help;
 	private Arena arena;
-	private CombatListeners combatListeners; //TODO Addon reference
 	private static SCGeneral instance;
 	private static Essentials essentials;
 	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
@@ -91,7 +87,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	@Override
 	public void onEnable()
 	{
-		//ADDONS: lockpicks, fishing, silverfishbomb, vote, entity, factions, combatlogger
+		//ADDONS: lockpicks, fishing, silverfishbomb, vote, entity, factions, combatlogger, itemlimiter, superitems
 		SCGeneral.instance = this;
 		this.getServer().getPluginManager().registerEvents(this, this);
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
@@ -127,9 +123,9 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.getServer().getPluginManager().registerEvents(dupe, this);
 		ExpFarmFix expfix = new ExpFarmFix();
 		this.getServer().getPluginManager().registerEvents(expfix, this);
-		this.getLogger().info(" - Registering ItemLimiter");
+		/*this.getLogger().info(" - Registering ItemLimiter");
 		ItemLimiter limiter = new ItemLimiter();
-		this.getServer().getPluginManager().registerEvents(limiter, this);
+		this.getServer().getPluginManager().registerEvents(limiter, this);*/
 		this.getLogger().info(" - Registering PotionPatch");
 		PotionPatch potion = new PotionPatch();
 		this.getServer().getPluginManager().registerEvents(potion, this);
@@ -145,9 +141,9 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.help = new HelpRequest();
 		/*final EntityListener entity = new EntityListener();
 		this.getServer().getPluginManager().registerEvents(entity, this);*/
-		this.getLogger().info(" - Registering Super items");
+		/*this.getLogger().info(" - Registering Super items");
 		SuperItems superi = new SuperItems();
-		this.getServer().getPluginManager().registerEvents(superi, this);
+		this.getServer().getPluginManager().registerEvents(superi, this);*/
 		this.getLogger().info(" - Overriding commands");
 		this.overrideCommands(this.help);
 		this.getLogger().info(" - Starting save-all loop");
@@ -311,9 +307,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public Arena getArena(){
 		return this.arena;
 	}
-	public CombatListeners getCombatListeners() {
-		return this.combatListeners;
-	}
+
 	public HelpRequest getHelp(){
 		return this.help;
 	}
@@ -334,9 +328,4 @@ public class SCGeneral extends JavaPlugin implements Listener
     {
         return this.data;
     }
-
-	public void setCombatListeners(CombatListeners combatListeners) 
-    {
-		this.combatListeners = combatListeners;
-	}
 }

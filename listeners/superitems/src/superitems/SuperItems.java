@@ -1,4 +1,4 @@
-package Items;
+package superitems;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,15 +22,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+import addon.Addon;
+import addon.AddonDescriptionFile;
+
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
 import org.bukkit.event.Listener;
 
-public class SuperItems implements Listener
+public class SuperItems extends Addon implements Listener
 {
-
 	public static final String tag = "&r&5Super item".replace('&', ChatColor.COLOR_CHAR);
 
 	private final String broadcast = "&e%s &5has bought a &e%s".replace('&', ChatColor.COLOR_CHAR);
@@ -53,8 +55,8 @@ public class SuperItems implements Listener
 	Map<Enchantment, Integer> stick = new HashMap<Enchantment, Integer>();
 	Map<Enchantment, Integer> tool = new HashMap<Enchantment, Integer>();
 
-	public SuperItems()
-	{
+	public SuperItems(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
 		this.armor.put(Enchantment.PROTECTION_FIRE, 6);
 		this.armor.put(Enchantment.PROTECTION_ENVIRONMENTAL, 6);
 		this.armor.put(Enchantment.PROTECTION_EXPLOSIONS, 6);

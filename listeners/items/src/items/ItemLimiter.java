@@ -1,4 +1,4 @@
-package Items;
+package items;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,14 +13,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
+import org.sensationcraft.scgeneral.SCGeneral;
 import org.yi.acru.bukkit.Lockette.Lockette;
+
+import addon.Addon;
+import addon.AddonDescriptionFile;
 
 /**
 *
 * @author superckl - Have a taste of your own medicine
 */
-public class ItemLimiter implements Listener
+public class ItemLimiter extends Addon implements Listener
 {
+
+	public ItemLimiter(SCGeneral scg, AddonDescriptionFile desc) {
+		super(scg, desc);
+	}
 
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onBlockPlace(final BlockPlaceEvent event)
