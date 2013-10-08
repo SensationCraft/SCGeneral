@@ -13,7 +13,6 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 
 public class VoteListener implements Listener
 {
-
 	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onVote(final VotifierEvent e)
 	{
