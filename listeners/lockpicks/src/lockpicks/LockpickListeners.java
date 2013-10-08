@@ -1,7 +1,5 @@
 package lockpicks;
 
-import addon.Addon;
-import addon.AddonDescriptionFile;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +13,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -25,29 +24,36 @@ import org.bukkit.scheduler.BukkitTask;
 import org.sensationcraft.scgeneral.SCGeneral;
 import org.yi.acru.bukkit.PluginCore;
 
+import addon.Addon;
+import addon.AddonDescriptionFile;
+
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
-import org.bukkit.event.Listener;
 
+/**
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class LockpickListeners extends Addon implements Listener
 {
-    
-    public LockpickListeners(SCGeneral scg, AddonDescriptionFile desc)
-    {
-        super(scg, desc);
-    }
-    
-    @Override
-    public void onEnable()
-    {
-        if(!this.hasData("picking"))
-            this.setData("picking", new HashMap<String, BukkitTask>());
-        this.picking = (Map<String, BukkitTask>) this.getData("picking");
-    }
+
+	public LockpickListeners(final SCGeneral scg, final AddonDescriptionFile desc)
+	{
+		super(scg, desc);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEnable()
+	{
+		if(!this.hasData("picking"))
+			this.setData("picking", new HashMap<String, BukkitTask>());
+		this.picking = (Map<String, BukkitTask>) this.getData("picking");
+	}
 
 	private Map<String, BukkitTask> picking;
-	
+
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerDamageEvent(final EntityDamageEvent e)
 	{
@@ -99,7 +105,7 @@ public class LockpickListeners extends Addon implements Listener
 								LockpickListeners.this.picking.remove(e.getPlayer().getName());
 							}
 
-						}.runTaskLater(getPlugin(), 100L));
+						}.runTaskLater(this.getPlugin(), 100L));
 					} else
 						e.getPlayer().sendMessage((new StringBuilder()).append(ChatColor.RED).append("You can only pick locks in the Wilderness!").toString());
 				}

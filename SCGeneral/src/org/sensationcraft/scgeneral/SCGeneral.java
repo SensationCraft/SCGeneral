@@ -3,9 +3,6 @@ package org.sensationcraft.scgeneral;
 import java.util.HashMap;
 import java.util.Map;
 
-import mcMMO.DisarmBlocker;
-import mcMMO.FactionParty;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,8 +21,10 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import patch.DupeFix;
 import patch.ExpFarmFix;
+import patch.HacknGlitchPatch;
+import patch.PotionPatch;
+import protocol.VanishFix;
 import Bounties.BountiesListeners;
-import CombatLogger.CombatListeners;
 import Commands.Bounty;
 import Commands.CheckBounties;
 import Commands.ClearInvis;
@@ -62,16 +61,7 @@ import Commands.tp.Top;
 import Commands.tp.TpSuite;
 import Duel.Arena;
 import Duel.DuelListeners;
-import Entity.EntityListener;
-import Factions.HomeAlert;
-import Items.ItemLimiter;
-import Items.SuperItems;
 import addon.AddonManager;
-import patch.PotionPatch;
-import patch.HacknGlitchPatch;
-import protocol.VanishFix;
-
-import SilverfishBomb.SilverfishBombListener;
 import addon.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
@@ -84,20 +74,20 @@ public class SCGeneral extends JavaPlugin implements Listener
 	private Shout shout;
 	private HelpRequest help;
 	private Arena arena;
-	private CombatListeners combatListeners;
 	private static SCGeneral instance;
 	private static Essentials essentials;
 	private final Map<String, SCUser> scUsers = new HashMap<String, SCUser>();
-    
-    private final Storage data = new Storage();
+
+	private final Storage data = new Storage();
 
 	@Override
 	public void onEnable()
 	{
+		//ADDONS: lockpicks, fishing, silverfishbomb, vote, entity, factions, combatlogger, itemlimiter, superitems, factionparty, disarmblocker
 		SCGeneral.instance = this;
 		this.getServer().getPluginManager().registerEvents(this, this);
 		SCGeneral.essentials = (Essentials) Bukkit.getPluginManager().getPlugin("Essentials");
-        this.getServer().getPluginManager().registerEvents(this, this);
+		this.getServer().getPluginManager().registerEvents(this, this);
 		if(SCGeneral.essentials == null || !SCGeneral.essentials.isEnabled()){
 			this.getLogger().info("Essentials not found! Stopping server.");
 			this.getServer().shutdown();
@@ -106,50 +96,50 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.getLogger().info(" - Reading config and setting up arena");
 		this.saveDefaultConfig();
 		this.arena = this.makeArena();
-		this.getLogger().info(" - Registering combat listeners");
+		/*this.getLogger().info(" - Registering combat listeners");
 		this.combatListeners = new CombatListeners();
-		this.getServer().getPluginManager().registerEvents(this.combatListeners, this);
-		this.getLogger().info("Registering Silverfish Bombs");
+		this.getServer().getPluginManager().registerEvents(this.combatListeners, this);*/
+		/*this.getLogger().info("Registering Silverfish Bombs");
 		SilverfishBombListener bombList = new SilverfishBombListener();
-		this.getServer().getPluginManager().registerEvents(bombList, this);
+		this.getServer().getPluginManager().registerEvents(bombList, this); ADDON*/
 		this.getLogger().info(" - Registering duel listeners");
-		DuelListeners duelList = new DuelListeners();
+		final DuelListeners duelList = new DuelListeners();
 		this.getServer().getPluginManager().registerEvents(duelList, this);
-		this.getLogger().info(" - Registering Faction fixes");
+		/*this.getLogger().info(" - Registering Faction fixes");
 		HomeAlert homealert = new HomeAlert();
-		this.getServer().getPluginManager().registerEvents(homealert, this);
-		this.getLogger().info(" - Registering mcMMO disarm protect");
+		this.getServer().getPluginManager().registerEvents(homealert, this);*/
+		/*this.getLogger().info(" - Registering mcMMO disarm protect");
 		DisarmBlocker disarm = new DisarmBlocker();
-		this.getServer().getPluginManager().registerEvents(disarm, this);
-		this.getLogger().info(" - Registering mcMMO party control");
+		this.getServer().getPluginManager().registerEvents(disarm, this);*/
+		/*this.getLogger().info(" - Registering mcMMO party control");
 		FactionParty factionParty = new FactionParty();
-		this.getServer().getPluginManager().registerEvents(factionParty, this);
+		this.getServer().getPluginManager().registerEvents(factionParty, this);*/
 		this.getLogger().info(" - Registering mcMMO fixes");
-		DupeFix dupe = new DupeFix();
+		final DupeFix dupe = new DupeFix();
 		this.getServer().getPluginManager().registerEvents(dupe, this);
-		ExpFarmFix expfix = new ExpFarmFix();
+		final ExpFarmFix expfix = new ExpFarmFix();
 		this.getServer().getPluginManager().registerEvents(expfix, this);
-		this.getLogger().info(" - Registering ItemLimiter");
+		/*this.getLogger().info(" - Registering ItemLimiter");
 		ItemLimiter limiter = new ItemLimiter();
-		this.getServer().getPluginManager().registerEvents(limiter, this);
+		this.getServer().getPluginManager().registerEvents(limiter, this);*/
 		this.getLogger().info(" - Registering PotionPatch");
-		PotionPatch potion = new PotionPatch();
+		final PotionPatch potion = new PotionPatch();
 		this.getServer().getPluginManager().registerEvents(potion, this);
 		this.getLogger().info(" - Registering Bounty");
-		BountiesListeners bounty = new BountiesListeners();
+		final BountiesListeners bounty = new BountiesListeners();
 		this.getServer().getPluginManager().registerEvents(bounty, this);
 		this.getLogger().info(" - Registering Hack & Glitch patches");
-		HacknGlitchPatch hacks = new HacknGlitchPatch();
+		final HacknGlitchPatch hacks = new HacknGlitchPatch();
 		this.getServer().getPluginManager().registerEvents(hacks, this);
 		this.getLogger().info(" - Registering Chest packet filter for vanish ;)");
 		ProtocolLibrary.getProtocolManager().addPacketListener(new VanishFix(this));
-		this.getLogger().info(" - Registering EntityListener");
+		//this.getLogger().info(" - Registering EntityListener");
 		this.help = new HelpRequest();
-		final EntityListener entity = new EntityListener();
-		this.getServer().getPluginManager().registerEvents(entity, this);
-		this.getLogger().info(" - Registering Super items");
+		/*final EntityListener entity = new EntityListener();
+		this.getServer().getPluginManager().registerEvents(entity, this);*/
+		/*this.getLogger().info(" - Registering Super items");
 		SuperItems superi = new SuperItems();
-		this.getServer().getPluginManager().registerEvents(superi, this);
+		this.getServer().getPluginManager().registerEvents(superi, this);*/
 		this.getLogger().info(" - Overriding commands");
 		this.overrideCommands(this.help);
 		this.getLogger().info(" - Starting save-all loop");
@@ -313,9 +303,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public Arena getArena(){
 		return this.arena;
 	}
-	public CombatListeners getCombatListeners() {
-		return this.combatListeners;
-	}
+
 	public HelpRequest getHelp(){
 		return this.help;
 	}
@@ -331,14 +319,9 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public static Essentials getEssentials(){
 		return SCGeneral.essentials;
 	}
-    
-    public Storage getData()
-    {
-        return this.data;
-    }
 
-	public void setCombatListeners(CombatListeners combatListeners) 
-    {
-		this.combatListeners = combatListeners;
+	public Storage getData()
+	{
+		return this.data;
 	}
 }

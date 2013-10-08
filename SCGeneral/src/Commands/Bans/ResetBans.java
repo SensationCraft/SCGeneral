@@ -10,6 +10,10 @@ import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.User;
 
+/**
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class ResetBans implements CommandExecutor{
 
 	@Override

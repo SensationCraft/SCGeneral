@@ -2,15 +2,17 @@ package Commands;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.SkullType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Skull;
 
+/**
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class Head implements CommandExecutor{
 
 	@Override

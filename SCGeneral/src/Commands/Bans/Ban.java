@@ -16,6 +16,10 @@ import com.earth2me.essentials.User;
 import com.earth2me.essentials.utils.DateUtil;
 import com.google.common.base.Joiner;
 
+/**
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class Ban implements CommandExecutor{
 
 	private final OverrideBan overBan;

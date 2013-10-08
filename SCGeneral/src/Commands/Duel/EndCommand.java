@@ -5,6 +5,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.sensationcraft.scgeneral.SCGeneral;
 
+/**
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class EndCommand implements CommandExecutor
 {
 	private final SCGeneral plugin;

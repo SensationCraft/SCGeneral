@@ -14,6 +14,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,12 +28,11 @@ import com.gmail.nossr50.party.PartyManager;
 import com.gmail.nossr50.util.Misc;
 import com.gmail.nossr50.util.Permissions;
 import com.gmail.nossr50.util.skills.CombatUtils;
-import org.bukkit.event.Listener;
 
 public class ExpFarmFix implements Listener
 {
 
-	private Set<String> sameIp = new HashSet<String>();
+	private final Set<String> sameIp = new HashSet<String>();
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDamage(final EntityDamageByEntityEvent event)
