@@ -13,16 +13,67 @@ import org.sensationcraft.scgeneral.SCGeneral;
 public class TpSuite implements CommandExecutor
 {
 
-	private final Map<String, TpRequest> requests = new HashMap<String, TpRequest>();
+	enum TpCommand
+	{
+		TPA,
+		TPACCEPT,
+		TPAHERE,
+		TPCHECK,
+		TPDENY;
 
+		public boolean needsRequest()
+		{
+			switch(this)
+			{
+			case TPACCEPT:
+			case TPDENY:
+			case TPCHECK:
+				return true;
+			default:
+				return false;
+			}
+		}
+	}
+
+	protected class TpRequest
+	{
+		final boolean isHere;
+		final String requested;
+		final String requester;
+
+		public TpRequest(final String requester, final String requested, final boolean isHere)
+		{
+			this.requester = requester;
+			this.requested = requested;
+			this.isHere = isHere;
+		}
+
+		public String getRequested()
+		{
+			return this.requested;
+		}
+
+		public String getRequester()
+		{
+			return this.requester;
+		}
+
+		public boolean isTpaHere()
+		{
+			return this.isHere;
+		}
+	}
 	private final TpAccept accept;
-	private final TpDeny deny;
-
-	private final Tpa tpa;
-	private final TpaHere tpahere;
 
 	private final String check = "&6Your current request is from &b%s &6and he requested to teleport &b%s".replace('&', ChatColor.COLOR_CHAR);
+	private final TpDeny deny;
 
+	private final Map<String, TpRequest> requests = new HashMap<String, TpRequest>();
+
+
+	private final Tpa tpa;
+
+	private final TpaHere tpahere;
 
 	public TpSuite()
 	{
@@ -30,6 +81,11 @@ public class TpSuite implements CommandExecutor
 		this.deny = new TpDeny();
 		this.tpa = new Tpa();
 		this.tpahere = new TpaHere();
+	}
+
+	public void clear(final String requested)
+	{
+		this.requests.remove(requested);
 	}
 
 	@Override
@@ -93,62 +149,6 @@ public class TpSuite implements CommandExecutor
 	public void request(final String requester, final String requested, final boolean isHere)
 	{
 		this.requests.put(requested, new TpRequest(requester, requested, isHere));
-	}
-
-	public void clear(final String requested)
-	{
-		this.requests.remove(requested);
-	}
-
-	enum TpCommand
-	{
-		TPA,
-		TPAHERE,
-		TPACCEPT,
-		TPDENY,
-		TPCHECK;
-
-		public boolean needsRequest()
-		{
-			switch(this)
-			{
-			case TPACCEPT:
-			case TPDENY:
-			case TPCHECK:
-				return true;
-			default:
-				return false;
-			}
-		}
-	}
-
-	protected class TpRequest
-	{
-		final String requester;
-		final String requested;
-		final boolean isHere;
-
-		public TpRequest(final String requester, final String requested, final boolean isHere)
-		{
-			this.requester = requester;
-			this.requested = requested;
-			this.isHere = isHere;
-		}
-
-		public String getRequester()
-		{
-			return this.requester;
-		}
-
-		public String getRequested()
-		{
-			return this.requested;
-		}
-
-		public boolean isTpaHere()
-		{
-			return this.isHere;
-		}
 	}
 
 }

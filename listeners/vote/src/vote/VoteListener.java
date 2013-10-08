@@ -1,7 +1,6 @@
 package vote;
 
 import org.bukkit.Bukkit;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -17,9 +16,9 @@ import addon.AddonDescriptionFile;
 import com.vexsoftware.votifier.model.VotifierEvent;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class VoteListener extends Addon implements Listener
 {
 

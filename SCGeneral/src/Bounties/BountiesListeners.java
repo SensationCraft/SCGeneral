@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.sensationcraft.scgeneral.SCGeneral;
@@ -15,30 +16,17 @@ import com.earth2me.essentials.User;
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
-import org.bukkit.event.Listener;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class BountiesListeners implements Listener{
 
-	@SuppressWarnings("unchecked")
-	@EventHandler(priority = EventPriority.MONITOR)
-	public void onPlayerJoin(final PlayerJoinEvent e){
-		final User user = SCGeneral.getEssentials().getOfflineUser(e.getPlayer().getName());
-		if(user != null)
-			if(user.getConfigMap().containsKey("bounties")){
-				final List<String> bounties = (List<String>)user.getConfigMap().get("bounties");
-				final Iterator<String> it = bounties.iterator();
-				while(it.hasNext()){
-					final String[] split = it.next().split("[:]");
-					if(split.length == 2)
-						if(!this.checkBountyIsValid(Long.parseLong(split[1])))
-							it.remove();
-				}
-				user.setConfigProperty("bounties", bounties);
-			}
+	public boolean checkBountyIsValid(final long timeout){
+		if(timeout < System.currentTimeMillis())
+			return false;
+		return true;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -72,9 +60,21 @@ public class BountiesListeners implements Listener{
 			}
 	}
 
-	public boolean checkBountyIsValid(final long timeout){
-		if(timeout < System.currentTimeMillis())
-			return false;
-		return true;
+	@SuppressWarnings("unchecked")
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onPlayerJoin(final PlayerJoinEvent e){
+		final User user = SCGeneral.getEssentials().getOfflineUser(e.getPlayer().getName());
+		if(user != null)
+			if(user.getConfigMap().containsKey("bounties")){
+				final List<String> bounties = (List<String>)user.getConfigMap().get("bounties");
+				final Iterator<String> it = bounties.iterator();
+				while(it.hasNext()){
+					final String[] split = it.next().split("[:]");
+					if(split.length == 2)
+						if(!this.checkBountyIsValid(Long.parseLong(split[1])))
+							it.remove();
+				}
+				user.setConfigProperty("bounties", bounties);
+			}
 	}
 }

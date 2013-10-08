@@ -14,6 +14,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -27,12 +28,19 @@ import com.gmail.nossr50.party.PartyManager;
 import com.gmail.nossr50.util.Misc;
 import com.gmail.nossr50.util.Permissions;
 import com.gmail.nossr50.util.skills.CombatUtils;
-import org.bukkit.event.Listener;
 
 public class ExpFarmFix implements Listener
 {
 
 	private Set<String> sameIp = new HashSet<String>();
+
+	@EventHandler
+	public void onChunkUnload(final ChunkUnloadEvent event)
+	{
+		for(final Entity e: event.getChunk().getEntities())
+			if(e.hasMetadata(mcMMO.entityMetadataKey) && e instanceof Monster)
+				e.remove();
+	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onDamage(final EntityDamageByEntityEvent event)
@@ -80,6 +88,27 @@ public class ExpFarmFix implements Listener
 					}
 				}.runTaskLater(SCGeneral.getInstance(), 1L);
 			}
+	}
+
+	@EventHandler
+	public void onExpEarn(final McMMOPlayerXpGainEvent event)
+	{
+		final SkillType skill = event.getSkill();
+		switch(skill)
+		{
+		case TAMING:
+		case ACROBATICS:
+		case UNARMED:
+		case AXES:
+		case SWORDS:
+		case ARCHERY:
+			break;
+		default:
+			return;
+		}
+
+		if(this.sameIp.contains(event.getPlayer().getName()))
+			event.setCancelled(true);
 	}
 
 	private boolean shouldMcMMOAllowIt(final EntityDamageByEntityEvent event)
@@ -138,34 +167,5 @@ public class ExpFarmFix implements Listener
 			}
 		}
 		return true;
-	}
-
-	@EventHandler
-	public void onExpEarn(final McMMOPlayerXpGainEvent event)
-	{
-		final SkillType skill = event.getSkill();
-		switch(skill)
-		{
-		case TAMING:
-		case ACROBATICS:
-		case UNARMED:
-		case AXES:
-		case SWORDS:
-		case ARCHERY:
-			break;
-		default:
-			return;
-		}
-
-		if(this.sameIp.contains(event.getPlayer().getName()))
-			event.setCancelled(true);
-	}
-
-	@EventHandler
-	public void onChunkUnload(final ChunkUnloadEvent event)
-	{
-		for(final Entity e: event.getChunk().getEntities())
-			if(e.hasMetadata(mcMMO.entityMetadataKey) && e instanceof Monster)
-				e.remove();
 	}
 }

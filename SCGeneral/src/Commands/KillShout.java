@@ -7,9 +7,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class KillShout implements CommandExecutor{
 
 	private final Shout shout;

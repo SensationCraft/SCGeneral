@@ -18,16 +18,46 @@ import com.github.DarkSeraphim.SCPvP.Titles;
 public class Shout implements CommandExecutor
 {
 
-	private final long SHOUT_DELAY = 15000;
-	private boolean dead = false;
-	private final String shoutFormat = "&c[S] &r%s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
-	private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
+	private enum ShoutPrefix
+	{
+		A("["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] %s"),
+		AP("["+ChatColor.DARK_RED+"A"+ChatColor.YELLOW+"+"+ChatColor.RESET+"] %s"),
+		HA("["+ChatColor.BLACK+"H"+ChatColor.GOLD+"A"+ChatColor.RESET+"] %s"),
+		MOD("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] %s"),
+		OP(ChatColor.GOLD+"%s"),
+		PREMIUM(ChatColor.BLUE+"%s"),
+		PREMIUMP(ChatColor.BLUE+"%s"+ChatColor.YELLOW+"+"),
+		VIP(ChatColor.GREEN+"%s"),
+		VIPP(ChatColor.GREEN+"%s"+ChatColor.YELLOW+"+"),
+		;
 
+		final String prefix;
+
+		ShoutPrefix(final String prefix)
+		{
+			this.prefix = prefix;
+		}
+
+		public String get(final String name)
+		{
+			return String.format(this.prefix, name);
+		}
+	}
 	private final Map<String, Long> coolDowns = new HashMap<String, Long>();
+	private boolean dead = false;
 	private final Set<String> disabled = new HashSet<String>();
 
-	public void setDead(final boolean dead){
-		this.dead = dead;
+	private final long SHOUT_DELAY = 15000;
+	private final String shoutFormat = "&c[S] &r%s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
+
+	private final String titleFormat = "&4&l[%s&r&4&l]&r ".replace('&', ChatColor.COLOR_CHAR);
+
+	public Map<String, Long> getCooldowns(){
+		return this.coolDowns;
+	}
+
+	public Set<String> getDisabled() {
+		return this.disabled;
 	}
 
 	public boolean isDead(){
@@ -110,37 +140,7 @@ public class Shout implements CommandExecutor
 		return true;
 	}
 
-	public Set<String> getDisabled() {
-		return this.disabled;
-	}
-
-	public Map<String, Long> getCooldowns(){
-		return this.coolDowns;
-	}
-
-	private enum ShoutPrefix
-	{
-		OP(ChatColor.GOLD+"%s"),
-		HA("["+ChatColor.BLACK+"H"+ChatColor.GOLD+"A"+ChatColor.RESET+"] %s"),
-		AP("["+ChatColor.DARK_RED+"A"+ChatColor.YELLOW+"+"+ChatColor.RESET+"] %s"),
-		A("["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] %s"),
-		MOD("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] %s"),
-		PREMIUMP(ChatColor.BLUE+"%s"+ChatColor.YELLOW+"+"),
-		PREMIUM(ChatColor.BLUE+"%s"),
-		VIPP(ChatColor.GREEN+"%s"+ChatColor.YELLOW+"+"),
-		VIP(ChatColor.GREEN+"%s"),
-		;
-
-		final String prefix;
-
-		ShoutPrefix(final String prefix)
-		{
-			this.prefix = prefix;
-		}
-
-		public String get(final String name)
-		{
-			return String.format(this.prefix, name);
-		}
+	public void setDead(final boolean dead){
+		this.dead = dead;
 	}
 }

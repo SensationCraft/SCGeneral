@@ -3,26 +3,16 @@ package fishing;
 import org.bukkit.permissions.Permissible;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public enum FishingChance {
 
 	DEFAULT(1.0),
-	VIP(1.25),
-	VIP_PLUS(1.5),
 	PREMIUM(1.75),
-	PREMIUM_PLUS(2.0);
-
-	private double modifer;
-
-	private FishingChance(final double modifier){
-		this.modifer = modifier;
-	}
-
-	public double getModifier(){
-		return this.modifer;
-	}
+	PREMIUM_PLUS(2.0),
+	VIP(1.25),
+	VIP_PLUS(1.5);
 
 	public static FishingChance getByPlayer(final Permissible player){
 		if(player.hasPermission("fishing.premiumplus"))
@@ -34,5 +24,15 @@ public enum FishingChance {
 		else if(player.hasPermission("fishing.vip"))
 			return VIP;
 		return DEFAULT;
+	}
+
+	private double modifer;
+
+	private FishingChance(final double modifier){
+		this.modifer = modifier;
+	}
+
+	public double getModifier(){
+		return this.modifer;
 	}
 }

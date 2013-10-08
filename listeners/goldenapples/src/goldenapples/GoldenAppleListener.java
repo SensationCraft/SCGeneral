@@ -41,6 +41,10 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 public class GoldenAppleListener extends Addon implements Listener
 {
 
+	private Map<String, Integer> appleOwners;
+
+	private final ItemStack godapple;
+
 	public GoldenAppleListener(SCGeneral scg, AddonDescriptionFile desc) {
 		super(scg, desc);
 		this.godapple = new ItemStack(Material.GOLDEN_APPLE, 1, (short)2);
@@ -48,62 +52,6 @@ public class GoldenAppleListener extends Addon implements Listener
 		meta.setDisplayName(ChatColor.LIGHT_PURPLE+"God Apple");
 		meta.setLore(Arrays.asList(ChatColor.GOLD+"An apple blessed by the ancient gods"));
 		this.godapple.setItemMeta(meta);
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public void onEnable(){
-		if(!this.hasData("appleowners"))
-			this.setData("appleowners", new HashMap<String, Integer>());
-		this.appleOwners = (Map<String, Integer>) this.getData("appleowners");
-	}
-
-	private final ItemStack godapple;
-
-	private Map<String, Integer> appleOwners;
-
-	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onPrepareCraft(final PrepareItemCraftEvent event)
-	{
-		final ItemStack result = event.getRecipe().getResult();
-		if(result.getType() == Material.GOLDEN_APPLE && result.getDurability() > 0)
-			event.getInventory().setResult(null);
-	}
-
-	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
-	public void onCraft(final CraftItemEvent event)
-	{
-		final ItemStack result = event.getRecipe().getResult();
-		if(result.getType() == Material.GOLDEN_APPLE && result.getDurability() > 0)
-		{
-			event.setCancelled(true);
-			event.setResult(Event.Result.DENY);
-		}
-	}
-
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-	public void onSignChange(final SignChangeEvent event)
-	{
-		if (event.getBlock().getType() != Material.WALL_SIGN)
-			return;
-		if (!event.getLine(0).equalsIgnoreCase("[purchase]"))
-			return;
-		if (!event.getPlayer().isOp())
-		{
-			event.setCancelled(true);
-			event.setLine(0, "");
-			event.setLine(1, "");
-			event.setLine(2, "");
-			event.setLine(3, "");
-		}
-		if (this.check(event))
-		{
-			event.setLine(0, ChatColor.BLUE + "[Purchase]");
-			event.setLine(1, ChatColor.GOLD + "God Apple");
-			// Basically leave line 3 alone
-			//event.setLine(2, event.getLine(2));
-			event.setLine(3, "");
-		}
 	}
 
 	private boolean check(final SignChangeEvent event)
@@ -121,6 +69,25 @@ public class GoldenAppleListener extends Addon implements Listener
 		}
 		event.setLine(3, "UNKNOWN SIGN");
 		return false;
+	}
+
+	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void onCraft(final CraftItemEvent event)
+	{
+		final ItemStack result = event.getRecipe().getResult();
+		if(result.getType() == Material.GOLDEN_APPLE && result.getDurability() > 0)
+		{
+			event.setCancelled(true);
+			event.setResult(Event.Result.DENY);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEnable(){
+		if(!this.hasData("appleowners"))
+			this.setData("appleowners", new HashMap<String, Integer>());
+		this.appleOwners = (Map<String, Integer>) this.getData("appleowners");
 	}
 
 	@EventHandler
@@ -181,6 +148,39 @@ public class GoldenAppleListener extends Addon implements Listener
 			return;
 		}
 		player.sendMessage(ChatColor.GREEN+"Purchased a god apple");
+	}
+
+	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onPrepareCraft(final PrepareItemCraftEvent event)
+	{
+		final ItemStack result = event.getRecipe().getResult();
+		if(result.getType() == Material.GOLDEN_APPLE && result.getDurability() > 0)
+			event.getInventory().setResult(null);
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onSignChange(final SignChangeEvent event)
+	{
+		if (event.getBlock().getType() != Material.WALL_SIGN)
+			return;
+		if (!event.getLine(0).equalsIgnoreCase("[purchase]"))
+			return;
+		if (!event.getPlayer().isOp())
+		{
+			event.setCancelled(true);
+			event.setLine(0, "");
+			event.setLine(1, "");
+			event.setLine(2, "");
+			event.setLine(3, "");
+		}
+		if (this.check(event))
+		{
+			event.setLine(0, ChatColor.BLUE + "[Purchase]");
+			event.setLine(1, ChatColor.GOLD + "God Apple");
+			// Basically leave line 3 alone
+			//event.setLine(2, event.getLine(2));
+			event.setLine(3, "");
+		}
 	}
 
 	public void save(final File parent)

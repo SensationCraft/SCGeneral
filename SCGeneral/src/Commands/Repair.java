@@ -19,6 +19,8 @@ public class Repair implements CommandExecutor
 
 	private final RepairCommand mcMMOCommand;
 
+	private final String repairAllMsg = "&6You have successfully repaired your: &c%s".replace('&', ChatColor.COLOR_CHAR);
+
 	public Repair(final CommandExecutor ce)
 	{
 		if(ce instanceof RepairCommand)
@@ -26,8 +28,6 @@ public class Repair implements CommandExecutor
 		else
 			this.mcMMOCommand = null;
 	}
-
-	private final String repairAllMsg = "&6You have successfully repaired your: &c%s".replace('&', ChatColor.COLOR_CHAR);
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args)

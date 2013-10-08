@@ -17,10 +17,23 @@ import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.utils.DateUtil;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class Bounty implements CommandExecutor{
+
+	@SuppressWarnings("unchecked")
+	private boolean addBounty(final User user, final double money) throws Exception{
+		final long timeStamp = DateUtil.parseDateDiff("1w", true);
+		List<String> bounties = null;
+		if(user.getConfigMap().containsKey("bounties"))
+			bounties = (List<String>) user.getConfigMap().get("bounties");
+		else
+			bounties = new ArrayList<>();
+			bounties.add(money+":"+timeStamp);
+			user.setConfigProperty("bounties", bounties);
+			return true;
+	}
 
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String arg2,
@@ -60,19 +73,6 @@ public class Bounty implements CommandExecutor{
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	private boolean addBounty(final User user, final double money) throws Exception{
-		final long timeStamp = DateUtil.parseDateDiff("1w", true);
-		List<String> bounties = null;
-		if(user.getConfigMap().containsKey("bounties"))
-			bounties = (List<String>) user.getConfigMap().get("bounties");
-		else
-			bounties = new ArrayList<>();
-			bounties.add(money+":"+timeStamp);
-			user.setConfigProperty("bounties", bounties);
-			return true;
 	}
 
 }

@@ -66,6 +66,12 @@ public class StopCommand extends Command implements CommandExecutor
 	}
 
 	@Override
+	public boolean execute(final CommandSender cs, final String label, final String[] args)
+	{
+		return this.onCommand(cs, this, label, args);
+	}
+
+	@Override
 	public boolean onCommand(final CommandSender cs, final Command cmnd, final String label, final String[] args)
 	{
 		if(!cs.hasPermission("bukkit.command.stop"))
@@ -121,12 +127,6 @@ public class StopCommand extends Command implements CommandExecutor
 		final Conversation c = cf.buildConversation((Player)cs);
 		((Player)cs).beginConversation(c);
 		return true;
-	}
-
-	@Override
-	public boolean execute(final CommandSender cs, final String label, final String[] args)
-	{
-		return this.onCommand(cs, this, label, args);
 	}
 
 }

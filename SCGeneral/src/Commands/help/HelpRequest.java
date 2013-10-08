@@ -11,13 +11,24 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class HelpRequest implements CommandExecutor{
 
-	private final Map<Integer, String> requests = new TreeMap<Integer, String>();
 	private int counter = 1;
+	private final Map<Integer, String> requests = new TreeMap<Integer, String>();
+
+	public Map<Integer, String> getRequests(){
+		return this.requests;
+	}
+	public boolean hasRequest(final String name){
+		for(final Integer i:this.requests.keySet()){
+			final String string = this.requests.get(i);
+			if(string.split("[:]")[0].equals(name)) return true;
+		}
+		return false;
+	}
 
 	@Override
 	public boolean onCommand(final CommandSender arg0, final Command arg1, final String arg2,
@@ -40,25 +51,6 @@ public class HelpRequest implements CommandExecutor{
 		arg0.sendMessage(ChatColor.GREEN+"\nYour request has been received. Please wait for a staff member to respond.");
 		return true;
 	}
-	private String translate(final String[] args) {
-		String message = "";
-		for (final String arg : args)
-			message += arg.concat(" ");
-		message = message.trim();
-		message = ChatColor.stripColor(message);
-		return message;
-	}
-
-	public boolean hasRequest(final String name){
-		for(final Integer i:this.requests.keySet()){
-			final String string = this.requests.get(i);
-			if(string.split("[:]")[0].equals(name)) return true;
-		}
-		return false;
-	}
-	public Map<Integer, String> getRequests(){
-		return this.requests;
-	}
 	public String removeRequest(final String name){
 		for(final Integer i:this.requests.keySet()){
 			final String string = this.requests.get(i);
@@ -66,6 +58,14 @@ public class HelpRequest implements CommandExecutor{
 				return this.requests.remove(i);
 		}
 		return null;
+	}
+	private String translate(final String[] args) {
+		String message = "";
+		for (final String arg : args)
+			message += arg.concat(" ");
+		message = message.trim();
+		message = ChatColor.stripColor(message);
+		return message;
 	}
 
 }

@@ -15,6 +15,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -29,30 +30,44 @@ import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
-import org.bukkit.event.Listener;
 
 public class SuperItems extends Addon implements Listener
 {
+	private enum Super
+	{
+		AXE,
+		BOOTS,
+		BOW,
+		HELMET,
+		HOE,
+		LEGGINGS,
+		PICKAXE,
+		PLATE,
+		SHOVEL,
+		STICK,
+		SWORD
+	}
+
 	public static final String tag = "&r&5Super item".replace('&', ChatColor.COLOR_CHAR);
 
+	Map<Enchantment, Integer> armor = new HashMap<Enchantment, Integer>();
+	Map<Enchantment, Integer> bow = new HashMap<Enchantment, Integer>();
 	private final String broadcast = "&e%s &5has bought a &e%s".replace('&', ChatColor.COLOR_CHAR);
-
-	private final ItemStack supersword = new ItemStack(Material.DIAMOND_SWORD);
-	private final ItemStack superhelmet = new ItemStack(Material.DIAMOND_HELMET);
-	private final ItemStack superchestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
-	private final ItemStack superleggings = new ItemStack(Material.DIAMOND_LEGGINGS);
+	Map<Enchantment, Integer> stick = new HashMap<Enchantment, Integer>();
+	private final ItemStack superaxe = new ItemStack(Material.DIAMOND_AXE);
 	private final ItemStack superboots = new ItemStack(Material.DIAMOND_BOOTS);
 	private final ItemStack superbow = new ItemStack(Material.BOW);
-	private final ItemStack superstick = new ItemStack(Material.STICK);
-	private final ItemStack superpickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
-	private final ItemStack superaxe = new ItemStack(Material.DIAMOND_AXE);
-	private final ItemStack supershovel = new ItemStack(Material.DIAMOND_SPADE);
+	private final ItemStack superchestplate = new ItemStack(Material.DIAMOND_CHESTPLATE);
+	private final ItemStack superhelmet = new ItemStack(Material.DIAMOND_HELMET);
 	private final ItemStack superhoe = new ItemStack(Material.DIAMOND_HOE);
+	private final ItemStack superleggings = new ItemStack(Material.DIAMOND_LEGGINGS);
 
-	Map<Enchantment, Integer> armor = new HashMap<Enchantment, Integer>();
+	private final ItemStack superpickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
+	private final ItemStack supershovel = new ItemStack(Material.DIAMOND_SPADE);
+	private final ItemStack superstick = new ItemStack(Material.STICK);
+	private final ItemStack supersword = new ItemStack(Material.DIAMOND_SWORD);
 	Map<Enchantment, Integer> sword = new HashMap<Enchantment, Integer>();
-	Map<Enchantment, Integer> bow = new HashMap<Enchantment, Integer>();
-	Map<Enchantment, Integer> stick = new HashMap<Enchantment, Integer>();
+
 	Map<Enchantment, Integer> tool = new HashMap<Enchantment, Integer>();
 
 	public SuperItems(SCGeneral scg, AddonDescriptionFile desc) {
@@ -94,120 +109,6 @@ public class SuperItems extends Addon implements Listener
 		this.supertool(this.superhoe);
 	}
 
-	private void superarmor(final ItemStack i)
-	{
-		this.tagit(i);
-		this.enchantit(i, this.armor);
-	}
-
-	private void supersword(final ItemStack i)
-	{
-		this.tagit(i);
-		this.enchantit(i, this.sword);
-	}
-
-	private void superbow(final ItemStack i)
-	{
-		this.tagit(i);
-		this.enchantit(i, this.bow);
-	}
-
-	private void superstick(final ItemStack i)
-	{
-		this.tagit(i);
-		this.enchantit(i, this.stick);
-	}
-
-	private void supertool(final ItemStack i)
-	{
-		this.tagit(i);
-		this.enchantit(i, this.tool);
-	}
-
-	private void tagit(final ItemStack i)
-	{
-		final ItemMeta meta = i.getItemMeta();
-		List<String> lore = meta.getLore();
-		if(lore == null)
-			lore = new ArrayList<String>();
-		lore.add(0, SuperItems.tag);
-		meta.setLore(lore);
-		String name = "&r&c%s".replace('&', ChatColor.COLOR_CHAR);
-		switch(i.getType())
-		{
-		case DIAMOND_SPADE:
-			name = String.format(name, "Super Shovel");
-			break;
-		case DIAMOND_AXE:
-			name = String.format(name, "Super Axe");
-			break;
-		case DIAMOND_PICKAXE:
-			name = String.format(name, "Super Pickaxe");
-			break;
-		case DIAMOND_HOE:
-			name = String.format(name, "Super Hoe");
-			break;
-		case STICK:
-			name = String.format(name, "Super Stick");
-			break;
-		case BOW:
-			name = String.format(name, "Super Bow");
-			break;
-		case DIAMOND_SWORD:
-			name = String.format(name, "Sveskmourne");
-			break;
-		case DIAMOND_HELMET:
-			name = String.format(name, "Super Helmet");
-			break;
-		case DIAMOND_CHESTPLATE:
-			name = String.format(name, "Super Chestplate");
-			break;
-		case DIAMOND_LEGGINGS:
-			name = String.format(name, "Super Leggings");
-			break;
-		case DIAMOND_BOOTS:
-			name = String.format(name, "Super Boots");
-			break;
-		default:
-			break;
-		}
-		meta.setDisplayName(name);
-		i.setItemMeta(meta);
-	}
-
-	private void enchantit(final ItemStack i, final Map<Enchantment, Integer> enchants)
-	{
-		for(final Map.Entry<Enchantment, Integer> enchant : enchants.entrySet())
-			if(enchant.getKey().canEnchantItem(i) || i.getType() == Material.STICK)
-				i.addUnsafeEnchantment(enchant.getKey(), enchant.getValue());
-	}
-
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-	public void onSignChange(final SignChangeEvent event)
-	{
-		if(event.getBlock().getType() != Material.WALL_SIGN)
-			return;
-		if(!event.getLine(0).equalsIgnoreCase("[purchase]"))
-			return;
-		if(!event.getPlayer().isOp())
-		{
-			event.setCancelled(true);
-			event.setLine(0, "");
-			event.setLine(1, "");
-			event.setLine(2, "");
-			event.setLine(3, "");
-		}
-		if(this.check(event))
-		{
-			event.setLine(0, ChatColor.BLUE+"[Purchase]");
-			event.setLine(1, ChatColor.RED+event.getLine(1));
-			// Basically leave line 3 alone
-			//event.setLine(2, event.getLine(2));
-			event.setLine(3, "");
-		} else
-			event.setLine(3, ChatColor.DARK_RED+"INVALID");
-	}
-
 	private boolean check(final SignChangeEvent event)
 	{
 		String item = event.getLine(1);
@@ -229,6 +130,26 @@ public class SuperItems extends Addon implements Listener
 		if(!event.getLine(2).matches("[0-9]*.[0-9]*"))
 			return false;
 		return true;
+	}
+
+	private void enchantit(final ItemStack i, final Map<Enchantment, Integer> enchants)
+	{
+		for(final Map.Entry<Enchantment, Integer> enchant : enchants.entrySet())
+			if(enchant.getKey().canEnchantItem(i) || i.getType() == Material.STICK)
+				i.addUnsafeEnchantment(enchant.getKey(), enchant.getValue());
+	}
+
+	public boolean isSuper(final ItemStack i)
+	{
+		if(i == null)
+			return false;
+		final ItemMeta meta = i.getItemMeta();
+		if(meta == null)
+			return false;
+		final List<String> lore = meta.getLore();
+		if(lore == null)
+			return false;
+		return lore.contains(SuperItems.tag);
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
@@ -338,32 +259,111 @@ public class SuperItems extends Addon implements Listener
 		}
 	}
 
-	public boolean isSuper(final ItemStack i)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+	public void onSignChange(final SignChangeEvent event)
 	{
-		if(i == null)
-			return false;
-		final ItemMeta meta = i.getItemMeta();
-		if(meta == null)
-			return false;
-		final List<String> lore = meta.getLore();
-		if(lore == null)
-			return false;
-		return lore.contains(SuperItems.tag);
+		if(event.getBlock().getType() != Material.WALL_SIGN)
+			return;
+		if(!event.getLine(0).equalsIgnoreCase("[purchase]"))
+			return;
+		if(!event.getPlayer().isOp())
+		{
+			event.setCancelled(true);
+			event.setLine(0, "");
+			event.setLine(1, "");
+			event.setLine(2, "");
+			event.setLine(3, "");
+		}
+		if(this.check(event))
+		{
+			event.setLine(0, ChatColor.BLUE+"[Purchase]");
+			event.setLine(1, ChatColor.RED+event.getLine(1));
+			// Basically leave line 3 alone
+			//event.setLine(2, event.getLine(2));
+			event.setLine(3, "");
+		} else
+			event.setLine(3, ChatColor.DARK_RED+"INVALID");
 	}
 
-	private enum Super
+	private void superarmor(final ItemStack i)
 	{
-		SWORD,
-		BOOTS,
-		LEGGINGS,
-		PLATE,
-		HELMET,
-		STICK,
-		PICKAXE,
-		AXE,
-		SHOVEL,
-		HOE,
-		BOW
+		this.tagit(i);
+		this.enchantit(i, this.armor);
+	}
+
+	private void superbow(final ItemStack i)
+	{
+		this.tagit(i);
+		this.enchantit(i, this.bow);
+	}
+
+	private void superstick(final ItemStack i)
+	{
+		this.tagit(i);
+		this.enchantit(i, this.stick);
+	}
+
+	private void supersword(final ItemStack i)
+	{
+		this.tagit(i);
+		this.enchantit(i, this.sword);
+	}
+
+	private void supertool(final ItemStack i)
+	{
+		this.tagit(i);
+		this.enchantit(i, this.tool);
+	}
+
+	private void tagit(final ItemStack i)
+	{
+		final ItemMeta meta = i.getItemMeta();
+		List<String> lore = meta.getLore();
+		if(lore == null)
+			lore = new ArrayList<String>();
+		lore.add(0, SuperItems.tag);
+		meta.setLore(lore);
+		String name = "&r&c%s".replace('&', ChatColor.COLOR_CHAR);
+		switch(i.getType())
+		{
+		case DIAMOND_SPADE:
+			name = String.format(name, "Super Shovel");
+			break;
+		case DIAMOND_AXE:
+			name = String.format(name, "Super Axe");
+			break;
+		case DIAMOND_PICKAXE:
+			name = String.format(name, "Super Pickaxe");
+			break;
+		case DIAMOND_HOE:
+			name = String.format(name, "Super Hoe");
+			break;
+		case STICK:
+			name = String.format(name, "Super Stick");
+			break;
+		case BOW:
+			name = String.format(name, "Super Bow");
+			break;
+		case DIAMOND_SWORD:
+			name = String.format(name, "Sveskmourne");
+			break;
+		case DIAMOND_HELMET:
+			name = String.format(name, "Super Helmet");
+			break;
+		case DIAMOND_CHESTPLATE:
+			name = String.format(name, "Super Chestplate");
+			break;
+		case DIAMOND_LEGGINGS:
+			name = String.format(name, "Super Leggings");
+			break;
+		case DIAMOND_BOOTS:
+			name = String.format(name, "Super Boots");
+			break;
+		default:
+			break;
+		}
+		meta.setDisplayName(name);
+		i.setItemMeta(meta);
 	}
 
 }

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.ThrownPotion;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -31,23 +32,49 @@ import addon.Addon;
 import addon.AddonDescriptionFile;
 
 import com.massivecraft.factions.FPlayers;
-import org.bukkit.event.Listener;
 
 public class CombatListeners extends Addon implements Listener
 {
+
+	private Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
 
 	public CombatListeners(SCGeneral scg, AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 
-	private Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
 		if(!this.hasData("flyexempts"))
 			this.setData("flyexempts", new HashMap<String, Integer>());
 		this.fakeFlyExempts = (Map<String, Integer>) this.getData("flyexmepts");
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onMove(final PlayerMoveEvent event)
+	{
+		if (SCGeneral.getUser(event.getPlayer().getName()).isInCombat())
+		{
+			final Location fhome = FPlayers.i.get(event.getPlayer()).getFaction().getHome();
+			if(this.sameLocation(event.getTo(), fhome))
+				if(event.getFrom().distanceSquared(fhome) > 3)
+				{
+					final String name = event.getPlayer().getName();
+					Integer count = this.fakeFlyExempts.get(name);
+					if(count == null)
+						this.fakeFlyExempts.put(name, 1);
+					else
+						this.fakeFlyExempts.put(name, ++count);
+					event.setCancelled(true);
+				}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onMove2(final PlayerMoveEvent event)
+	{
+		//System.out.println(event.getFrom());
+		//System.out.println(event.getTo());
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -84,30 +111,6 @@ public class CombatListeners extends Addon implements Listener
 		SCGeneral.getUser(damagerPlayer.getName()).setInCombat(true);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerDeath(final PlayerDeathEvent e)
-	{
-		e.setDeathMessage(null);
-		SCGeneral.getUser(e.getEntity().getName()).setInCombat(false);
-		final ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
-		final SkullMeta meta = (SkullMeta) it.getItemMeta();
-		meta.setOwner(e.getEntity().getName());
-		it.setItemMeta(meta);
-		e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), it);
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerQuit(final PlayerQuitEvent e)
-	{
-		e.setQuitMessage(null);
-		if (SCGeneral.getUser(e.getPlayer().getName()).isInCombat())
-		{
-			e.getPlayer().damage(32767);
-			Bukkit.broadcastMessage(ChatColor.YELLOW + e.getPlayer().getName() + " " + ChatColor.DARK_PURPLE + "has been punished for logging out during combat!");
-		}
-		SCGeneral.getUser(e.getPlayer().getName()).setInCombat(false);
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerCommandPre(final PlayerCommandPreprocessEvent e)
 	{
@@ -136,53 +139,16 @@ public class CombatListeners extends Addon implements Listener
          }*/
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onTeleport(final PlayerTeleportEvent event)
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerDeath(final PlayerDeathEvent e)
 	{
-		if (event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
-			return;
-		if (SCGeneral.getUser(event.getPlayer().getName()).isInCombat())
-		{
-			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "You cannot teleport while in combat!");
-			event.setTo(event.getFrom());
-		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onMove(final PlayerMoveEvent event)
-	{
-		if (SCGeneral.getUser(event.getPlayer().getName()).isInCombat())
-		{
-			final Location fhome = FPlayers.i.get(event.getPlayer()).getFaction().getHome();
-			if(this.sameLocation(event.getTo(), fhome))
-				if(event.getFrom().distanceSquared(fhome) > 3)
-				{
-					final String name = event.getPlayer().getName();
-					Integer count = this.fakeFlyExempts.get(name);
-					if(count == null)
-						this.fakeFlyExempts.put(name, 1);
-					else
-						this.fakeFlyExempts.put(name, ++count);
-					event.setCancelled(true);
-				}
-		}
-	}
-
-	private boolean sameLocation(final Location a, final Location b)
-	{
-		if(a == null || b == null)
-			return false;
-		return a.getBlockX() == b.getBlockX()
-				&& Math.abs(a.getBlockY() - b.getBlockY()) < 10
-				&& a.getBlockZ() == b.getBlockZ();
-	}
-
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onMove2(final PlayerMoveEvent event)
-	{
-		//System.out.println(event.getFrom());
-		//System.out.println(event.getTo());
+		e.setDeathMessage(null);
+		SCGeneral.getUser(e.getEntity().getName()).setInCombat(false);
+		final ItemStack it = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
+		final SkullMeta meta = (SkullMeta) it.getItemMeta();
+		meta.setOwner(e.getEntity().getName());
+		it.setItemMeta(meta);
+		e.getEntity().getWorld().dropItemNaturally(e.getEntity().getLocation(), it);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -206,5 +172,39 @@ public class CombatListeners extends Addon implements Listener
 			if(SCGeneral.getUser(name).isInCombat())
 				e.setCancelled(true);
 		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerQuit(final PlayerQuitEvent e)
+	{
+		e.setQuitMessage(null);
+		if (SCGeneral.getUser(e.getPlayer().getName()).isInCombat())
+		{
+			e.getPlayer().damage(32767);
+			Bukkit.broadcastMessage(ChatColor.YELLOW + e.getPlayer().getName() + " " + ChatColor.DARK_PURPLE + "has been punished for logging out during combat!");
+		}
+		SCGeneral.getUser(e.getPlayer().getName()).setInCombat(false);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onTeleport(final PlayerTeleportEvent event)
+	{
+		if (event.getCause() != TeleportCause.COMMAND && event.getCause() != TeleportCause.PLUGIN)
+			return;
+		if (SCGeneral.getUser(event.getPlayer().getName()).isInCombat())
+		{
+			event.setCancelled(true);
+			event.getPlayer().sendMessage(ChatColor.RED + "You cannot teleport while in combat!");
+			event.setTo(event.getFrom());
+		}
+	}
+
+	private boolean sameLocation(final Location a, final Location b)
+	{
+		if(a == null || b == null)
+			return false;
+		return a.getBlockX() == b.getBlockX()
+				&& Math.abs(a.getBlockY() - b.getBlockY()) < 10
+				&& a.getBlockZ() == b.getBlockZ();
 	}
 }

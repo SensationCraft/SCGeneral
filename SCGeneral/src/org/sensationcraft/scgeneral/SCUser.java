@@ -8,21 +8,24 @@ import org.bukkit.scheduler.BukkitTask;
 import com.earth2me.essentials.PlayerExtension;
 
 /**
-*
-* @author superckl - Have a taste of your own medicine
-*/
+ *
+ * @author superckl - Have a taste of your own medicine
+ */
 public class SCUser extends PlayerExtension{
 
-	private boolean inCombat;
-	private long combatTime;
-	private BukkitTask combatTask;
-
 	private final long COMBAT_TIME = 8000;
+	private BukkitTask combatTask;
+	private long combatTime;
+
+	private boolean inCombat;
 
 	public SCUser(final Player base) {
 		super(base);
 	}
 
+	public boolean isInCombat(){
+		return this.inCombat && System.currentTimeMillis() < this.combatTime;
+	}
 	public void setInCombat(final boolean inCombat){
 		if(inCombat){
 			this.combatTime = System.currentTimeMillis()+this.COMBAT_TIME;
@@ -42,8 +45,5 @@ public class SCUser extends PlayerExtension{
 			this.getBase().sendMessage(ChatColor.YELLOW+"You have left combat.");
 		}
 		this.inCombat = inCombat;
-	}
-	public boolean isInCombat(){
-		return this.inCombat && System.currentTimeMillis() < this.combatTime;
 	}
 }
