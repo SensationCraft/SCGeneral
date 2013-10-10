@@ -96,9 +96,6 @@ public class AddonManager implements CommandExecutor
 				try
 				{
 					rl.load(this.plugin);
-					// Maybe call an onEnable or smth
-
-					this.plugin.getData().register(rl.getAddon());
 
 					this.addons.put(args[1], rl);
 
@@ -219,8 +216,6 @@ public class AddonManager implements CommandExecutor
 			{
 				rl.load(this.plugin);
 				// Maybe call an onEnable or smth
-
-				this.plugin.getData().register(rl.getAddon());
 
 				this.addons.put(name, rl);
 

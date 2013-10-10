@@ -63,7 +63,7 @@ import Commands.tp.TpSuite;
 import Duel.Arena;
 import Duel.DuelListeners;
 import addon.AddonManager;
-import addon.Storage;
+import addon.storage.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;

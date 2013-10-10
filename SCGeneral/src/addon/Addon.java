@@ -2,6 +2,8 @@ package addon;
 
 import org.sensationcraft.scgeneral.SCGeneral;
 
+import addon.storage.AbstractStorage;
+
 /**
  *
  * @author DarkSeraphim
@@ -39,12 +41,12 @@ public abstract class Addon
 		return this.desc.getName();
 	}
 
-	public void setData(final String key, final Object value)
+	public void setData(final String key, final AbstractStorage value)
 	{
 		this.getPlugin().getData().set(key, value);
 	}
 
-	public boolean hasData(Class clazz, final String key)
+	public <T> boolean hasData(Class<T> clazz, final String key)
 	{
 		return this.getPlugin().getData().hasKey(clazz, key);
 	}
