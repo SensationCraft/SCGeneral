@@ -98,8 +98,6 @@ public class AddonManager implements CommandExecutor
 					rl.load(this.plugin);
 					// Maybe call an onEnable or smth
 
-					this.plugin.getData().register(rl.getAddon());
-
 					this.addons.put(args[1], rl);
 
 					sender.sendMessage(ChatColor.GREEN+"Loaded the addon.");
@@ -219,8 +217,6 @@ public class AddonManager implements CommandExecutor
 			{
 				rl.load(this.plugin);
 				// Maybe call an onEnable or smth
-
-				this.plugin.getData().register(rl.getAddon());
 
 				this.addons.put(name, rl);
 

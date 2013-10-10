@@ -30,6 +30,7 @@ import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
+import addon.storage.Persistant;
 
 import com.massivecraft.factions.FPlayers;
 
@@ -39,16 +40,16 @@ public class CombatListeners extends Addon implements Listener
 	public CombatListeners(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
+	@Persistant(key = "flyexempts", instantiationType = HashMap.class)
+	private Map<String, Integer> fakeFlyExempts;
 
-	private Map<String, Integer> fakeFlyExempts = new HashMap<String, Integer>();
-
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
 		if(!this.hasData(Map.class, "flyexempts"))
 			this.setData("flyexempts", new HashMap<String, Integer>());
 		this.fakeFlyExempts = this.getData(Map.class, "flyexmepts");
-	}
+	}*/
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerAttack(final EntityDamageByEntityEvent e)

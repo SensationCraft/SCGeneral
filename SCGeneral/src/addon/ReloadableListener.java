@@ -1,6 +1,7 @@
 package addon;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,6 +14,7 @@ import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.exceptions.InvalidAddonException;
 import addon.exceptions.UnknownAddonException;
+import addon.storage.Persistant;
 
 /**
  *
@@ -57,6 +59,20 @@ public class ReloadableListener extends AbstractReloadable
 			if(a instanceof Listener == false)
 				throw new InvalidAddonException(String.format("Addon is not a listener"));
 
+			//Look for StorageRestore and restore where possible
+			for(Field field:a.getClass().getDeclaredFields())
+				if(field.isAnnotationPresent(Persistant.class)){
+					boolean initialFlag = field.isAccessible();
+					field.setAccessible(true);
+					Persistant annot = field.getAnnotation(Persistant.class);
+					Object obj = a.getData(Object.class, annot.key());
+					if(obj == null){
+						obj = annot.instantiationType().newInstance();
+						a.setData(annot.key(), obj);
+					}
+					field.set(a, obj);
+					field.setAccessible(initialFlag);
+				}
 			this.addon = a;
 		}
 		catch(final InvocationTargetException ex)

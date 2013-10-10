@@ -29,6 +29,7 @@ import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
+import addon.storage.Persistant;
 
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
@@ -50,16 +51,16 @@ public class GoldenAppleListener extends Addon implements Listener
 		this.godapple.setItemMeta(meta);
 	}
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
 		if(!this.hasData(Map.class, "appleowners"))
 			this.setData("appleowners", new HashMap<String, Integer>());
 		this.appleOwners = this.getData(Map.class, "appleowners");
-	}
+	}*/
 
 	private final ItemStack godapple;
-
+	@Persistant(key = "appleowners", instantiationType = HashMap.class)
 	private Map<String, Integer> appleOwners;
 
 	@EventHandler (ignoreCancelled = true, priority = EventPriority.HIGHEST)

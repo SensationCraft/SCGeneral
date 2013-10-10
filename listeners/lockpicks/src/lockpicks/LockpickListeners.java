@@ -26,6 +26,7 @@ import org.yi.acru.bukkit.PluginCore;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
+import addon.storage.Persistant;
 
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
@@ -43,15 +44,15 @@ public class LockpickListeners extends Addon implements Listener
 		super(scg, desc);
 	}
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable()
 	{
 		if(!this.hasData(Map.class, "picking"))
 			this.setData("picking", new HashMap<String, BukkitTask>());
 		this.picking = this.getData(Map.class, "picking");
-	}
-
+	}*/
+	@Persistant(key = "picking", instantiationType = HashMap.class)
 	private Map<String, BukkitTask> picking;
 
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)

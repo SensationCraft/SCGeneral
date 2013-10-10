@@ -4,7 +4,6 @@ import com.earth2me.essentials.utils.DateUtil;
 import com.google.common.base.Joiner;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -72,7 +71,8 @@ public class Muteip implements CommandExecutor
         }
         if(this.plugin.getData().hasKey(null, "ipmutes"))
         {
-            Map<String, Long> ipmutes = this.plugin.getData().get(Map.class, "ipmutes");
+            @SuppressWarnings("unchecked")
+			Map<String, Long> ipmutes = this.plugin.getData().get(Map.class, "ipmutes");
             String ip = getIp(muted);
             if(ipmutes.containsKey(ip))
                 ipmutes.remove(ip);

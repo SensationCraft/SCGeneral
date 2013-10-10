@@ -31,6 +31,7 @@ import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
+import addon.storage.Persistant;
 
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
@@ -48,16 +49,18 @@ public class SilverfishBombListener extends Addon implements Listener{
 	public SilverfishBombListener(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
+	
+	@Persistant(key = "snowballs", instantiationType = HashSet.class)
 	private Set<Snowball> snowballs;
 
 
-	@SuppressWarnings("unchecked")
+	/*@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
 		if(!this.hasData(Set.class, "snowballs"))
 			this.setData("snowballs", new HashSet<String>());
 		this.snowballs = this.getData(Set.class, "snowballs");
-	}
+	}*/
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onEggCollide(final ProjectileHitEvent e){

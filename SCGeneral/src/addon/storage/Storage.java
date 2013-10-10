@@ -1,4 +1,4 @@
-package addon;
+package addon.storage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,11 +10,6 @@ import java.util.Map;
 public class Storage
 {
 	Map<String, Object> stor = new HashMap<String, Object>();
-
-	public void register(final Addon a)
-	{
-		this.stor.put(a.getName(), new HashMap<String, Object>());
-	}
 
     /**
      * 
