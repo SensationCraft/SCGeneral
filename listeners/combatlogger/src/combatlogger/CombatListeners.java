@@ -45,9 +45,9 @@ public class CombatListeners extends Addon implements Listener
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
-		if(!this.hasData("flyexempts"))
+		if(!this.hasData(Map.class, "flyexempts"))
 			this.setData("flyexempts", new HashMap<String, Integer>());
-		this.fakeFlyExempts = (Map<String, Integer>) this.getData("flyexmepts");
+		this.fakeFlyExempts = this.getData(Map.class, "flyexmepts");
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

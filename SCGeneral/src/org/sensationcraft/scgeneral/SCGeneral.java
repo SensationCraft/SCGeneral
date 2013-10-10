@@ -44,6 +44,7 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
+import Commands.Channel;
 import Commands.Duel.AcceptCommand;
 import Commands.Duel.CancelCommand;
 import Commands.Duel.ChallengeCommand;
@@ -230,7 +231,8 @@ public class SCGeneral extends JavaPlugin implements Listener
 		// No its not ignored, it just handles the shizzle in the constructor
 		new StopCommand(this);
 		this.shout = new Shout();
-		this.commandMap.put("shout", this.shout);
+		//this.commandMap.put("shout", this.shout);
+		this.commandMap.put("channel", new Channel());
 		this.commandMap.put("shoutmute", new ShoutMute());
 		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
 		if(repairCommand != null)
@@ -252,7 +254,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.put("tpaccept", tpsuite);
 		this.commandMap.put("tpdeny", tpsuite);
 		this.commandMap.put("tpcheck", tpsuite);
-		this.commandMap.put("killshout", new KillShout(this.shout));
+		this.commandMap.put("killshout", new KillShout(this));
 		this.commandMap.put("head", new Head());
 		this.commandMap.put("expel", new Expel());
 		this.commandMap.put("helprequest", help);

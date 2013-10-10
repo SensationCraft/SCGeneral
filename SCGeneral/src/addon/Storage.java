@@ -9,36 +9,38 @@ import java.util.Map;
  */
 public class Storage
 {
-	Map<String, Map<String, Object>> stor = new HashMap<String, Map<String, Object>>();
+	Map<String, Object> stor = new HashMap<String, Object>();
 
 	public void register(final Addon a)
 	{
 		this.stor.put(a.getName(), new HashMap<String, Object>());
 	}
 
-	/*public void unregister(Addon a)
-    {
-        this.stor.remove(a.getName());
-    }*/
-
-	public Object get(final Addon a, final String key) throws IllegalStateException
+    /**
+     * 
+     * @param clazz Expected class
+     * @param key Key of the value requested
+     * @return Value of type T
+     * @throws IllegalStateException 
+     * @throws ClassCastException if the value is not of the type clazz specified
+     * Check with hasKey before get!
+     */
+	public <T> T get(Class<T> clazz, final String key) throws IllegalStateException, ClassCastException
 	{
-		if(!this.stor.containsKey(a.getName()))
-			throw new IllegalStateException("Addon not active");
-		return this.stor.get(a.getName()).get(key);
+        return clazz.cast(this.stor.get(key));
 	}
 
-	public boolean hasKey(final Addon a, final String key) throws IllegalStateException
+	public <T> boolean hasKey(Class<T> clazz, final String key) throws IllegalStateException
 	{
-		if(!this.stor.containsKey(a.getName()))
-			throw new IllegalStateException("Addon not active");
-		return this.stor.get(a.getName()).containsKey(key);
+        if(this.stor.containsKey(key))
+        {
+            return clazz.isInstance(this.stor.get(key));
+        }
+        return true;
 	}
 
-	public void set(final Addon a, final String key, final Object val)
+	public void set(final String key, final Object val)
 	{
-		if(!this.stor.containsKey(a.getName()))
-			throw new IllegalStateException("Addon not active");
-		this.stor.get(a.getName()).put(key, val);
+		this.stor.put(key, val);
 	}
 }

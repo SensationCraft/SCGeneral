@@ -54,9 +54,9 @@ public class SilverfishBombListener extends Addon implements Listener{
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
-		if(!this.hasData("snowballs"))
+		if(!this.hasData(Set.class, "snowballs"))
 			this.setData("snowballs", new HashSet<String>());
-		this.snowballs = (Set<Snowball>) this.getData("snowballs");
+		this.snowballs = this.getData(Set.class, "snowballs");
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

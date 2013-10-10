@@ -11,13 +11,16 @@ import com.earth2me.essentials.PlayerExtension;
  *
  * @author superckl - Have a taste of your own medicine
  */
-public class SCUser extends PlayerExtension{
-
+public class SCUser extends PlayerExtension
+{
+    
 	private boolean inCombat;
 	private long combatTime;
 	private BukkitTask combatTask;
 
 	private final long COMBAT_TIME = 8000;
+    
+    private volatile ChatChannel c;
 
 	public SCUser(final Player base) {
 		super(base);
@@ -46,4 +49,14 @@ public class SCUser extends PlayerExtension{
 	public boolean isInCombat(){
 		return this.inCombat && System.currentTimeMillis() < this.combatTime;
 	}
+    
+    public void setChannel(ChatChannel cc)
+    {
+        this.c = cc;
+    }
+    
+    public ChatChannel getChannel()
+    {
+        return this.c;
+    }
 }

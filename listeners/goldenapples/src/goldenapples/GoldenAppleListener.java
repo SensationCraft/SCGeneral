@@ -53,9 +53,9 @@ public class GoldenAppleListener extends Addon implements Listener
 	@SuppressWarnings("unchecked")
 	@Override
 	public void onEnable(){
-		if(!this.hasData("appleowners"))
+		if(!this.hasData(Map.class, "appleowners"))
 			this.setData("appleowners", new HashMap<String, Integer>());
-		this.appleOwners = (Map<String, Integer>) this.getData("appleowners");
+		this.appleOwners = this.getData(Map.class, "appleowners");
 	}
 
 	private final ItemStack godapple;

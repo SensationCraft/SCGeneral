@@ -47,9 +47,9 @@ public class LockpickListeners extends Addon implements Listener
 	@Override
 	public void onEnable()
 	{
-		if(!this.hasData("picking"))
+		if(!this.hasData(Map.class, "picking"))
 			this.setData("picking", new HashMap<String, BukkitTask>());
-		this.picking = (Map<String, BukkitTask>) this.getData("picking");
+		this.picking = this.getData(Map.class, "picking");
 	}
 
 	private Map<String, BukkitTask> picking;

@@ -88,7 +88,10 @@ public class ReloadableListener extends AbstractReloadable
 	public void unload()
 	{
 		if(this.addon != null)
+        {
 			this.disable();
+            this.addon = null;
+        }
 	}
 
 	@Override
@@ -96,6 +99,7 @@ public class ReloadableListener extends AbstractReloadable
 	{
 		if(this.addon == null)
 			throw new IllegalStateException("Addon not loaded");
+        this.addon.onEnable();
 		Bukkit.getPluginManager().registerEvents((Listener)this.addon, plugin);
 		this.isEnabled = true;
 	}
@@ -109,7 +113,10 @@ public class ReloadableListener extends AbstractReloadable
 	public void disable()
 	{
 		if(this.addon != null)
+        {
 			HandlerList.unregisterAll((Listener)this.addon);
+            this.addon.onDisable();
+        }
 		this.isEnabled = false;
 	}
 

@@ -5,9 +5,9 @@ main: org.sensationcraft.scgeneral.SCGeneral
 website: www.sensationcraft.info
 depend: [Factions, Lockette, Votifier, Essentials, SCLogin, mcMMO, ProtocolLib]
 commands:
-  shout:
-    description: Shout a message
-    aliases: [s]
+#  shout:
+#    description: Shout a message
+#    aliases: [s]
   factioncheck:
     description: Check a factions for overlapping IPs.
   clearinvis:
@@ -71,5 +71,11 @@ commands:
     aliases: [forceend]
   addons:
     description: Command for the Addon Manager :3.
-  seamlessreload:
-    description: Attempt to reload just a listener.
+#  seamlessreload:
+#    description: Attempt to reload just a listener.
+  channel:
+    description: Change your chat channel
+    aliases: [c,ch]
+  muteip:
+    description: Mute all users that use a certain ip
+  

@@ -41,18 +41,16 @@ public abstract class Addon
 
 	public void setData(final String key, final Object value)
 	{
-		this.getPlugin().getData().set(this, key, value);
+		this.getPlugin().getData().set(key, value);
 	}
 
-	public boolean hasData(final String key)
+	public boolean hasData(Class clazz, final String key)
 	{
-		return this.getPlugin().getData().hasKey(this, key);
+		return this.getPlugin().getData().hasKey(clazz, key);
 	}
 
-	public Object getData(final String key)
+	public <T> T getData(Class<T> clazz, final String key)
 	{
-		if(!this.hasData(key))
-			return null;
-		return this.getPlugin().getData().get(this, key);
+		return this.getPlugin().getData().get(clazz, key);
 	}
 }
