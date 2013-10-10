@@ -1,20 +1,46 @@
 package addon;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.HashMap;
+import java.util.Map;
 
-import addon.storage.AbstractStorage;
-import addon.storage.GenericStorage;
+/**
+ *
+ * @author DarkSeraphim
+ */
+public class Storage
+{
+	Map<String, Object> stor = new HashMap<String, Object>();
 
+	public void register(final Addon a)
+	{
+		this.stor.put(a.getName(), new HashMap<String, Object>());
+	}
 
+    /**
+     * 
+     * @param clazz Expected class
+     * @param key Key of the value requested
+     * @return Value of type T
+     * @throws IllegalStateException 
+     * @throws ClassCastException if the value is not of the type clazz specified
+     * Check with hasKey before get!
+     */
+	public <T> T get(Class<T> clazz, final String key) throws IllegalStateException, ClassCastException
+	{
+        return clazz.cast(this.stor.get(key));
+	}
 
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Storage {
+	public <T> boolean hasKey(Class<T> clazz, final String key) throws IllegalStateException
+	{
+        if(this.stor.containsKey(key))
+        {
+            return clazz.isInstance(this.stor.get(key));
+        }
+        return true;
+	}
 
-	Class<? extends AbstractStorage> storageType() default GenericStorage.class;
-	String instantiationField() default "";
-	
+	public void set(final String key, final Object val)
+	{
+		this.stor.put(key, val);
+	}
 }
