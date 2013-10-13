@@ -2,12 +2,8 @@ package silverfishbomb;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.block.Sign;
@@ -31,7 +27,6 @@ import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
-import addon.storage.Persistant;
 
 import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
