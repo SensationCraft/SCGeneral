@@ -4,7 +4,6 @@ import addon.Addon;
 import addon.AddonDescriptionFile;
 import addon.storage.Persistant;
 import com.earth2me.essentials.User;
-import com.massivecraft.factions.Factions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
