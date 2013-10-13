@@ -1,12 +1,12 @@
 package addon;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.exceptions.InvalidAddonException;
 import addon.exceptions.UnknownAddonException;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 
 /**
  *
@@ -16,8 +16,8 @@ public abstract class AbstractReloadable
 {
 
 	protected Addon addon;
-    
-    protected boolean isEnabled = false;
+
+	protected boolean isEnabled = false;
 
 	protected Addon getAddon()
 	{
@@ -39,29 +39,29 @@ public abstract class AbstractReloadable
 			a = this.load(plugin, true);
 		}
 		catch(final UnknownAddonException ex)
-        {
-            sender.sendMessage(ChatColor.RED+"Unknown addon.");
-        }
-        catch(final InvalidAddonException ex)
-        {
-            sender.sendMessage(ChatColor.RED+"Failed to load the addon!");
-            ex.printStackTrace();
-        }
+		{
+			sender.sendMessage(ChatColor.RED+"Unknown addon.");
+		}
+		catch(final InvalidAddonException ex)
+		{
+			sender.sendMessage(ChatColor.RED+"Failed to load the addon!");
+			ex.printStackTrace();
+		}
 		if(a != null)
-        {
+		{
 			this.unload();
-            this.load(a);
-            this.enable(plugin);
-        }
+			this.load(a);
+			this.enable(plugin);
+		}
 		return a;
 	}
 
 	public abstract void enable(Plugin plugin) throws IllegalStateException;
 
-    public boolean isEnabled()
-    {
-        return this.isEnabled;
-    }
-    
+	public boolean isEnabled()
+	{
+		return this.isEnabled;
+	}
+
 	public abstract void disable();
 }

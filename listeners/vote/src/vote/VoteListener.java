@@ -27,7 +27,7 @@ public class VoteListener extends Addon implements Listener
 		super(scg, desc);
 	}
 
-    @EventHandler(priority=EventPriority.HIGHEST)
+	@EventHandler(priority=EventPriority.HIGHEST)
 	public void onVote(final VotifierEvent e)
 	{
 		final String name = e.getVote().getUsername();

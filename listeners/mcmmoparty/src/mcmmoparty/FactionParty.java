@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.sensationcraft.scgeneral.SCGeneral;
 
@@ -25,12 +26,11 @@ import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.event.FPlayerLeaveEvent;
 import com.massivecraft.factions.event.FactionRelationEvent;
 import com.massivecraft.factions.struct.Relation;
-import org.bukkit.event.Listener;
 
 public class FactionParty extends Addon implements Listener
 {
 
-	public FactionParty(SCGeneral scg, AddonDescriptionFile desc) {
+	public FactionParty(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 

@@ -7,7 +7,7 @@ package org.sensationcraft.scgeneral;
  */
 public enum ChatChannel
 {
-    GLOBAL,
-    LOCAL,
-    NONE;
+	GLOBAL,
+	LOCAL,
+	NONE;
 }

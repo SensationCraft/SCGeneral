@@ -7,7 +7,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +28,7 @@ import patch.PotionPatch;
 import protocol.VanishFix;
 import Bounties.BountiesListeners;
 import Commands.Bounty;
+import Commands.Channel;
 import Commands.CheckBounties;
 import Commands.ClearInvis;
 import Commands.Delhomes;
@@ -35,6 +38,7 @@ import Commands.Head;
 import Commands.Heal;
 import Commands.Kick;
 import Commands.KillShout;
+import Commands.Muteip;
 import Commands.Repair;
 import Commands.Shout;
 import Commands.ShoutMute;
@@ -44,14 +48,12 @@ import Commands.Bans.GetBans;
 import Commands.Bans.OverrideBan;
 import Commands.Bans.ResetBans;
 import Commands.Bans.Unban;
-import Commands.Channel;
 import Commands.Duel.AcceptCommand;
 import Commands.Duel.CancelCommand;
 import Commands.Duel.ChallengeCommand;
 import Commands.Duel.DenyCommand;
 import Commands.Duel.EndCommand;
 import Commands.Duel.SpectateCommand;
-import Commands.Muteip;
 import Commands.help.HelpAccept;
 import Commands.help.HelpCancel;
 import Commands.help.HelpDeny;
@@ -68,8 +70,6 @@ import addon.storage.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 
 
 public class SCGeneral extends JavaPlugin implements Listener
@@ -188,15 +188,15 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public void onDisable(){
 		this.arena.forceEnd();
 	}
-    
-    // Default command, will inform the user when an addon command is unused
-    @Override
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
-    {
-        sender.sendMessage(ChatColor.RED+"That command is currently under development.");
-        return true;
-    }
-    
+
+	// Default command, will inform the user when an addon command is unused
+	@Override
+	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args)
+	{
+		sender.sendMessage(ChatColor.RED+"That command is currently under development.");
+		return true;
+	}
+
 	public Scoreboard getScoreboard() {
 		return this.scoreboard;
 	}

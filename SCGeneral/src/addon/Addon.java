@@ -44,12 +44,12 @@ public abstract class Addon
 		this.getPlugin().getData().set(key, value);
 	}
 
-	public <T> boolean hasData(Class<T> clazz, final String key)
+	public <T> boolean hasData(final Class<T> clazz, final String key)
 	{
 		return this.getPlugin().getData().hasKey(clazz, key);
 	}
 
-	public <T> T getData(Class<T> clazz, final String key)
+	public <T> T getData(final Class<T> clazz, final String key)
 	{
 		return this.getPlugin().getData().get(clazz, key);
 	}

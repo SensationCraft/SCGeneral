@@ -153,7 +153,7 @@ public class AddonManager implements CommandExecutor
 			}
 		}
 		else if(args[0].equalsIgnoreCase("reload"))
-        {
+		{
 			if(args.length < 2)
 				sender.sendMessage(ChatColor.RED+"Please specify the addon you want to reload");
 			else if(!this.addons.containsKey(args[1]))
@@ -162,7 +162,7 @@ public class AddonManager implements CommandExecutor
 			{
 				final AbstractReloadable ar = this.addons.get(args[1]);
 				Addon a;
-                a = ar.reload(sender, this.plugin);
+				a = ar.reload(sender, this.plugin);
 				if(a == null)
 				{
 					sender.sendMessage(ChatColor.RED+"Failed to reload the addon!");
@@ -170,20 +170,20 @@ public class AddonManager implements CommandExecutor
 				}
 				sender.sendMessage(ChatColor.GREEN+"Addon reloaded.");
 			}
-        }
-        else if(args[0].equalsIgnoreCase("list"))
-        {
-            StringBuilder list = new StringBuilder();
-            for(Map.Entry<String, AbstractReloadable> e : this.addons.entrySet())
-            {
-                list.append(e.getValue().isEnabled() ? ChatColor.GREEN : ChatColor.RED);
-                list.append(e.getKey());
-                list.append(ChatColor.RESET).append(", ");
-            }
-            if(list.length() > 2)
-                list.delete(list.length()-2, list.length());
-            sender.sendMessage(String.format("Addons: %s", list.toString()));
-        }
+		}
+		else if(args[0].equalsIgnoreCase("list"))
+		{
+			final StringBuilder list = new StringBuilder();
+			for(final Map.Entry<String, AbstractReloadable> e : this.addons.entrySet())
+			{
+				list.append(e.getValue().isEnabled() ? ChatColor.GREEN : ChatColor.RED);
+				list.append(e.getKey());
+				list.append(ChatColor.RESET).append(", ");
+			}
+			if(list.length() > 2)
+				list.delete(list.length()-2, list.length());
+			sender.sendMessage(String.format("Addons: %s", list.toString()));
+		}
 		return true;
 	}
 

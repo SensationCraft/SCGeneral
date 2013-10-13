@@ -31,7 +31,7 @@ public class ReloadableListener extends AbstractReloadable
 	}
 
 	@Override
-	public Addon load(final SCGeneral plugin, boolean reload) throws UnknownAddonException, InvalidAddonException
+	public Addon load(final SCGeneral plugin, final boolean reload) throws UnknownAddonException, InvalidAddonException
 	{
 		final File file = new File(plugin.getDataFolder(), String.format("listeners/%s.jar", this.name));
 		if(!file.exists())
@@ -46,7 +46,7 @@ public class ReloadableListener extends AbstractReloadable
 			return null;
 			// Swallow it
 		}
-        Addon a = null;
+		Addon a = null;
 		final ClassLoader cloader = new java.net.URLClassLoader(urls, AddonManager.parentLoader);
 		final AddonDescriptionFile desc = new AddonDescriptionFile(file);
 		final String mainClass = desc.getMainClass();
@@ -59,11 +59,11 @@ public class ReloadableListener extends AbstractReloadable
 				throw new InvalidAddonException(String.format("Addon is not a listener"));
 
 			//Look for StorageRestore and restore where possible
-			for(Field field:a.getClass().getDeclaredFields())
+			for(final Field field:a.getClass().getDeclaredFields())
 				if(field.isAnnotationPresent(Persistant.class)){
-					boolean initialFlag = field.isAccessible();
+					final boolean initialFlag = field.isAccessible();
 					field.setAccessible(true);
-					Persistant annot = field.getAnnotation(Persistant.class);
+					final Persistant annot = field.getAnnotation(Persistant.class);
 					Object obj = a.getData(Object.class, annot.key());
 					if(obj == null){
 						obj = annot.instantiationType().newInstance();
@@ -72,8 +72,8 @@ public class ReloadableListener extends AbstractReloadable
 					field.set(a, obj);
 					field.setAccessible(initialFlag);
 				}
-            if(!reload)
-                this.addon = a;
+			if(!reload)
+				this.addon = a;
 		}
 		catch(final InvocationTargetException ex)
 		{
@@ -104,10 +104,10 @@ public class ReloadableListener extends AbstractReloadable
 	public void unload()
 	{
 		if(this.addon != null)
-        {
+		{
 			this.disable();
-            this.addon = null;
-        }
+			this.addon = null;
+		}
 	}
 
 	@Override
@@ -115,12 +115,12 @@ public class ReloadableListener extends AbstractReloadable
 	{
 		if(this.addon == null)
 			throw new IllegalStateException("Addon not loaded");
-        this.addon.onEnable();
+		this.addon.onEnable();
 		Bukkit.getPluginManager().registerEvents((Listener)this.addon, plugin);
 		this.isEnabled = true;
 	}
 
-    @Override
+	@Override
 	public boolean isEnabled()
 	{
 		return this.isEnabled;
@@ -130,10 +130,10 @@ public class ReloadableListener extends AbstractReloadable
 	public void disable()
 	{
 		if(this.addon != null)
-        {
+		{
 			HandlerList.unregisterAll((Listener)this.addon);
-            this.addon.onDisable();
-        }
+			this.addon.onDisable();
+		}
 		this.isEnabled = false;
 	}
 

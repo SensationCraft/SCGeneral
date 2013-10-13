@@ -12,11 +12,13 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
@@ -25,8 +27,6 @@ import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.gmail.nossr50.events.skills.unarmed.McMMOPlayerDisarmEvent;
-import org.bukkit.event.Listener;
-import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
  *
@@ -35,7 +35,7 @@ import org.sensationcraft.scgeneral.SCGeneral;
 public class DisarmBlocker extends Addon implements Listener
 {
 
-	public DisarmBlocker(SCGeneral scg, AddonDescriptionFile desc) {
+	public DisarmBlocker(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
 

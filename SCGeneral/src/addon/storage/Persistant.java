@@ -11,5 +11,5 @@ public @interface Persistant {
 
 	String key();
 	Class<?> instantiationType();
-	
+
 }
