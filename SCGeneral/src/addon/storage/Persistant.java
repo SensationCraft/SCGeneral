@@ -11,5 +11,6 @@ public @interface Persistant {
 
 	String key();
 	Class<?> instantiationType();
+	boolean reloadOnly() default false;
 
 }

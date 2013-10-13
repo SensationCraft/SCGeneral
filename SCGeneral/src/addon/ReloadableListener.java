@@ -59,19 +59,20 @@ public class ReloadableListener extends AbstractReloadable
 				throw new InvalidAddonException(String.format("Addon is not a listener"));
 
 			//Look for StorageRestore and restore where possible
-			for(final Field field:a.getClass().getDeclaredFields())
+			for(final Field field:a.getClass().getDeclaredFields()){
+				final boolean initialFlag = field.isAccessible();
+				field.setAccessible(true);
 				if(field.isAnnotationPresent(Persistant.class)){
-					final boolean initialFlag = field.isAccessible();
-					field.setAccessible(true);
 					final Persistant annot = field.getAnnotation(Persistant.class);
 					Object obj = a.getData(Object.class, annot.key());
-					if(obj == null){
+					if(obj == null || (annot.reloadOnly() && !reload)){
 						obj = annot.instantiationType().newInstance();
 						a.setData(annot.key(), obj);
 					}
 					field.set(a, obj);
-					field.setAccessible(initialFlag);
 				}
+				field.setAccessible(initialFlag);
+			}
 			if(!reload)
 				this.addon = a;
 		}
