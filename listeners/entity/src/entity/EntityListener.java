@@ -143,13 +143,4 @@ public class EntityListener extends Addon implements Listener
 		player.sendMessage(ChatColor.YELLOW+"You killed "+e.getEntity().getName());
 		player.playSound(player.getLocation(), Sound.NOTE_PIANO, 1, 1);
 	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void onPlayerChat(final AsyncPlayerChatEvent e) {
-		if(e.getMessage().startsWith("!")){
-			e.setCancelled(true);
-			e.setMessage("I'm a herp");
-			e.getPlayer().sendMessage(ChatColor.DARK_RED+"I will eat your soul if you chat like that. -superckl");
-		}
-	}
 }

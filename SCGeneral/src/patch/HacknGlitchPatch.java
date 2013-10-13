@@ -211,12 +211,12 @@ public class HacknGlitchPatch implements Listener
 		{
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.DARK_RED + "Op can only be given from the console!");
-		} else if (SCGeneral.getInstance().getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme ")))
+		} /*else if (SCGeneral.getInstance().getShout().isDead() && (e.getMessage().startsWith("/me ") || e.getMessage().startsWith("/eme ")))
 		{
 			e.getPlayer().sendMessage(ChatColor.RED + "Shout is currently disabled! Try again later.");
 			e.setCancelled(true);
 			e.setMessage("/cockblocked");
-		} else if (e.getMessage().startsWith("/?"))
+		}*/ else if (e.getMessage().startsWith("/?"))
 			e.setMessage(e.getMessage().replace("/?", "/help"));
 		else if (e.getMessage().startsWith("/togglepickup"))
 		{

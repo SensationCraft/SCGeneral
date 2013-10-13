@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.ChannelChangeEvent;
 import org.sensationcraft.scgeneral.ChatChannel;
+import org.sensationcraft.scgeneral.SCGeneral;
 
 /**
  *
@@ -58,7 +59,7 @@ public class Channel implements CommandExecutor
         }
         
         sender.sendMessage(String.format(changed, channel.name()));
-        
+        SCGeneral.getUser(sender.getName()).setChannel(channel);
         Bukkit.getPluginManager().callEvent(new ChannelChangeEvent(sender.getName(), channel));
         
         return true;

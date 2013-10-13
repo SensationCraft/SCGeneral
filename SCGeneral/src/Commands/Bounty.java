@@ -25,6 +25,8 @@ public class Bounty implements CommandExecutor{
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command command, final String arg2,
 			final String[] args) {
+        if(true)
+        return true;
 		if(sender instanceof Player == false){
 			sender.sendMessage(ChatColor.RED+"That command must be executed ingame!");
 			return false;

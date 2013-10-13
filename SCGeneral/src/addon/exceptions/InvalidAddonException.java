@@ -7,10 +7,16 @@ package addon.exceptions;
 @SuppressWarnings("serial")
 public class InvalidAddonException extends Exception
 {
-
-	public InvalidAddonException(final String error)
+ 
+    public InvalidAddonException(final String error)
+    {
+        super(error);
+    }
+    
+	public InvalidAddonException(final String error, Throwable ex)
 	{
 		super(error);
+        this.setStackTrace(ex.getStackTrace());
 	}
 
 }

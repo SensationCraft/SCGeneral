@@ -25,15 +25,13 @@ public class ReloadableListener extends AbstractReloadable
 
 	private final String name;
 
-	private boolean isEnabled = false;
-
 	ReloadableListener(final String name)
 	{
 		this.name = name;
 	}
 
 	@Override
-	public Addon load(final SCGeneral plugin) throws UnknownAddonException, InvalidAddonException
+	public Addon load(final SCGeneral plugin, boolean reload) throws UnknownAddonException, InvalidAddonException
 	{
 		final File file = new File(plugin.getDataFolder(), String.format("listeners/%s.jar", this.name));
 		if(!file.exists())
@@ -48,6 +46,7 @@ public class ReloadableListener extends AbstractReloadable
 			return null;
 			// Swallow it
 		}
+        Addon a = null;
 		final ClassLoader cloader = new java.net.URLClassLoader(urls, AddonManager.parentLoader);
 		final AddonDescriptionFile desc = new AddonDescriptionFile(file);
 		final String mainClass = desc.getMainClass();
@@ -55,7 +54,7 @@ public class ReloadableListener extends AbstractReloadable
 		{
 			final Class<?> c = Class.forName(mainClass, true, cloader);
 			final Class<? extends Addon> addonClass = c.asSubclass(Addon.class);
-			final Addon a = addonClass.getConstructor(SCGeneral.class, AddonDescriptionFile.class).newInstance(plugin, desc);
+			a = addonClass.getConstructor(SCGeneral.class, AddonDescriptionFile.class).newInstance(plugin, desc);
 			if(a instanceof Listener == false)
 				throw new InvalidAddonException(String.format("Addon is not a listener"));
 
@@ -73,17 +72,18 @@ public class ReloadableListener extends AbstractReloadable
 					field.set(a, obj);
 					field.setAccessible(initialFlag);
 				}
-			this.addon = a;
+            if(!reload)
+                this.addon = a;
 		}
 		catch(final InvocationTargetException ex)
 		{
-			throw new InvalidAddonException(String.format("Invalid addon found: %s", ex.getCause().getMessage()));
+			throw new InvalidAddonException(String.format("Invalid addon found: %s", ex.getCause().getMessage()), ex);
 		}
 		catch(final Throwable ex)
 		{
-			throw new InvalidAddonException(String.format("Invalid addon found: %s", ex.getMessage()));
+			throw new InvalidAddonException(String.format("Invalid addon '%s' found: %s", desc.getName(), ex.getMessage()), ex);
 		}
-		return this.addon;
+		return a;
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public class ReloadableListener extends AbstractReloadable
 	@Override
 	public void load(final Addon addon)
 	{
-		if(this.addon != null)
+		if(this.addon == null)
 			this.addon = addon;
 	}
 
@@ -120,6 +120,7 @@ public class ReloadableListener extends AbstractReloadable
 		this.isEnabled = true;
 	}
 
+    @Override
 	public boolean isEnabled()
 	{
 		return this.isEnabled;

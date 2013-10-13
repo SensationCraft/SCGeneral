@@ -2,14 +2,14 @@ package chat;
 
 import addon.Addon;
 import addon.AddonDescriptionFile;
+import addon.storage.Persistant;
 import com.earth2me.essentials.User;
+import com.massivecraft.factions.Factions;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Bukkit;
@@ -22,6 +22,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatTabCompleteEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.sensationcraft.scgeneral.ChannelChangeEvent;
@@ -37,18 +38,32 @@ public class ChatManager extends Addon implements Listener
 {
     
     private Map<String, ChatChannel> users = new HashMap<String, ChatChannel>();
+    
+    @Persistant(key = "pm", instantiationType = HashMap.class)
     private Map<String, String> pm;
+    
+    @Persistant(key = "ipmutes", instantiationType = HashMap.class)
     private Map<String, Long> mute;
+    
+    @Persistant(key = "shoutcool", instantiationType = HashMap.class)
     private Map<String, Long> cooldown;
     
+    @Persistant(key = "shoutkill", instantiationType = AtomicBoolean.class)
     private AtomicBoolean shoutkill;
     
-    private final String to = "&6[me -> %s]&r %s".replace('&', ChatColor.COLOR_CHAR);
-    private final String from = "&6[%s -> me]&r %s".replace('&', ChatColor.COLOR_CHAR);
+    @Persistant(key = "pvptitles", instantiationType = ConcurrentHashMap.class)
+    private Map<String, String> pvptitles;
+    
+    private final String to = "&6[me -> %s&6]&r %s".replace('&', ChatColor.COLOR_CHAR);
+    private final String from = "&6[%s&6 -> me]&r %s".replace('&', ChatColor.COLOR_CHAR);
     private final String ss = "[Socialspy: %s -> %s] %s";
     
-    private final String local = "&a- %s&7: %s".replace('&', ChatColor.COLOR_CHAR);
-    private final String global = "&c[S] &r%s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
+    private final String local = "&a- &r%s&7: %s".replace('&', ChatColor.COLOR_CHAR);
+    private final String global = "&c[S] &r%s &r%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
+    private final String me = "&5* %s %s".replace('&', ChatColor.COLOR_CHAR);
+    
+    private final String at = "@%s";
+    private final String t = "&4&l[&r%s&4&l]&r".replace('&', ChatColor.COLOR_CHAR);
     
     // 15 seconds cooldown
     private final long SHOUT_COOLDOWN = 15000;
@@ -159,7 +174,7 @@ public class ChatManager extends Addon implements Listener
         this.users.remove(name);
     }
     
-    @EventHandler (priority = EventPriority.HIGH)
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onChat(AsyncPlayerChatEvent event)
     {
         String message = event.getMessage();
@@ -175,6 +190,11 @@ public class ChatManager extends Addon implements Listener
         
         if(message.startsWith("@"))
         {
+            if(message.indexOf(" ") < 0)
+            {
+                player.sendMessage("@<player> <message>");
+                return;
+            }
             Player other = null;
             if(message.startsWith("@r"))
             {
@@ -227,7 +247,7 @@ public class ChatManager extends Addon implements Listener
                     if(spy == player || spy == other)
                         continue;
                     espy = SCGeneral.getEssentials().getUser(spy);
-                    if(espy != null && espy.isOnline())
+                    if(espy != null && espy.isOnline() && espy.isSocialSpyEnabled())
                     {
                         spy.sendMessage(mes);
                     }
@@ -235,7 +255,13 @@ public class ChatManager extends Addon implements Listener
             }
             return;
         }
-        
+        else if(message.startsWith("!") && player.hasPermission("essentials.me"))
+        {
+            message = String.format(me, player.getDisplayName(), message.substring(1));
+            for(Player other : event.getRecipients())
+                other.sendMessage(message);
+            return;
+        }
         ChatChannel c = get(player.getName());
         String m;
         switch(c)
@@ -243,9 +269,12 @@ public class ChatManager extends Addon implements Listener
             case LOCAL:
             Location loc = player.getLocation();
                 m = String.format(local, getLocalTag(player), event.getMessage());
+                player.sendMessage(m);
                 for(Player other : event.getRecipients())
                 {
-                    if(other.getLocation().distanceSquared(loc) >= 900)
+                    if(other.getWorld() != player.getWorld())
+                        continue;
+                    if(other.getLocation().distanceSquared(loc) <= 900)
                         other.sendMessage(m);
                 }
                 break;
@@ -263,7 +292,11 @@ public class ChatManager extends Addon implements Listener
                     return;
                 }
                 
-                m = String.format(global, getGlobalTag(player), event.getMessage());
+                String title = "";
+                String rank = this.pvptitles.containsKey(player.getName()) ? this.pvptitles.get(player.getName()) : "";
+                if(!rank.isEmpty())
+                    title = String.format(t, rank);
+                m = String.format(global, title, getGlobalTag(player), event.getMessage());
                 for(Player other : event.getRecipients())
                 {
                     other.sendMessage(m);
@@ -288,11 +321,18 @@ public class ChatManager extends Addon implements Listener
             {
                 Player other = it.next();
                 if(other != null && player.canSee(other))
-                    hits.add(other.getName());
+                    hits.add(String.format(at, other.getName()));
             }
             event.getTabCompletions().clear();
             event.getTabCompletions().addAll(hits);
         }
+    }
+    
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onMe(PlayerCommandPreprocessEvent event)
+    {
+        if(event.getMessage().startsWith("/me") || event.getMessage().startsWith("/eme"))
+            event.setCancelled(true);
     }
     
     private boolean isIpMuted(Player player)
@@ -307,7 +347,10 @@ public class ChatManager extends Addon implements Listener
         if(player.hasPermission("Shout.Bypass"))
             return false;
         if(!this.cooldown.containsKey(player.getName()))
+        {
+            this.cooldown.put(player.getName(), System.currentTimeMillis()+SHOUT_COOLDOWN);
             return false;
+        }
         long expire = this.cooldown.get(player.getName());
         if(expire < System.currentTimeMillis())
         {
@@ -365,7 +408,8 @@ public class ChatManager extends Addon implements Listener
            "["+ChatColor.DARK_RED+"A"+ChatColor.YELLOW+"+"+ChatColor.RESET+"] %s"),
         A("["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] "+ChatColor.DARK_GRAY+"%s",
           "["+ChatColor.DARK_RED+"A"+ChatColor.RESET+"] %s"),
-        M("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] "+ChatColor.DARK_GRAY+"%s"),
+        M("["+ChatColor.BLUE+"M"+ChatColor.RESET+"] "+ChatColor.DARK_GRAY+"%s",
+          "["+ChatColor.BLUE+"M"+ChatColor.RESET+"] %s"),
         PREMIUMP(ChatColor.BLUE+"%s"+ChatColor.YELLOW+"+"),
 		PREMIUM(ChatColor.BLUE+"%s"),
 		VIPP(ChatColor.GREEN+"%s"+ChatColor.YELLOW+"+"),

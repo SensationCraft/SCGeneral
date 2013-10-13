@@ -51,6 +51,7 @@ import Commands.Duel.ChallengeCommand;
 import Commands.Duel.DenyCommand;
 import Commands.Duel.EndCommand;
 import Commands.Duel.SpectateCommand;
+import Commands.Muteip;
 import Commands.help.HelpAccept;
 import Commands.help.HelpCancel;
 import Commands.help.HelpDeny;
@@ -67,6 +68,8 @@ import addon.storage.Storage;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.earth2me.essentials.Essentials;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 
 public class SCGeneral extends JavaPlugin implements Listener
@@ -185,6 +188,15 @@ public class SCGeneral extends JavaPlugin implements Listener
 	public void onDisable(){
 		this.arena.forceEnd();
 	}
+    
+    // Default command, will inform the user when an addon command is unused
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args)
+    {
+        sender.sendMessage(ChatColor.RED+"That command is currently under development.");
+        return true;
+    }
+    
 	public Scoreboard getScoreboard() {
 		return this.scoreboard;
 	}
@@ -234,6 +246,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		//this.commandMap.put("shout", this.shout);
 		this.commandMap.put("channel", new Channel());
 		this.commandMap.put("shoutmute", new ShoutMute());
+		this.commandMap.put("muteip", new Muteip(this));
 		final PluginCommand repairCommand = this.getServer().getPluginCommand("repair");
 		if(repairCommand != null)
 			this.commandMap.put("repair", new Repair(repairCommand.getExecutor()));
@@ -293,7 +306,7 @@ public class SCGeneral extends JavaPlugin implements Listener
 		this.commandMap.clear();
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerJoin(final PlayerJoinEvent e){
 		this.scUsers.put(e.getPlayer().getName(), new SCUser(e.getPlayer()));
 	}

@@ -95,7 +95,7 @@ public class AddonManager implements CommandExecutor
 				final ReloadableListener rl = new ReloadableListener(args[1]);
 				try
 				{
-					rl.load(this.plugin);
+					rl.load(this.plugin, false);
 					// Maybe call an onEnable or smth
 
 					this.addons.put(args[1], rl);
@@ -153,45 +153,37 @@ public class AddonManager implements CommandExecutor
 			}
 		}
 		else if(args[0].equalsIgnoreCase("reload"))
+        {
 			if(args.length < 2)
 				sender.sendMessage(ChatColor.RED+"Please specify the addon you want to reload");
 			else if(!this.addons.containsKey(args[1]))
 				sender.sendMessage(ChatColor.RED+"Addon not found.");
 			else
 			{
-				final AbstractReloadable ar = this.addons.remove(args[1]);
-				Addon a = null;
-				try
-				{
-					a = ar.load(this.plugin);
-				}
-				catch(final UnknownAddonException ex)
-				{
-					sender.sendMessage(ChatColor.RED+"Unknown addon.");
-				}
-				catch(final InvalidAddonException ex)
-				{
-					sender.sendMessage(ChatColor.RED+"Failed to load the addon!");
-					ex.printStackTrace();
-				}
+				final AbstractReloadable ar = this.addons.get(args[1]);
+				Addon a;
+                a = ar.reload(sender, this.plugin);
 				if(a == null)
 				{
 					sender.sendMessage(ChatColor.RED+"Failed to reload the addon!");
 					return true;
 				}
-				try
-				{
-					ar.validate(a);
-				}
-				catch(final Exception ex)
-				{
-					sender.sendMessage(ChatColor.RED+"Failed to reload the addon!");
-					ex.printStackTrace();
-				}
-				ar.unload();
-				ar.load(a);
-				sender.sendMessage(ChatColor.DARK_RED+"Addon reloaded.");
+				sender.sendMessage(ChatColor.GREEN+"Addon reloaded.");
 			}
+        }
+        else if(args[0].equalsIgnoreCase("list"))
+        {
+            StringBuilder list = new StringBuilder();
+            for(Map.Entry<String, AbstractReloadable> e : this.addons.entrySet())
+            {
+                list.append(e.getValue().isEnabled() ? ChatColor.GREEN : ChatColor.RED);
+                list.append(e.getKey());
+                list.append(ChatColor.RESET).append(", ");
+            }
+            if(list.length() > 2)
+                list.delete(list.length()-2, list.length());
+            sender.sendMessage(String.format("Addons: %s", list.toString()));
+        }
 		return true;
 	}
 
@@ -215,7 +207,7 @@ public class AddonManager implements CommandExecutor
 			final ReloadableListener rl = new ReloadableListener(name);
 			try
 			{
-				rl.load(this.plugin);
+				rl.load(this.plugin, false);
 				// Maybe call an onEnable or smth
 
 				this.addons.put(name, rl);

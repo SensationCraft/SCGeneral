@@ -30,6 +30,7 @@ import com.earth2me.essentials.api.Economy;
 import com.earth2me.essentials.api.NoLoanPermittedException;
 import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.earth2me.essentials.craftbukkit.InventoryWorkaround;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class SuperItems extends Addon implements Listener
 {
@@ -337,6 +338,22 @@ public class SuperItems extends Addon implements Listener
 			// Swallow it you cumbucket
 		}
 	}
+    
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onDamage(EntityDamageByEntityEvent event)
+    {
+        if(event.getEntity() instanceof Player == false)
+            return;
+        if(event.getDamager() instanceof Player == false)
+            return;
+        ItemStack i = ((Player)event.getDamager()).getItemInHand();
+        if(isSuper(i) && i.getType() == Material.STICK)
+        {
+            event.setCancelled(true);
+            ((Player)event.getEntity()).damage(1D, event.getDamager());
+            ((Player)event.getDamager()).sendMessage(ChatColor.RED+"Supersticks have been disabled!");
+        }
+    }
 
 	public boolean isSuper(final ItemStack i)
 	{

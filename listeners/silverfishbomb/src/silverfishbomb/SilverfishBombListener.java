@@ -39,6 +39,7 @@ import com.earth2me.essentials.api.UserDoesNotExistException;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
+import org.bukkit.metadata.FixedMetadataValue;
 
 /**
  *
@@ -46,12 +47,11 @@ import com.massivecraft.factions.Faction;
  */
 public class SilverfishBombListener extends Addon implements Listener{
 
+    ItemStack egg;
+    
 	public SilverfishBombListener(final SCGeneral scg, final AddonDescriptionFile desc) {
 		super(scg, desc);
 	}
-	
-	@Persistant(key = "snowballs", instantiationType = HashSet.class)
-	private Set<Snowball> snowballs;
 
 
 	/*@SuppressWarnings("unchecked")
@@ -66,16 +66,11 @@ public class SilverfishBombListener extends Addon implements Listener{
 	public void onEggCollide(final ProjectileHitEvent e){
 		if(e.getEntityType() != EntityType.SNOWBALL)
 			return;
-		boolean match = false;
-		final Iterator<Snowball> it = this.snowballs.iterator();
-		while(it.hasNext())
-			if(it.next() == e.getEntity()){
-				match = true;
-				it.remove();
-				break;
-			}
-		if(!match)
-			return;
+		
+        if(!e.getEntity().hasMetadata("silverfish"))
+            return;
+        e.getEntity().removeMetadata("silverfish", getPlugin());
+        
 		e.getEntity().getWorld().createExplosion(e.getEntity().getLocation(), 0);
 		e.getEntity().getWorld().playSound(e.getEntity().getLocation(), Sound.ENDERMAN_TELEPORT, 5, 1);
 		for(int i=0;i<5;i++){
@@ -86,7 +81,7 @@ public class SilverfishBombListener extends Addon implements Listener{
 					if(ent.isValid())
 						ent.remove();
 				}
-			}.runTaskLater(Bukkit.getPluginManager().getPlugin("SilverfishBomb"), 20*30L);
+			}.runTaskLater(getPlugin(), 20*30L);
 		}
 	}
 
@@ -144,26 +139,31 @@ public class SilverfishBombListener extends Addon implements Listener{
 				e.getPlayer().setItemInHand(new ItemStack(0));
 			else
 				e.getPlayer().getItemInHand().setAmount(e.getPlayer().getItemInHand().getAmount()-1);
-			this.snowballs.add(e.getPlayer().launchProjectile(Snowball.class));
+			e.getPlayer().launchProjectile(Snowball.class).setMetadata("silverfish", new FixedMetadataValue(getPlugin(), null));
 		}
 	}
-	private ItemStack makeEgg(){
-		final ItemStack it = new ItemStack(383);
-		final ItemMeta meta = it.getItemMeta();
-		meta.setDisplayName(ChatColor.BLUE+"Silverfish Bomb");
-		List<String> lore = meta.getLore();
-		if(lore == null)
-			lore = new ArrayList<String>();
-		lore.add(" ");
-		lore.add("Do not throw this in spawn!");
-		lore.add(" ");
-		lore.add(ChatColor.YELLOW+""+ChatColor.ITALIC+"\"A silverfish a day keeps the enemies at bay!\"");
-		meta.setLore(lore);
-		it.setItemMeta(meta);
-		final MaterialData data = it.getData();
-		data.setData((byte) 60);
-		it.setData(data);
-		it.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
-		return it;
+	private ItemStack makeEgg()
+    {
+        if(egg == null)
+        {
+            final ItemStack it = new ItemStack(383);
+            final ItemMeta meta = it.getItemMeta();
+            meta.setDisplayName(ChatColor.BLUE+"Silverfish Bomb");
+            List<String> lore = meta.getLore();
+            if(lore == null)
+                lore = new ArrayList<String>();
+            lore.add(" ");
+            lore.add("Do not throw this in spawn!");
+            lore.add(" ");
+            lore.add(ChatColor.YELLOW+""+ChatColor.ITALIC+"\"A silverfish a day keeps the enemies at bay!\"");
+            meta.setLore(lore);
+            it.setItemMeta(meta);
+            final MaterialData data = it.getData();
+            data.setData((byte) 60);
+            it.setData(data);
+            it.addUnsafeEnchantment(Enchantment.ARROW_DAMAGE, 1);
+            egg = it;
+        }
+		return egg;
 	}
 }

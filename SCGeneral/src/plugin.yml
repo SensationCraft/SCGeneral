@@ -78,4 +78,9 @@ commands:
     aliases: [c,ch]
   muteip:
     description: Mute all users that use a certain ip
+# executors handled by SCPvP addon
+  rank:
+    default: op
+  ranking:
+    default: true
   

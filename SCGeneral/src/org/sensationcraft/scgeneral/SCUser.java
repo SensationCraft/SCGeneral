@@ -20,7 +20,7 @@ public class SCUser extends PlayerExtension
 
 	private final long COMBAT_TIME = 8000;
     
-    private volatile ChatChannel c;
+    private volatile ChatChannel c = ChatChannel.LOCAL;
 
 	public SCUser(final Player base) {
 		super(base);

@@ -13,11 +13,10 @@ import org.bukkit.entity.Player;
 import org.sensationcraft.scgeneral.SCGeneral;
 
 import com.earth2me.essentials.User;
-import com.github.DarkSeraphim.SCPvP.Titles;
 
 public class Shout implements CommandExecutor
 {
-
+/*
 	private final long SHOUT_DELAY = 15000;
 	private boolean dead = false;
 	private final String shoutFormat = "&c[S] &r%s%s&r: &l%s".replace('&', ChatColor.COLOR_CHAR);
@@ -33,11 +32,11 @@ public class Shout implements CommandExecutor
 	public boolean isDead(){
 		return this.dead;
 	}
-
+*/
 	@Override
 	public boolean onCommand(final CommandSender p, final Command arg1, final String arg2,
 			final String[] args) {
-		if(args.length <= 0){
+		/*if(args.length <= 0){
 			p.sendMessage(ChatColor.RED+"You must type a message!");
 			return false;
 		}
@@ -106,10 +105,10 @@ public class Shout implements CommandExecutor
 		SCGeneral.getInstance().getLogger().info(shout);
 		if(!bypass)
 			this.coolDowns.put(playerName,System.currentTimeMillis()+this.SHOUT_DELAY);
-
+*/
 		return true;
-	}
-
+    }
+/*
 	public Set<String> getDisabled() {
 		return this.disabled;
 	}
@@ -142,5 +141,5 @@ public class Shout implements CommandExecutor
 		{
 			return String.format(this.prefix, name);
 		}
-	}
+	}*/
 }
