@@ -27,7 +27,10 @@ public class SCUser extends PlayerExtension
 	}
 
 	public void setInCombat(final boolean inCombat){
-		if(inCombat){
+		if(inCombat)
+        {
+            if(this.inCombat && this.combatTask != null)
+                this.combatTask.cancel();
 			this.combatTime = System.currentTimeMillis()+this.COMBAT_TIME;
 			this.combatTask = new BukkitRunnable()
 			{
@@ -41,6 +44,7 @@ public class SCUser extends PlayerExtension
 				this.getBase().sendMessage(ChatColor.YELLOW+"You have entered combat!");
 		}else if(this.inCombat && !inCombat){
 			this.combatTask.cancel();
+            this.combatTask = null;
 			this.combatTime = 0;
 			this.getBase().sendMessage(ChatColor.YELLOW+"You have left combat.");
 		}

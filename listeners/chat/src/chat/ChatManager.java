@@ -30,6 +30,9 @@ import addon.AddonDescriptionFile;
 import addon.storage.Persistant;
 
 import com.earth2me.essentials.User;
+import com.google.common.collect.Sets;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  *
@@ -65,6 +68,20 @@ public class ChatManager extends Addon implements Listener
 
 	private final String at = "@%s";
 	private final String t = "&4&l[&r%s&4&l]&r".replace('&', ChatColor.COLOR_CHAR);
+    
+    private final Set<String> cmds = Sets.newHashSet("m", 
+                                                     "t",
+                                                     "w",
+                                                     "tell",
+                                                     "whisper",
+                                                     "msg",
+                                                     "r",
+                                                     "emsg",
+                                                     "etell",
+                                                     "ewhisper",
+                                                     "er",
+                                                     "ereply",
+                                                     "reply");
 
 	// 15 seconds cooldown
 	private final long SHOUT_COOLDOWN = 15000;
@@ -186,7 +203,7 @@ public class ChatManager extends Addon implements Listener
 				return;
 			}
 			Player other = null;
-			if(message.startsWith("@r"))
+			if(message.startsWith("@r "))
 			{
 				// fetch other;
 				final String r = this.pm.containsKey(player.getName()) ? this.pm.get(player.getName()) : "";
@@ -249,7 +266,6 @@ public class ChatManager extends Addon implements Listener
 		case LOCAL:
 			final Location loc = player.getLocation();
 			m = String.format(this.local, this.getLocalTag(player), event.getMessage());
-			player.sendMessage(m);
 			for(final Player other : event.getRecipients())
 			{
 				if(other.getWorld() != player.getWorld())
@@ -289,6 +305,7 @@ public class ChatManager extends Addon implements Listener
 	public void onTab(final PlayerChatTabCompleteEvent event)
 	{
 		final String msg = event.getChatMessage();
+        
 		if(msg.startsWith("@") && msg.indexOf(" ") < 0)
 		{
 			final Player player = event.getPlayer();
@@ -303,12 +320,30 @@ public class ChatManager extends Addon implements Listener
 			event.getTabCompletions().addAll(hits);
 		}
 	}
-
+    
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onMe(final PlayerCommandPreprocessEvent event)
+	public void onOldCommand(final PlayerCommandPreprocessEvent event)
 	{
+        Player player = event.getPlayer();
 		if(event.getMessage().startsWith("/me") || event.getMessage().startsWith("/eme"))
-			event.setCancelled(true);
+        {
+            player.sendMessage(ChatColor.RED+"Use !<message>");
+            event.setCancelled(true);
+            return;
+        }
+        
+        int space = event.getMessage().indexOf(" ");
+        if(space > -1)
+        {
+            String command = event.getMessage().substring(1, space);
+            if(this.cmds.contains(command))
+            {
+                player.sendMessage(ChatColor.RED+"Use @<playername> and @r (for quick reply).");
+                event.setCancelled(true);
+                return;
+            }
+        }
+        
 	}
 
 	private boolean isIpMuted(final Player player)
